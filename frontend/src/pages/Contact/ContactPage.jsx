@@ -19,7 +19,7 @@ export default function ContactPage() {
   const altPhone = footerData?.altPhone || '+91-8302313065'
   const email = footerData?.email || 'sales@ecomargin.com'
   const supportEmail = footerData?.supportEmail || 'support@ecomargin.com'
-  const whatsapp = footerData?.whatsapp || '+91-9982148474'
+  const whatsapp = footerData?.whatsapp || '+91-+91- 8302313065'
   const businessHours = footerData?.businessHours || 'Monday – Saturday: 09:00 AM – 07:00 PM IST'
   const mapsEmbedUrl = footerData?.googleMapsEmbedUrl || 'https://maps.google.com/maps?q=Noida%20Sector%2062&t=&z=13&ie=UTF8&iwloc=&output=embed'
 
