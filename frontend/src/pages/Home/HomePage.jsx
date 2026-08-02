@@ -1,77 +1,63 @@
 import React from 'react'
 import SEO from '@seo/SEO'
 
-// Import all 15 sections
+// Corporate Sections
 import HeroSection from './sections/HeroSection'
 import IntroSection from './sections/IntroSection'
-import ServicesSection from './sections/ServicesSection'
 import ProductsSection from './sections/ProductsSection'
+import ManufacturingSection from './sections/ManufacturingSection'
+import ServicesSection from './sections/ServicesSection'
 import WhyChooseUsSection from './sections/WhyChooseUsSection'
 import CounterSection from './sections/CounterSection'
 import IndustriesSection from './sections/IndustriesSection'
-import TimelineSection from './sections/TimelineSection'
-import TestimonialsSection from './sections/TestimonialsSection'
-import ClientsSection from './sections/ClientsSection'
 import GallerySection from './sections/GallerySection'
 import BlogsSection from './sections/BlogsSection'
 import FAQSection from './sections/FAQSection'
 import ContactCTASection from './sections/ContactCTASection'
-import NewsletterSection from './sections/NewsletterSection'
 
 export default function HomePage() {
   return (
     <>
       <SEO 
-        title="EcoMargin | Intelligent EV Charging Platform" 
-        description="The ultimate Cloud software and mobile app ecosystem for EV charging station operators, fleets, and drivers."
+        title="EcoMargin | EV Charger Manufacturer & EPC Infrastructure Company" 
+        description="EcoMargin manufactures 3.3kW–240kW commercial AC & DC EV chargers, OCPP Cloud CSMS software, and turnkey EPC charging station installation services."
       />
       
-      {/* 1. Animated Hero */}
+      {/* 1. Animated Corporate Hero */}
       <HeroSection />
       
       {/* 2. Company Introduction */}
       <IntroSection />
       
-      {/* 3. Our Services */}
-      <ServicesSection />
-      
-      {/* 4. Products */}
+      {/* 3. EV Charger Manufacturing Spectrum (3.3kW to 240kW) */}
       <ProductsSection />
       
-      {/* 5. Why Choose EcoMargin */}
+      {/* 4. Manufacturing Plant & QA Testing Lab */}
+      <ManufacturingSection />
+
+      {/* 5. EPC Installation & AMC Services */}
+      <ServicesSection />
+      
+      {/* 6. Why Choose EcoMargin */}
       <WhyChooseUsSection />
       
-      {/* 6. Counter */}
+      {/* 7. Counter Stats */}
       <CounterSection />
       
-      {/* 7. Industries */}
+      {/* 8. Industries Served (Highways, Fleets, Bus Depots, Hotels) */}
       <IndustriesSection />
       
-      {/* 8. Timeline */}
-      <TimelineSection />
-      
-      {/* 9. Testimonials */}
-      <TestimonialsSection />
-      
-      {/* 10. Clients */}
-      <ClientsSection />
-      
-      {/* 11. Gallery Preview */}
+      {/* 9. Projects & Installation Gallery */}
       <GallerySection />
       
-      {/* 12. Latest Blogs */}
+      {/* 10. Industry Insights / Blogs */}
       <BlogsSection />
       
-      {/* 13. FAQ */}
+      {/* 11. FAQ */}
       <FAQSection />
       
-      {/* 14. Contact CTA */}
+      {/* 12. Contact Sales CTA */}
       <ContactCTASection />
-      
-      {/* 15. Newsletter */}
-      <NewsletterSection />
-      
-      {/* 16. Footer (Handled automatically by MainLayout wrapper in AppRoutes.jsx) */}
     </>
   )
 }

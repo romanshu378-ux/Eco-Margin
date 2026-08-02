@@ -2,9 +2,12 @@ export const PATHS = {
   HOME: '/',
   ABOUT: '/about',
   PRODUCTS: '/products',
+  MANUFACTURING: '/manufacturing',
   SOLUTIONS: '/solutions',
   SERVICES: '/services',
   PROJECTS: '/projects',
+  DEALER_PARTNER: '/dealer-partner',
+  DOWNLOADS: '/downloads',
   GALLERY: '/gallery',
   BLOGS: '/blogs',
   CAREER: '/career',
@@ -13,22 +16,7 @@ export const PATHS = {
   // Legal
   PRIVACY: '/privacy-policy',
   TERMS: '/terms',
-  
-  // Auth
-  LOGIN: '/login',
-  REGISTER: '/register',
-  FORGOT_PASSWORD: '/forgot-password',
-  
-  // App
-  STATIONS: '/stations',
-  STATION_DETAIL: (id) => `/stations/${id}`,
-  
-  // Protected
-  DASHBOARD: '/dashboard',
-  BOOKINGS: '/dashboard/bookings',
-  WALLET: '/dashboard/wallet',
-  PROFILE: '/dashboard/profile',
-  
+
   // 404
   NOT_FOUND: '*'
 }

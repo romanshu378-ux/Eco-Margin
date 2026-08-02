@@ -1,107 +1,146 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Button from '@components/ui/Button/Button'
-import { PATHS } from '@routes/paths'
 import { fadeUp, staggerContainer, slideInRight } from '@animations/variants'
+import QuoteModal from '@components/common/QuoteModal/QuoteModal'
+import { FiDownload, FiArrowRight, FiShield, FiCpu, FiCheckCircle } from 'react-icons/fi'
 
 export default function HeroSection() {
+  const [quoteOpen, setQuoteOpen] = useState(false)
+
   return (
-    <section style={{ 
-      minHeight: '90vh', 
-      display: 'flex', 
-      alignItems: 'center', 
-      position: 'relative',
-      overflow: 'hidden',
-      padding: '4rem 0'
-    }}>
-      {/* Background Gradients */}
-      <div style={{ position: 'absolute', top: '-10%', right: '-5%', width: '500px', height: '500px', background: 'radial-gradient(circle, var(--color-primary-light) 0%, transparent 70%)', filter: 'blur(60px)', zIndex: -1 }} />
-      <div style={{ position: 'absolute', bottom: '-20%', left: '-10%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(0, 230, 172, 0.03) 0%, transparent 70%)', filter: 'blur(80px)', zIndex: -1 }} />
+    <>
+      <section style={{ 
+        minHeight: '92vh', 
+        display: 'flex', 
+        alignItems: 'center', 
+        position: 'relative',
+        overflow: 'hidden',
+        padding: '6rem 0 4rem 0',
+        background: 'linear-gradient(180deg, #0B0F19 0%, #111827 100%)',
+        color: '#ffffff'
+      }}>
+        {/* Glow Effects */}
+        <div style={{ position: 'absolute', top: '-10%', right: '-5%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%)', filter: 'blur(80px)', zIndex: 0 }} />
+        <div style={{ position: 'absolute', bottom: '-20%', left: '-10%', width: '700px', height: '700px', background: 'radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%)', filter: 'blur(90px)', zIndex: 0 }} />
 
-      <div className="container">
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'center' }}>
-          
-          <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-            <motion.div variants={fadeUp} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.5rem 1rem', background: 'var(--color-bg-card)', borderRadius: 'var(--radius-full)', border: '1px solid var(--color-border)', marginBottom: '2rem', fontSize: '0.875rem', fontWeight: '500' }}>
-              <span style={{ display: 'flex', width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-primary)' }}></span>
-              Intelligent EV Management Platform
-            </motion.div>
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '4rem', alignItems: 'center' }}>
             
-            <motion.h1 variants={fadeUp} style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', marginBottom: '1.5rem', lineHeight: '1.1' }}>
-              Powering the <br />
-              <span className="text-gradient">Electric Future.</span>
-            </motion.h1>
-            
-            <motion.p variants={fadeUp} style={{ color: 'var(--color-text-muted)', fontSize: '1.25rem', marginBottom: '2.5rem', maxWidth: '500px', lineHeight: '1.6' }}>
-              EcoMargin offers an end-to-end management solution for EV charging networks. Monitor, monetize, and scale your infrastructure seamlessly.
-            </motion.p>
-            
-            <motion.div variants={fadeUp} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-              <Link to={PATHS.REGISTER}>
-                <Button size="lg" variant="primary">Start Free Trial</Button>
-              </Link>
-              <Link to={PATHS.CONTACT}>
-                <Button size="lg" variant="outline">Book Demo</Button>
-              </Link>
-            </motion.div>
-          </motion.div>
-
-          <motion.div variants={slideInRight} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ position: 'relative' }}>
-            <div className="glass-panel" style={{ width: '100%', aspectRatio: '4/3', borderRadius: '24px', padding: '1rem', position: 'relative', overflow: 'hidden', border: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column' }}>
-              {/* Abstract Dashboard UI Mockup */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                <div style={{ width: '30%', height: '8px', background: 'var(--color-text-muted)', borderRadius: '4px' }} />
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <div style={{ width: '8px', height: '8px', background: 'var(--color-error)', borderRadius: '50%' }} />
-                  <div style={{ width: '8px', height: '8px', background: 'var(--color-warning)', borderRadius: '50%' }} />
-                  <div style={{ width: '8px', height: '8px', background: 'var(--color-success)', borderRadius: '50%' }} />
-                </div>
-              </div>
+            {/* Left Content */}
+            <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}>
               
-              <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
-                <div style={{ flex: 1, height: '80px', background: 'var(--color-bg)', borderRadius: '12px' }} />
-                <div style={{ flex: 1, height: '80px', background: 'var(--color-bg)', borderRadius: '12px' }} />
-                <div style={{ flex: 1, height: '80px', background: 'var(--color-primary-light)', borderRadius: '12px', border: '1px solid var(--color-primary)' }} />
-              </div>
+              <motion.div variants={fadeUp} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', padding: '0.5rem 1.25rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '9999px', border: '1px solid rgba(16, 185, 129, 0.3)', marginBottom: '1.75rem' }}>
+                <span style={{ display: 'block', width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 10px #10B981' }}></span>
+                <span style={{ fontSize: '0.85rem', fontWeight: '700', letterSpacing: '1px', textTransform: 'uppercase', color: '#10B981' }}>
+                  OEM EV Charger Manufacturer
+                </span>
+              </motion.div>
+              
+              <motion.h1 variants={fadeUp} style={{ fontSize: 'clamp(2.5rem, 5.5vw, 4.25rem)', marginBottom: '1.25rem', lineHeight: '1.1', fontWeight: '800', fontFamily: 'Outfit, sans-serif' }}>
+                Powering India's <br />
+                <span style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 50%, #3B82F6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  EV Infrastructure.
+                </span>
+              </motion.h1>
 
-              <div style={{ flex: 1, background: 'var(--color-bg)', borderRadius: '12px', position: 'relative', overflow: 'hidden' }}>
-                <motion.div 
-                  initial={{ width: 0 }}
-                  animate={{ width: '100%' }}
-                  transition={{ duration: 1.5, delay: 0.5 }}
-                  style={{ position: 'absolute', bottom: 0, left: 0, height: '40%', background: 'linear-gradient(to top, var(--color-primary-light), transparent)' }}
-                />
-                <svg viewBox="0 0 100 40" preserveAspectRatio="none" style={{ position: 'absolute', bottom: 0, width: '100%', height: '100%', opacity: 0.5 }}>
-                  <motion.path 
-                    initial={{ pathLength: 0 }}
-                    animate={{ pathLength: 1 }}
-                    transition={{ duration: 2, ease: "easeInOut" }}
-                    d="M0 40 Q 20 20, 40 30 T 80 15 T 100 5 L 100 40 L 0 40" 
-                    fill="var(--color-primary-light)" 
-                    stroke="var(--color-primary)" 
-                    strokeWidth="0.5" 
-                  />
-                </svg>
-              </div>
+              {/* Core Pillars */}
+              <motion.div variants={fadeUp} style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.75rem', fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-primary)' }}>
+                <span>Design</span> • <span>Manufacturing</span> • <span>EPC Installation</span> • <span>OCPP Software</span> • <span>AMC</span>
+              </motion.div>
+              
+              <motion.p variants={fadeUp} style={{ color: '#9CA3AF', fontSize: '1.15rem', marginBottom: '2.5rem', maxWidth: '540px', lineHeight: '1.6' }}>
+                Engineering heavy-duty commercial AC chargers (3.3kW–22kW) and ultra-fast DC charging stations (20kW–240kW) for highways, fleets, CPOs, bus depots, and commercial real estate.
+              </motion.p>
+              
+              <motion.div variants={fadeUp} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                <Button size="lg" variant="primary" onClick={() => setQuoteOpen(true)}>
+                  Request Quote <FiArrowRight style={{ marginLeft: '0.5rem' }} />
+                </Button>
+                <Link to="/contact">
+                  <Button size="lg" variant="outline">Contact Sales</Button>
+                </Link>
+                <Link to="/downloads">
+                  <Button size="lg" variant="ghost" style={{ color: '#9CA3AF' }}>
+                    <FiDownload style={{ marginRight: '0.5rem' }} /> Brochure
+                  </Button>
+                </Link>
+              </motion.div>
 
-              {/* Floating Element */}
-              <motion.div 
-                animate={{ y: [-10, 10, -10] }} 
-                transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-                style={{ position: 'absolute', bottom: '2rem', right: '-1rem', background: 'var(--color-bg-card)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-lg)', display: 'flex', alignItems: 'center', gap: '1rem' }}
-              >
-                <div style={{ width: '40px', height: '40px', background: 'var(--color-primary-light)', color: 'var(--color-primary)', borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.2rem' }}>⚡</div>
+              {/* Trust Badges */}
+              <motion.div variants={fadeUp} style={{ display: 'flex', gap: '2rem', marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
                 <div>
-                  <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Revenue Today</div>
-                  <div style={{ fontWeight: '700' }}>$4,250.00</div>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#ffffff' }}>3.3kW – 240kW</div>
+                  <div style={{ fontSize: '0.8rem', color: '#9CA3AF' }}>AC & DC Fast Range</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#ffffff' }}>ISO & ARAI</div>
+                  <div style={{ fontSize: '0.8rem', color: '#9CA3AF' }}>Certified Factory</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#ffffff' }}>99.8%</div>
+                  <div style={{ fontSize: '0.8rem', color: '#9CA3AF' }}>Network Uptime</div>
                 </div>
               </motion.div>
-            </div>
-          </motion.div>
 
+            </motion.div>
+
+            {/* Right Product Industrial Showcase */}
+            <motion.div variants={slideInRight} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ position: 'relative' }}>
+              <div style={{ 
+                background: 'rgba(21, 26, 45, 0.8)', 
+                border: '1px solid rgba(255, 255, 255, 0.1)', 
+                borderRadius: '24px', 
+                padding: '2.5rem', 
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
+                position: 'relative'
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-primary)', letterSpacing: '1px' }}>
+                    FLAGSHIP MODEL
+                  </span>
+                  <span style={{ padding: '0.25rem 0.75rem', borderRadius: '9999px', background: 'rgba(16, 185, 129, 0.15)', color: '#10B981', fontSize: '0.75rem', fontWeight: 700 }}>
+                    Dual CCS2 Gun
+                  </span>
+                </div>
+
+                <h3 style={{ fontSize: '1.75rem', marginBottom: '0.5rem', color: '#ffffff' }}>EcoCharge 120kW Dual DC Fast Station</h3>
+                <p style={{ color: '#9CA3AF', fontSize: '0.875rem', marginBottom: '2rem' }}>Heavy Duty Ultra-Fast Highway & Bus Depot Charging System</p>
+
+                {/* Industrial Specifications Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
+                  <div style={{ background: 'rgba(11, 15, 25, 0.8)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>Output Power</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>120kW (Scalable to 160kW)</div>
+                  </div>
+                  <div style={{ background: 'rgba(11, 15, 25, 0.8)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>Connector Type</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>Dual CCS2 (GB/T Option)</div>
+                  </div>
+                  <div style={{ background: 'rgba(11, 15, 25, 0.8)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>Protection Rating</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>IP55 Outdoor Rated</div>
+                  </div>
+                  <div style={{ background: 'rgba(11, 15, 25, 0.8)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>Communication</div>
+                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>OCPP 2.0.1 / 4G / Ethernet</div>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <Button variant="primary" fullWidth onClick={() => setQuoteOpen(true)}>
+                    Request Technical Datasheet
+                  </Button>
+                </div>
+              </div>
+            </motion.div>
+
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <QuoteModal isOpen={quoteOpen} onClose={() => setQuoteOpen(false)} defaultProduct="120kW Ultra Fast DC Station" />
+    </>
   )
 }

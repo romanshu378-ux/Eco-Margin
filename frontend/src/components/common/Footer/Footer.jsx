@@ -1,113 +1,151 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import LogoIcon from '@assets/icons/LogoIcon'
+import { FiShield, FiCheckCircle, FiPhoneCall, FiMail, FiMapPin } from 'react-icons/fi'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
     <footer style={{ 
-      background: 'var(--color-bg-alt)', 
+      background: '#0B0F19', 
       borderTop: '1px solid var(--color-border)',
       padding: '4rem 0 2rem 0',
+      color: 'var(--color-text)',
       marginTop: 'auto'
     }}>
       <div className="container">
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
-          gap: '3rem',
+        
+        {/* Top Badges Bar */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          gap: '1.5rem',
+          paddingBottom: '3rem',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
           marginBottom: '3rem'
         }}>
-          {/* Brand Col */}
-          <div>
-            <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1.5rem' }}>
-              <div style={{ color: 'var(--color-primary)' }}><LogoIcon size={28} /></div>
-              <span style={{ fontFamily: 'Outfit', fontSize: '1.25rem', fontWeight: '700' }}>EcoMargin</span>
-            </Link>
-            <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', fontSize: '0.9rem' }}>
-              Pioneering the future of electric mobility with seamless charging infrastructure management across the globe.
-            </p>
-            <div style={{ display: 'flex', gap: '1rem' }}>
-              {/* Social icons placeholders */}
-              {['Twitter', 'LinkedIn', 'GitHub'].map(social => (
-                <a key={social} href="#" style={{ 
-                  width: '36px', height: '36px', borderRadius: '50%', 
-                  background: 'var(--color-bg-card)', border: '1px solid var(--color-border)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: 'var(--color-text)', fontSize: '0.8rem'
-                }}>
-                  {social[0]}
-                </a>
-              ))}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <FiShield style={{ fontSize: '1.75rem', color: 'var(--color-primary)' }} />
+            <div>
+              <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>ARAI & CE Certified</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Tested for Indian Grid Standards</div>
             </div>
           </div>
-
-          {/* Links Col 1 */}
-          <div>
-            <h4 style={{ marginBottom: '1.5rem', fontSize: '1rem' }}>Platform</h4>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {['Find Stations', 'Pricing Plans', 'Operator Dashboard', 'Mobile App'].map(link => (
-                <li key={link}><a href="#" style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>{link}</a></li>
-              ))}
-            </ul>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <FiCheckCircle style={{ fontSize: '1.75rem', color: 'var(--color-primary)' }} />
+            <div>
+              <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>OCPP 2.0.1 Compliant</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Universal CPO Interoperability</div>
+            </div>
           </div>
-
-          {/* Links Col 2 */}
-          <div>
-            <h4 style={{ marginBottom: '1.5rem', fontSize: '1rem' }}>Company</h4>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              {['About Us', 'Careers', 'Blog', 'Contact'].map(link => (
-                <li key={link}>
-                  <Link to={`/${link.toLowerCase().replace(' ', '-')}`} style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>{link}</Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Newsletter Col */}
-          <div>
-            <h4 style={{ marginBottom: '1.5rem', fontSize: '1rem' }}>Stay Updated</h4>
-            <p style={{ color: 'var(--color-text-muted)', marginBottom: '1rem', fontSize: '0.9rem' }}>
-              Subscribe to our newsletter for the latest EV news.
-            </p>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <input 
-                type="email" 
-                placeholder="Email address" 
-                style={{ 
-                  flex: 1, padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)',
-                  background: 'var(--color-bg)', border: '1px solid var(--color-border)',
-                  color: 'var(--color-text)', outline: 'none'
-                }} 
-              />
-              <button style={{ 
-                padding: '0 1rem', background: 'var(--color-primary)', color: '#0f0f1a',
-                borderRadius: 'var(--radius-md)', fontWeight: '600'
-              }}>
-                Subscribe
-              </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <FiPhoneCall style={{ fontSize: '1.75rem', color: 'var(--color-primary)' }} />
+            <div>
+              <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>24/7 Remote NOC</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>AMC & On-site Field Support</div>
             </div>
           </div>
         </div>
 
+        {/* Footer Links Grid */}
         <div style={{ 
-          borderTop: '1px solid var(--color-border)', 
-          paddingTop: '2rem',
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+          gap: '2.5rem',
+          marginBottom: '3rem'
+        }}>
+          {/* Company Bio */}
+          <div style={{ gridColumn: 'span 2' }}>
+            <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '1.25rem' }}>
+              <div style={{ color: 'var(--color-primary)' }}><LogoIcon size={30} /></div>
+              <span style={{ fontFamily: 'Outfit', fontSize: '1.4rem', fontWeight: '800', color: '#ffffff' }}>
+                EcoMargin
+              </span>
+            </Link>
+            <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', fontSize: '0.875rem', lineHeight: 1.6 }}>
+              EcoMargin is a leading OEM EV Charger Manufacturer and Infrastructure EPC Contractor. We manufacture commercial AC Fast Chargers (3.3kW–22kW) and heavy-duty DC Charging Stations (20kW–240kW) with integrated OCPP Cloud software.
+            </p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <FiMapPin style={{ color: 'var(--color-primary)' }} /> Factory & R&D Center: Plot 42, Industrial Area, Sector 62, Noida, India
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <FiPhoneCall style={{ color: 'var(--color-primary)' }} /> Sales & Support: +91-99999-99999 / +91-88888-88888
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <FiMail style={{ color: 'var(--color-primary)' }} /> Sales Enquiries: sales@ecomargin.com
+              </div>
+            </div>
+          </div>
+
+          {/* Manufacturing Range */}
+          <div>
+            <h4 style={{ marginBottom: '1.25rem', fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-primary)' }}>
+              Charger Range
+            </h4>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem' }}>
+              <li><Link to="/products" style={{ color: 'var(--color-text-muted)' }}>3.3kW / 7.4kW AC Single Phase</Link></li>
+              <li><Link to="/products" style={{ color: 'var(--color-text-muted)' }}>11kW / 22kW AC Three Phase</Link></li>
+              <li><Link to="/products" style={{ color: 'var(--color-text-muted)' }}>30kW / 60kW DC Fast Station</Link></li>
+              <li><Link to="/products" style={{ color: 'var(--color-text-muted)' }}>120kW / 160kW Dual Gun DC</Link></li>
+              <li><Link to="/products" style={{ color: 'var(--color-text-muted)' }}>240kW Heavy Bus Charger</Link></li>
+              <li><Link to="/products" style={{ color: 'var(--color-text-muted)' }}>Portable Fleet Chargers</Link></li>
+            </ul>
+          </div>
+
+          {/* Solutions & EPC */}
+          <div>
+            <h4 style={{ marginBottom: '1.25rem', fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-primary)' }}>
+              Solutions & Services
+            </h4>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem' }}>
+              <li><Link to="/services" style={{ color: 'var(--color-text-muted)' }}>Turnkey EPC Installation</Link></li>
+              <li><Link to="/solutions" style={{ color: 'var(--color-text-muted)' }}>OCPP Cloud CSMS Software</Link></li>
+              <li><Link to="/services" style={{ color: 'var(--color-text-muted)' }}>Annual Maintenance (AMC)</Link></li>
+              <li><Link to="/manufacturing" style={{ color: 'var(--color-text-muted)' }}>OEM & White Label Supply</Link></li>
+              <li><Link to="/dealer-partner" style={{ color: 'var(--color-text-muted)' }}>CPO & Franchise Partner</Link></li>
+              <li><Link to="/downloads" style={{ color: 'var(--color-text-muted)' }}>Datasheets & Certificates</Link></li>
+            </ul>
+          </div>
+
+          {/* Corporate Links */}
+          <div>
+            <h4 style={{ marginBottom: '1.25rem', fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-primary)' }}>
+              Corporate
+            </h4>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem' }}>
+              <li><Link to="/about" style={{ color: 'var(--color-text-muted)' }}>About EcoMargin</Link></li>
+              <li><Link to="/projects" style={{ color: 'var(--color-text-muted)' }}>Completed Projects</Link></li>
+              <li><Link to="/blogs" style={{ color: 'var(--color-text-muted)' }}>Industry Insights</Link></li>
+              <li><Link to="/career" style={{ color: 'var(--color-text-muted)' }}>Careers</Link></li>
+              <li><Link to="/contact" style={{ color: 'var(--color-text-muted)' }}>Contact Sales</Link></li>
+              <li><Link to="/privacy-policy" style={{ color: 'var(--color-text-muted)' }}>Privacy Policy</Link></li>
+            </ul>
+          </div>
+
+        </div>
+
+        {/* Copyright Bar */}
+        <div style={{ 
+          borderTop: '1px solid rgba(255, 255, 255, 0.08)', 
+          paddingTop: '1.5rem',
           display: 'flex',
           flexWrap: 'wrap',
           justifyContent: 'space-between',
           alignItems: 'center',
-          gap: '1rem'
+          gap: '1rem',
+          fontSize: '0.8rem',
+          color: 'var(--color-text-muted)'
         }}>
-          <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>
-            &copy; {currentYear} EcoMargin. All rights reserved.
-          </p>
+          <p>&copy; {currentYear} EcoMargin Infrastructure Pvt. Ltd. All Rights Reserved.</p>
           <div style={{ display: 'flex', gap: '1.5rem' }}>
-            <Link to="/privacy-policy" style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>Privacy Policy</Link>
-            <Link to="/terms" style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem' }}>Terms of Service</Link>
+            <Link to="/privacy-policy" style={{ color: 'var(--color-text-muted)' }}>Privacy Policy</Link>
+            <Link to="/terms" style={{ color: 'var(--color-text-muted)' }}>Terms of Service</Link>
+            <Link to="/contact" style={{ color: 'var(--color-text-muted)' }}>Request RFQ</Link>
           </div>
         </div>
+
       </div>
     </footer>
   )

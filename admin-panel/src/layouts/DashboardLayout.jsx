@@ -1,4 +1,4 @@
-// EcoMargin Admin Panel — Dashboard Layout
+// EcoMargin Admin Panel — Dashboard Layout (B2B EV Manufacturing Edition)
 // src/layouts/DashboardLayout.jsx
 import React from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext';
 import { 
   FiHome, FiBox, FiList, FiFileText, FiImage, 
   FiBriefcase, FiUsers, FiMail, FiMessageSquare, 
-  FiSettings, FiSearch, FiFolder, FiLogOut
+  FiSettings, FiSearch, FiFolder, FiLogOut, FiInbox, FiUserCheck
 } from 'react-icons/fi';
 
 export default function DashboardLayout() {
@@ -20,15 +20,17 @@ export default function DashboardLayout() {
 
   const navItems = [
     { name: 'Dashboard', path: '/', icon: <FiHome /> },
-    { name: 'Products', path: '/products', icon: <FiBox /> },
-    { name: 'Categories', path: '/categories', icon: <FiList /> },
-    { name: 'Blogs', path: '/blogs', icon: <FiFileText /> },
-    { name: 'Gallery', path: '/gallery', icon: <FiImage /> },
-    { name: 'Projects', path: '/projects', icon: <FiBriefcase /> },
-    { name: 'Users', path: '/users', icon: <FiUsers /> },
-    { name: 'Contact Submissions', path: '/contact', icon: <FiMail /> },
-    { name: 'Newsletter', path: '/newsletter', icon: <FiMessageSquare /> },
-    { name: 'Media Manager', path: '/media', icon: <FiFolder /> },
+    { name: 'Products Catalog', path: '/products', icon: <FiBox /> },
+    { name: 'Product Categories', path: '/categories', icon: <FiList /> },
+    { name: 'Quote Enquiries (RFQs)', path: '/contact', icon: <FiInbox /> },
+    { name: 'EPC Projects', path: '/projects', icon: <FiBriefcase /> },
+    { name: 'Gallery & Factory Photos', path: '/gallery', icon: <FiImage /> },
+    { name: 'Blogs & Insights', path: '/blogs', icon: <FiFileText /> },
+    { name: 'Careers & Hiring', path: '/users', icon: <FiUserCheck /> },
+    { name: 'Users & Roles', path: '/users', icon: <FiUsers /> },
+    { name: 'Contact Leads', path: '/contact', icon: <FiMail /> },
+    { name: 'Newsletter Subscribers', path: '/newsletter', icon: <FiMessageSquare /> },
+    { name: 'Media Library', path: '/media', icon: <FiFolder /> },
     { name: 'Website Settings', path: '/settings', icon: <FiSettings /> },
     { name: 'SEO Configurations', path: '/seo', icon: <FiSearch /> },
   ];
@@ -38,14 +40,14 @@ export default function DashboardLayout() {
       {/* Sidebar */}
       <aside className="sidebar">
         <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border)' }}>
-          <h2 style={{ fontSize: '1.25rem', color: 'var(--primary)', margin: 0 }}>EcoMargin</h2>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Admin Panel v1.0</div>
+          <h2 style={{ fontSize: '1.25rem', color: 'var(--primary)', margin: 0 }}>EcoMargin Admin</h2>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>EV Infrastructure Panel</div>
         </div>
         
         <nav style={{ flex: 1, padding: '1rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
-          {navItems.map((item) => (
+          {navItems.map((item, idx) => (
             <NavLink
-              key={item.path}
+              key={`${item.path}-${idx}`}
               to={item.path}
               className={({ isActive }) => `
                 nav-link ${isActive ? 'active' : ''}
@@ -67,7 +69,7 @@ export default function DashboardLayout() {
       {/* Main Content */}
       <main className="main-content">
         <header className="header">
-          <div style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Dashboard</div>
+          <div style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Enterprise Management</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <div style={{ textAlign: 'right' }}>
               <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>{user?.name || 'Super Admin'}</div>
