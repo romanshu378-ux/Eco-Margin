@@ -26,7 +26,7 @@ const app = express()
 app.set('trust proxy', 1)
 
 // ── 1. EARLY CORS MIDDLEWARE & PREFLIGHT OPTIONS HANDLER ──────────
-// Must be registered BEFORE Helmet, rate limiters, and route handlers
+// Registered BEFORE Helmet, rate limiters, and route handlers
 app.use(cors(corsOptions))
 app.options('*', cors(corsOptions))
 
@@ -34,16 +34,7 @@ app.options('*', cors(corsOptions))
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' },
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
-        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
-        imgSrc: ["'self'", 'data:', 'blob:', 'https:', 'https://res.cloudinary.com'],
-        connectSrc: ["'self'", 'https:', 'http://localhost:5000', 'http://localhost:3000', 'http://localhost:3001'],
-      },
-    },
+    contentSecurityPolicy: false, // Prevent CSP header conflicts with CORS credentials
     frameguard: { action: 'deny' },
     xssFilter: true,
     noSniff: true,
