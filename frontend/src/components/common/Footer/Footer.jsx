@@ -10,12 +10,12 @@ export default function Footer() {
   const currentYear = new Date().getFullYear()
   const { data: footerCMS } = useFooterCMS()
 
-  const companyName = footerCMS?.companyName || "EcoMargin Infrastructure Pvt. Ltd."
-  const address = footerCMS?.address || "Plot 42, Industrial Area, Sector 62, Noida, UP - 201301, India"
-  const phone = footerCMS?.phone || "+91-8302313065"
-  const altPhone = footerCMS?.altPhone || "+91-8302313065"
-  const email = footerCMS?.email || "sales@ecomargin.com"
-  const copyright = footerCMS?.copyright || `© ${currentYear} EcoMargin Infrastructure Pvt. Ltd. All Rights Reserved.`
+  const companyName = footerCMS?.companyName || ''
+  const address = footerCMS?.address || ''
+  const phone = footerCMS?.phone || ''
+  const altPhone = footerCMS?.altPhone || ''
+  const email = footerCMS?.email || ''
+  const copyright = footerCMS?.copyright || `© ${currentYear} All Rights Reserved.`
 
   return (
     <footer style={{ 
@@ -75,18 +75,24 @@ export default function Footer() {
               </span>
             </Link>
             <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', fontSize: '0.875rem', lineHeight: 1.6 }}>
-              {companyName} is a leading OEM EV Charger Manufacturer and Infrastructure EPC Contractor. We manufacture commercial AC Fast Chargers (3.3kW–22kW) and heavy-duty DC Charging Stations (20kW–240kW) with integrated OCPP Cloud software.
+              {companyName ? `${companyName} is a leading OEM EV Charger Manufacturer and Infrastructure EPC Contractor.` : 'Leading OEM EV Charger Manufacturer & Infrastructure EPC Contractor.'}
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <FiMapPin style={{ color: 'var(--color-primary)' }} /> Factory & R&D Center: {address}
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <FiPhoneCall style={{ color: 'var(--color-primary)' }} /> Sales & Support: {phone} / {altPhone}
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <FiMail style={{ color: 'var(--color-primary)' }} /> Sales Enquiries: {email}
-              </div>
+              {address && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <FiMapPin style={{ color: 'var(--color-primary)' }} /> Registered Address: {address}
+                </div>
+              )}
+              {phone && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <FiPhoneCall style={{ color: 'var(--color-primary)' }} /> Sales & Support: {phone} {altPhone ? `/ ${altPhone}` : ''}
+                </div>
+              )}
+              {email && (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <FiMail style={{ color: 'var(--color-primary)' }} /> Sales Enquiries: {email}
+                </div>
+              )}
             </div>
           </div>
 

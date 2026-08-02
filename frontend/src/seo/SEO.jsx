@@ -3,11 +3,11 @@
 import React, { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import publicApi from '../services/publicApi'
-import { useFooter } from '../hooks/useCMS'
+import { useFooterCMS } from '../hooks/useCMS'
 
 export default function SEO({ title, description, keywords, schemaType = 'Organization', schemaData = null }) {
   const [seoData, setSeoData] = useState(null)
-  const { data: footerData } = useFooter()
+  const { data: footerData } = useFooterCMS()
 
   useEffect(() => {
     const loadSEO = async () => {
@@ -34,14 +34,16 @@ export default function SEO({ title, description, keywords, schemaType = 'Organi
   const fullTitle = title ? `${title} | ${siteName}` : defaultTitle
   const metaDesc = description || defaultDesc
 
-  const phone = footerData?.phone || '+91-8302313065'
-  const email = footerData?.email || 'sales@ecomargin.com'
+  const phone = footerData?.phone || ''
+  const email = footerData?.email || ''
+  const companyName = footerData?.companyName || ''
+  const address = footerData?.address || ''
 
   // JSON-LD Organization & Manufacturer Schema
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    'name': footerData?.companyName || 'EcoMargin Infrastructure Pvt. Ltd.',
+    'name': companyName,
     'url': canonical,
     'logo': 'https://ecomargin.vercel.app/logo.png',
     'description': defaultDesc,
@@ -55,7 +57,7 @@ export default function SEO({ title, description, keywords, schemaType = 'Organi
     },
     'address': {
       '@type': 'PostalAddress',
-      'streetAddress': footerData?.address || 'Plot 42, Sector 62, Noida, UP - 201301, India',
+      'streetAddress': address,
       'addressCountry': 'IN'
     }
   }

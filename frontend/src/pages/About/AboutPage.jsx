@@ -10,7 +10,7 @@ import { useAbout } from '../../hooks/useCMS'
 export default function AboutPage() {
   const { data: aboutData } = useAbout()
 
-  const story = aboutData?.story || "Founded in 2020, EcoMargin has grown into a leading OEM EV charger manufacturer and EPC infrastructure contractor operating a 50,000 sq.ft. certified facility in Noida, India."
+  const story = aboutData?.story || "Founded in 2020, EcoMargin has grown into a leading OEM EV charger manufacturer and EPC infrastructure contractor."
   const vision = aboutData?.vision || "To accelerate global e-mobility adoption by manufacturing reliable, high-uptime EV charging hardware."
   const mission = aboutData?.mission || "Engineering 100% indigenous Indian-manufactured commercial chargers tailored for harsh grid conditions."
   const directorMessage = aboutData?.directorMessage || "India's EV revolution requires ultra-fast, robust charging stations backed by 24/7 NOC monitoring."

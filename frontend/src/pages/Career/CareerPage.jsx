@@ -4,8 +4,12 @@ import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer } from '@animations/variants'
 import PageHeader from '@components/common/PageHeader/PageHeader'
 import Button from '@components/ui/Button/Button'
+import { useFooterCMS } from '../../hooks/useCMS'
 
 export default function CareerPage() {
+  const { data: footerData } = useFooterCMS()
+  const contactEmail = footerData?.email || ''
+
   const jobs = [
     { title: 'Senior Backend Engineer (Node.js)', type: 'Full-time', location: 'Remote / Mumbai', dept: 'Engineering' },
     { title: 'Frontend Developer (React)', type: 'Full-time', location: 'Remote', dept: 'Engineering' },
@@ -60,9 +64,11 @@ export default function CareerPage() {
           ))}
         </motion.div>
         
-        <div style={{ textAlign: 'center', marginTop: '4rem', color: 'var(--color-text-muted)' }}>
-          Don't see a perfect fit? Send your resume to <a href="mailto:careers@ecomargin.com" style={{ color: 'var(--color-primary)' }}>careers@ecomargin.com</a>
-        </div>
+        {contactEmail && (
+          <div style={{ textAlign: 'center', marginTop: '4rem', color: 'var(--color-text-muted)' }}>
+            Don't see a perfect fit? Send your resume to <a href={`mailto:${contactEmail}`} style={{ color: 'var(--color-primary)' }}>{contactEmail}</a>
+          </div>
+        )}
       </div>
     </>
   )
