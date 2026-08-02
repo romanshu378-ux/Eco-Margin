@@ -1,0 +1,78 @@
+# ============================================================
+# EcoMargin — Root .gitignore
+# ============================================================
+
+# ── Node & Package Managers ──────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ── Build Outputs ────────────────────────────────────────────
+dist/
+build/
+out/
+.output/
+.next/
+.nuxt/
+.cache/
+
+# ── Environment & Secrets ────────────────────────────────────
+.env
+.env.local
+.env.development
+.env.production
+.env.staging
+.env.test
+*.env
+
+# ── IDE / Editor ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# ── Logs ─────────────────────────────────────────────────────
+logs/
+*.log
+combined.log
+error.log
+
+# ── Testing & Coverage ───────────────────────────────────────
+coverage/
+.nyc_output/
+*.lcov
+
+# ── OS Generated ─────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# ── Temp & Misc ──────────────────────────────────────────────
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*.orig
+
+# ── Docker ───────────────────────────────────────────────────
+.dockerignore
+
+# ── Uploads & Media ──────────────────────────────────────────
+uploads/
+public/uploads/
