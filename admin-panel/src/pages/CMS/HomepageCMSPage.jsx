@@ -1,10 +1,13 @@
 // EcoMargin Admin Panel — Homepage CMS Management
 // src/pages/CMS/HomepageCMSPage.jsx
-import React, { useState } from 'react';
-import { FiSave, FiEye, FiSliders, FiVideo, FiLayers, FiCheck } from 'react-icons/fi';
+import React, { useState, useEffect } from 'react';
+import { FiSave, FiEye, FiSliders, FiVideo, FiLayers, FiCheck, FiAlertCircle } from 'react-icons/fi';
+import { adminService } from '../../services/adminService';
 
 export default function HomepageCMSPage() {
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [cms, setCms] = useState({
     heroTitle: "Powering India's EV Infrastructure",
     heroSubtitle: "Design • Manufacturing • EPC Installation • OCPP Software • AMC Services",
@@ -33,10 +36,39 @@ export default function HomepageCMSPage() {
     }
   });
 
-  const handleSave = (e) => {
+  useEffect(() => {
+    const fetchCMS = async () => {
+      try {
+        const res = await adminService.getHomepageCMS();
+        if (res && res.data && res.data.data) {
+          setCms(prev => ({ ...prev, ...res.data.data }));
+        }
+      } catch (err) {
+        console.warn('Initial CMS load notice:', err.message);
+      }
+    };
+    fetchCMS();
+  }, []);
+
+  const handleSave = async (e) => {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await adminService.updateHomepageCMS(cms);
+      if (res && (res.data?.success || res.status === 200)) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      } else {
+        throw new Error(res.data?.message || 'Failed to save Homepage CMS');
+      }
+    } catch (err) {
+      console.error('❌ Error saving Homepage CMS:', err);
+      setError(err.message || 'Error saving changes to database');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const toggleSection = (key) => {
@@ -56,10 +88,16 @@ export default function HomepageCMSPage() {
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>Homepage CMS Manager</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Manage Hero Banners, Videos, CTA Buttons, Stats Counters & Section Visibility</p>
         </div>
-        <button onClick={handleSave} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          {saved ? <><FiCheck /> Saved!</> : <><FiSave /> Save Changes</>}
+        <button onClick={handleSave} disabled={loading} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {loading ? 'Saving to Database...' : saved ? <><FiCheck /> Saved to Database!</> : <><FiSave /> Save Changes</>}
         </button>
       </div>
+
+      {error && (
+        <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', marginBottom: '1.5rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <FiAlertCircle /> {error}
+        </div>
+      )}
 
       <form onSubmit={handleSave} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
         

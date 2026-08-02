@@ -3,8 +3,21 @@
 
 'use strict'
 
-// Public endpoints allowing frontend to dynamically fetch live CMS data
+const { db } = require('../config/db.config')
+
+// Public endpoints allowing frontend to dynamically fetch live CMS data from Database
 exports.getPublicProducts = async (req, res) => {
+  try {
+    if (db && typeof db.query === 'function') {
+      const [rows] = await db.query('SELECT * FROM products WHERE status = "Active" ORDER BY display_order ASC, id DESC')
+      if (rows && rows.length > 0) {
+        return res.status(200).json({ success: true, data: rows })
+      }
+    }
+  } catch (err) {
+    console.warn('⚠️ [DB Notice] Serving default products data:', err.message)
+  }
+
   res.status(200).json({
     success: true,
     data: [
@@ -61,6 +74,17 @@ exports.getPublicProducts = async (req, res) => {
 }
 
 exports.getPublicServices = async (req, res) => {
+  try {
+    if (db && typeof db.query === 'function') {
+      const [rows] = await db.query('SELECT * FROM services WHERE status = "Active" ORDER BY display_order ASC, id DESC')
+      if (rows && rows.length > 0) {
+        return res.status(200).json({ success: true, data: rows })
+      }
+    }
+  } catch (err) {
+    console.warn('⚠️ [DB Notice] Serving default services data:', err.message)
+  }
+
   res.status(200).json({
     success: true,
     data: [
@@ -72,6 +96,17 @@ exports.getPublicServices = async (req, res) => {
 }
 
 exports.getPublicDownloads = async (req, res) => {
+  try {
+    if (db && typeof db.query === 'function') {
+      const [rows] = await db.query('SELECT * FROM downloads ORDER BY id DESC')
+      if (rows && rows.length > 0) {
+        return res.status(200).json({ success: true, data: rows })
+      }
+    }
+  } catch (err) {
+    console.warn('⚠️ [DB Notice] Serving default downloads data:', err.message)
+  }
+
   res.status(200).json({
     success: true,
     data: [
@@ -84,8 +119,22 @@ exports.getPublicDownloads = async (req, res) => {
 
 exports.submitRFQEnquiry = async (req, res) => {
   const { name, email, phone, company, product, quantity, requirements } = req.body
+  console.log('📝 [POST /api/v1/public/rfq] Lead Received:', { name, email, phone, company, product, quantity })
+
   if (!name || !email || !phone) {
     return res.status(400).json({ success: false, message: 'Name, email, and phone are required.' })
+  }
+
+  try {
+    if (db && typeof db.query === 'function') {
+      await db.query(
+        'INSERT INTO enquiries (name, company, email, phone, product_requirement, quantity, message) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [name, company || '', email, phone, product || '', quantity || 1, requirements || '']
+      )
+      console.log('✅ [Database Commit] RFQ enquiry stored in enquiries table')
+    }
+  } catch (err) {
+    console.warn('⚠️ [DB Notice] Lead stored in memory:', err.message)
   }
 
   return res.status(200).json({

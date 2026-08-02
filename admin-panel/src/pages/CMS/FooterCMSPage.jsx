@@ -1,10 +1,13 @@
 // EcoMargin Admin Panel — Footer & Contact CMS Management
 // src/pages/CMS/FooterCMSPage.jsx
-import React, { useState } from 'react';
-import { FiSave, FiCheck, FiPhone, FiMail, FiMapPin, FiGlobe } from 'react-icons/fi';
+import React, { useState, useEffect } from 'react';
+import { FiSave, FiCheck, FiPhone, FiMail, FiMapPin, FiGlobe, FiAlertCircle } from 'react-icons/fi';
+import { adminService } from '../../services/adminService';
 
 export default function FooterCMSPage() {
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [footer, setFooter] = useState({
     companyName: "EcoMargin Infrastructure Pvt. Ltd.",
     address: "Plot 42, Industrial Area, Sector 62, Noida, UP - 201301, India",
@@ -21,10 +24,39 @@ export default function FooterCMSPage() {
     copyright: "© 2026 EcoMargin Infrastructure Pvt. Ltd. All Rights Reserved."
   });
 
-  const handleSave = (e) => {
+  useEffect(() => {
+    const fetchFooter = async () => {
+      try {
+        const res = await adminService.getFooterCMS();
+        if (res && res.data && res.data.data) {
+          setFooter(prev => ({ ...prev, ...res.data.data }));
+        }
+      } catch (err) {
+        console.warn('Initial Footer CMS load notice:', err.message);
+      }
+    };
+    fetchFooter();
+  }, []);
+
+  const handleSave = async (e) => {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await adminService.updateFooterCMS(footer);
+      if (res && (res.data?.success || res.status === 200)) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      } else {
+        throw new Error(res.data?.message || 'Failed to save Footer CMS');
+      }
+    } catch (err) {
+      console.error('❌ Error saving Footer CMS:', err);
+      setError(err.message || 'Error saving changes to database');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -34,10 +66,16 @@ export default function FooterCMSPage() {
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>Footer & Contact CMS Manager</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Manage Corporate Address, Phones, Emails, WhatsApp Desk, Google Maps & Copyright</p>
         </div>
-        <button onClick={handleSave} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          {saved ? <><FiCheck /> Saved!</> : <><FiSave /> Save Changes</>}
+        <button onClick={handleSave} disabled={loading} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {loading ? 'Saving to Database...' : saved ? <><FiCheck /> Saved to Database!</> : <><FiSave /> Save Changes</>}
         </button>
       </div>
+
+      {error && (
+        <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', marginBottom: '1.5rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <FiAlertCircle /> {error}
+        </div>
+      )}
 
       <form onSubmit={handleSave} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
         

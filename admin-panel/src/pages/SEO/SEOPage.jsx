@@ -1,10 +1,13 @@
 // EcoMargin Admin Panel — SEO & Schema Manager
 // src/pages/SEO/SEOPage.jsx
-import React, { useState } from 'react';
-import { FiSave, FiCheck, FiSearch, FiCode, FiShare2, FiFileText } from 'react-icons/fi';
+import React, { useState, useEffect } from 'react';
+import { FiSave, FiCheck, FiSearch, FiCode, FiShare2, FiFileText, FiAlertCircle } from 'react-icons/fi';
+import { adminService } from '../../services/adminService';
 
 export default function SEOPage() {
   const [saved, setSaved] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [seo, setSeo] = useState({
     metaTitle: "EcoMargin | EV Charger Manufacturer & EPC Infrastructure Company",
     metaDescription: "EcoMargin manufactures 3.3kW to 240kW commercial AC & DC chargers, OCPP CSMS software, and turnkey EPC charging station installation.",
@@ -25,10 +28,39 @@ export default function SEOPage() {
 }`
   });
 
-  const handleSave = (e) => {
+  useEffect(() => {
+    const fetchSEO = async () => {
+      try {
+        const res = await adminService.getSEOCMS();
+        if (res && res.data && res.data.data) {
+          setSeo(prev => ({ ...prev, ...res.data.data }));
+        }
+      } catch (err) {
+        console.warn('Initial SEO CMS load notice:', err.message);
+      }
+    };
+    fetchSEO();
+  }, []);
+
+  const handleSave = async (e) => {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2500);
+    setLoading(true);
+    setError(null);
+
+    try {
+      const res = await adminService.updateSEOCMS(seo);
+      if (res && (res.data?.success || res.status === 200)) {
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+      } else {
+        throw new Error(res.data?.message || 'Failed to save SEO Metadata');
+      }
+    } catch (err) {
+      console.error('❌ Error saving SEO Metadata:', err);
+      setError(err.message || 'Error saving changes to database');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -38,10 +70,16 @@ export default function SEOPage() {
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>SEO & Meta Schema Manager</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Manage Search Engine Metadata, Open Graph, Twitter Cards, JSON-LD Schemas, Robots & Sitemap</p>
         </div>
-        <button onClick={handleSave} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          {saved ? <><FiCheck /> Saved!</> : <><FiSave /> Save SEO Changes</>}
+        <button onClick={handleSave} disabled={loading} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {loading ? 'Saving to Database...' : saved ? <><FiCheck /> Saved to Database!</> : <><FiSave /> Save SEO Changes</>}
         </button>
       </div>
+
+      {error && (
+        <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', marginBottom: '1.5rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <FiAlertCircle /> {error}
+        </div>
+      )}
 
       <form onSubmit={handleSave} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
         

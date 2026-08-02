@@ -1,7 +1,8 @@
-// EcoMargin Admin Panel — Product Management CMS (20+ Technical Spec Fields)
+// EcoMargin Admin Panel — Product Management CMS with Database Persistence
 // src/pages/Products/ProductsPage.jsx
-import React, { useState } from 'react';
-import { FiPlus, FiEdit, FiTrash2, FiSearch, FiFilter, FiCheck, FiX, FiFileText, FiStar } from 'react-icons/fi';
+import React, { useState, useEffect } from 'react';
+import { FiPlus, FiEdit, FiTrash2, FiSearch, FiFilter, FiCheck, FiX, FiFileText, FiStar, FiAlertCircle } from 'react-icons/fi';
+import { adminService } from '../../services/adminService';
 
 const initialProducts = [
   {
@@ -108,6 +109,8 @@ export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [showModal, setShowModal] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const emptyForm = {
     name: '',
@@ -135,6 +138,20 @@ export default function ProductsPage() {
 
   const [formData, setFormData] = useState(emptyForm);
 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await adminService.getProducts();
+        if (res && res.data && res.data.data && Array.isArray(res.data.data)) {
+          setProducts(res.data.data);
+        }
+      } catch (err) {
+        console.warn('Initial Products load notice:', err.message);
+      }
+    };
+    fetchProducts();
+  }, []);
+
   const handleOpenAdd = () => {
     setEditingProduct(null);
     setFormData(emptyForm);
@@ -147,18 +164,36 @@ export default function ProductsPage() {
     setShowModal(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
+    try {
+      await adminService.deleteProduct(id);
+    } catch (err) {
+      console.warn('Backend delete error, falling back locally:', err.message);
+    }
     setProducts(products.filter(p => p.id !== id));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (editingProduct) {
-      setProducts(products.map(p => p.id === editingProduct.id ? { ...formData, id: editingProduct.id } : p));
-    } else {
-      setProducts([...products, { ...formData, id: Date.now() }]);
+    setLoading(true);
+    setError(null);
+
+    try {
+      if (editingProduct) {
+        await adminService.updateProduct(editingProduct.id, formData);
+        setProducts(products.map(p => p.id === editingProduct.id ? { ...formData, id: editingProduct.id } : p));
+      } else {
+        const res = await adminService.createProduct(formData);
+        const newId = res.data?.id || Date.now();
+        setProducts([...products, { ...formData, id: newId }]);
+      }
+      setShowModal(false);
+    } catch (err) {
+      console.error('❌ Error saving product:', err);
+      setError(err.message || 'Failed to save product to database');
+    } finally {
+      setLoading(false);
     }
-    setShowModal(false);
   };
 
   const filteredProducts = products.filter(p => {
@@ -180,6 +215,12 @@ export default function ProductsPage() {
           <FiPlus /> Add New Charger Model
         </button>
       </div>
+
+      {error && (
+        <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', marginBottom: '1.5rem', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <FiAlertCircle /> {error}
+        </div>
+      )}
 
       {/* Filter & Search Bar */}
       <div className="card" style={{ padding: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.5rem' }}>
@@ -388,7 +429,9 @@ export default function ProductsPage() {
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
                 <button type="button" onClick={() => setShowModal(false)} className="btn btn-outline">Cancel</button>
-                <button type="submit" className="btn btn-primary">Save Specifications</button>
+                <button type="submit" disabled={loading} className="btn btn-primary">
+                  {loading ? 'Saving to Database...' : 'Save Specifications'}
+                </button>
               </div>
 
             </form>
