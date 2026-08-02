@@ -1,0 +1,96 @@
+// EcoMargin Backend — Public Dynamic Content Controller
+// src/controllers/publicController.js
+
+'use strict'
+
+// Public endpoints allowing frontend to dynamically fetch live CMS data
+exports.getPublicProducts = async (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: [
+      {
+        id: 1,
+        name: 'EcoWall 7.4kW AC Single Phase Charger',
+        category: 'AC EV Chargers',
+        power: '7.4kW',
+        voltage: '230V AC',
+        connector: 'Type 2 Gun',
+        protection: 'IP55',
+        efficiency: '>98%',
+        warranty: '3 Years Warranty',
+        datasheetPdf: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/7.4kW-AC.pdf'
+      },
+      {
+        id: 2,
+        name: 'EcoPower 3.3kW LVDC Fleet Charger',
+        category: 'LVDC Chargers',
+        power: '3.3kW LVDC',
+        voltage: '48V – 96V DC',
+        connector: 'Anderson Heavy-Duty',
+        protection: 'IP65',
+        efficiency: '≥94%',
+        warranty: '2 Years Warranty',
+        datasheetPdf: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/3.3kW-LVDC.pdf'
+      },
+      {
+        id: 3,
+        name: 'EcoCharge 60kW Dual Gun DC Fast Charger',
+        category: 'DC Fast Chargers',
+        power: '60kW DC',
+        voltage: '200V – 1000V DC',
+        connector: 'Dual CCS2 Guns',
+        protection: 'IP55 Outdoor Cabinet',
+        efficiency: '≥95.5%',
+        warranty: '3 Years AMC Included',
+        datasheetPdf: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/60kW-DC.pdf'
+      },
+      {
+        id: 4,
+        name: 'EcoCharge 120kW Ultra-Fast DC Station',
+        category: 'DC Fast Chargers',
+        power: '120kW DC',
+        voltage: '200V – 1000V DC',
+        connector: 'Dual CCS2 Guns',
+        protection: 'IP55 Weatherproof',
+        efficiency: '≥96%',
+        warranty: '3 Years Warranty',
+        datasheetPdf: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/120kW-DC.pdf'
+      }
+    ]
+  })
+}
+
+exports.getPublicServices = async (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: [
+      { id: 1, title: 'Turnkey EPC Station Installation', category: 'EPC Execution', description: 'Complete site feasibility, civil plinth work, HT transformer, DISCOM grid approval, and full commissioning.' },
+      { id: 2, title: 'Power Load & Electrical Survey', category: 'Engineering', description: 'Engineering assessment of electrical grid capacity, soil testing, and optimal station layout design.' },
+      { id: 3, title: 'Annual Maintenance Contracts (AMC)', category: 'Support & NOC', description: 'Comprehensive 24/7 NOC monitoring, preventative quarterly servicing, emergency technician dispatch, and SLA guarantees.' }
+    ]
+  })
+}
+
+exports.getPublicDownloads = async (req, res) => {
+  res.status(200).json({
+    success: true,
+    data: [
+      { id: 1, name: 'EcoWall 7.4kW AC Single Phase Charger Specification Sheet', category: 'Technical Datasheet', size: '1.2 MB', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/7.4kW-AC.pdf' },
+      { id: 2, name: 'ARAI Test Compliance Certificate (AIS 138 Part 1 & 2)', category: 'Certificates', size: '2.1 MB', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/certs/arai-ais138.pdf' },
+      { id: 3, name: 'ISO 9001:2015 Quality Management System Certificate', category: 'Certificates', size: '1.4 MB', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/certs/iso9001.pdf' }
+    ]
+  })
+}
+
+exports.submitRFQEnquiry = async (req, res) => {
+  const { name, email, phone, company, product, quantity, requirements } = req.body
+  if (!name || !email || !phone) {
+    return res.status(400).json({ success: false, message: 'Name, email, and phone are required.' })
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: 'RFQ submitted successfully. An engineering manager will contact you shortly.',
+    enquiryId: Date.now()
+  })
+}

@@ -7,6 +7,9 @@ const stationRoutes = require('./stationRoutes');
 const bookingRoutes = require('./bookingRoutes');
 const paymentRoutes = require('./paymentRoutes');
 const userRoutes = require('./userRoutes');
+const cmsRoutes = require('./cms.routes');
+const publicRoutes = require('./public.routes');
+const mediaController = require('../controllers/mediaController');
 
 // Mount domain routes
 router.get('/health', healthController.checkHealth);
@@ -16,5 +19,11 @@ router.use('/stations', stationRoutes);
 router.use('/bookings', bookingRoutes);
 router.use('/payments', paymentRoutes);
 router.use('/users', userRoutes);
+router.use('/cms', cmsRoutes);
+router.use('/public', publicRoutes);
+
+// Media Upload & Delete Endpoints
+router.post('/media/upload', mediaController.uploadMedia);
+router.post('/media/delete', mediaController.deleteMedia);
 
 module.exports = router;

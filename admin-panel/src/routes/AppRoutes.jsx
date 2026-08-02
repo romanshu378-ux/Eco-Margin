@@ -11,6 +11,12 @@ import ProtectedRoute from './ProtectedRoute'
 // Lazy loaded page components
 const LoginPage = lazy(() => import('../pages/Auth/LoginPage'))
 const Dashboard = lazy(() => import('../pages/Dashboard/Dashboard'))
+const HomepageCMSPage = lazy(() => import('../pages/CMS/HomepageCMSPage'))
+const AboutCMSPage = lazy(() => import('../pages/CMS/AboutCMSPage'))
+const FooterCMSPage = lazy(() => import('../pages/CMS/FooterCMSPage'))
+const DownloadsCMSPage = lazy(() => import('../pages/CMS/DownloadsCMSPage'))
+const ServicesCMSPage = lazy(() => import('../pages/CMS/ServicesCMSPage'))
+const IndustriesCMSPage = lazy(() => import('../pages/CMS/IndustriesCMSPage'))
 const ProductsPage = lazy(() => import('../pages/Products/ProductsPage'))
 const CategoriesPage = lazy(() => import('../pages/Categories/CategoriesPage'))
 const BlogsPage = lazy(() => import('../pages/Blogs/BlogsPage'))
@@ -35,7 +41,7 @@ const Loader = () => (
   }}>
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
       <div style={{ width: '40px', height: '40px', borderRadius: '50%', border: '3px solid var(--border)', borderTopColor: 'var(--primary)', animation: 'spin 1s linear infinite' }}></div>
-      <span>Loading Admin Panel...</span>
+      <span>Loading Enterprise CMS...</span>
     </div>
     <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
   </div>
@@ -46,16 +52,22 @@ export default function AppRoutes() {
     <Suspense fallback={<Loader />}>
       <Routes>
         
-        {/* Auth Routes (/login and /admin/login) */}
+        {/* Auth Routes */}
         <Route element={<AuthLayout />}>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/admin/login" element={<LoginPage />} />
         </Route>
 
-        {/* Protected Dashboard Routes */}
+        {/* Protected Dashboard & Enterprise CMS Routes */}
         <Route element={<ProtectedRoute><DashboardLayout /></ProtectedRoute>}>
           <Route index element={<Dashboard />} />
           <Route path="/admin" element={<Dashboard />} />
+          <Route path="/cms/home" element={<HomepageCMSPage />} />
+          <Route path="/cms/about" element={<AboutCMSPage />} />
+          <Route path="/cms/footer" element={<FooterCMSPage />} />
+          <Route path="/cms/services" element={<ServicesCMSPage />} />
+          <Route path="/cms/industries" element={<IndustriesCMSPage />} />
+          <Route path="/downloads" element={<DownloadsCMSPage />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/categories" element={<CategoriesPage />} />
           <Route path="/blogs" element={<BlogsPage />} />

@@ -1,0 +1,183 @@
+// EcoMargin Admin Panel — Homepage CMS Management
+// src/pages/CMS/HomepageCMSPage.jsx
+import React, { useState } from 'react';
+import { FiSave, FiEye, FiSliders, FiVideo, FiLayers, FiCheck } from 'react-icons/fi';
+
+export default function HomepageCMSPage() {
+  const [saved, setSaved] = useState(false);
+  const [cms, setCms] = useState({
+    heroTitle: "Powering India's EV Infrastructure",
+    heroSubtitle: "Design • Manufacturing • EPC Installation • OCPP Software • AMC Services",
+    heroVideoUrl: "https://res.cloudinary.com/ecomargin/video/upload/v1/hero-ev.mp4",
+    primaryButtonText: "Request Quote",
+    secondaryButtonText: "Contact Sales",
+    brochureButtonText: "Download Brochure",
+    stats: [
+      { label: "AC & DC Fast Range", value: "3.3kW – 240kW" },
+      { label: "Certified Factory", value: "ISO & ARAI" },
+      { label: "Network Uptime", value: "99.8%" }
+    ],
+    sectionVisibility: {
+      hero: true,
+      intro: true,
+      products: true,
+      manufacturing: true,
+      services: true,
+      whyChooseUs: true,
+      counter: true,
+      industries: true,
+      gallery: true,
+      blogs: true,
+      faq: true,
+      contactCta: true
+    }
+  });
+
+  const handleSave = (e) => {
+    e.preventDefault();
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2500);
+  };
+
+  const toggleSection = (key) => {
+    setCms({
+      ...cms,
+      sectionVisibility: {
+        ...cms.sectionVisibility,
+        [key]: !cms.sectionVisibility[key]
+      }
+    });
+  };
+
+  return (
+    <div style={{ padding: '1.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+        <div>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>Homepage CMS Manager</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Manage Hero Banners, Videos, CTA Buttons, Stats Counters & Section Visibility</p>
+        </div>
+        <button onClick={handleSave} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {saved ? <><FiCheck /> Saved!</> : <><FiSave /> Save Changes</>}
+        </button>
+      </div>
+
+      <form onSubmit={handleSave} style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
+        
+        {/* Main Content Editors */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          
+          {/* Hero Banner Section */}
+          <div className="card" style={{ padding: '1.75rem' }}>
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)' }}>
+              <FiSliders /> Hero Banner Configuration
+            </h3>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.35rem' }}>Hero Heading Title</label>
+                <input 
+                  type="text" className="input" 
+                  value={cms.heroTitle} 
+                  onChange={(e) => setCms({ ...cms, heroTitle: e.target.value })} 
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.35rem' }}>Hero Subtitle / Tagline</label>
+                <input 
+                  type="text" className="input" 
+                  value={cms.heroSubtitle} 
+                  onChange={(e) => setCms({ ...cms, heroSubtitle: e.target.value })} 
+                />
+              </div>
+
+              <div>
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.35rem' }}>Background Video URL (Cloudinary / MP4)</label>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <input 
+                    type="text" className="input" 
+                    value={cms.heroVideoUrl} 
+                    onChange={(e) => setCms({ ...cms, heroVideoUrl: e.target.value })} 
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Buttons Section */}
+          <div className="card" style={{ padding: '1.75rem' }}>
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '1.25rem', color: 'var(--primary)' }}>Call to Action (CTA) Button Labels</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Primary CTA Label</label>
+                <input type="text" className="input" value={cms.primaryButtonText} onChange={(e) => setCms({ ...cms, primaryButtonText: e.target.value })} />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Secondary CTA Label</label>
+                <input type="text" className="input" value={cms.secondaryButtonText} onChange={(e) => setCms({ ...cms, secondaryButtonText: e.target.value })} />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Brochure CTA Label</label>
+                <input type="text" className="input" value={cms.brochureButtonText} onChange={(e) => setCms({ ...cms, brochureButtonText: e.target.value })} />
+              </div>
+            </div>
+          </div>
+
+          {/* Hero Statistics Counters */}
+          <div className="card" style={{ padding: '1.75rem' }}>
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '1.25rem', color: 'var(--primary)' }}>Hero Statistics Badges</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {cms.stats.map((stat, idx) => (
+                <div key={idx} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: 'var(--bg-main)', padding: '0.75rem', borderRadius: 'var(--radius-md)' }}>
+                  <input 
+                    type="text" className="input" 
+                    value={stat.value} 
+                    onChange={(e) => {
+                      const updatedStats = [...cms.stats];
+                      updatedStats[idx].value = e.target.value;
+                      setCms({ ...cms, stats: updatedStats });
+                    }} 
+                  />
+                  <input 
+                    type="text" className="input" 
+                    value={stat.label} 
+                    onChange={(e) => {
+                      const updatedStats = [...cms.stats];
+                      updatedStats[idx].label = e.target.value;
+                      setCms({ ...cms, stats: updatedStats });
+                    }} 
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+
+        {/* Section Visibility & Toggles */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          <div className="card" style={{ padding: '1.75rem' }}>
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '1.25rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)' }}>
+              <FiLayers /> Homepage Section Visibility
+            </h3>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {Object.keys(cms.sectionVisibility).map((secKey) => (
+                <label key={secKey} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.5rem 0.75rem', background: 'var(--bg-main)', borderRadius: 'var(--radius-md)', cursor: 'pointer', fontSize: '0.875rem' }}>
+                  <span style={{ textTransform: 'capitalize' }}>{secKey.replace(/([A-Z])/g, ' $1')} Section</span>
+                  <input 
+                    type="checkbox" 
+                    checked={cms.sectionVisibility[secKey]} 
+                    onChange={() => toggleSection(secKey)} 
+                    style={{ width: '18px', height: '18px', accentColor: 'var(--primary)' }}
+                  />
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  );
+}

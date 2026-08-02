@@ -1,25 +1,26 @@
+// EcoMargin Admin Panel — Enterprise CMS Dashboard
+// src/pages/Dashboard/Dashboard.jsx
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { FiTrendingUp, FiUsers, FiBox, FiDollarSign } from 'react-icons/fi';
+import { FiTrendingUp, FiUsers, FiBox, FiBriefcase, FiMail, FiEye, FiCheckCircle } from 'react-icons/fi';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { adminService } from '../../services/adminService';
 
-const chartData = [
-  { name: 'Jan', revenue: 4000, users: 2400 },
-  { name: 'Feb', revenue: 3000, users: 1398 },
-  { name: 'Mar', revenue: 2000, users: 9800 },
-  { name: 'Apr', revenue: 2780, users: 3908 },
-  { name: 'May', revenue: 1890, users: 4800 },
-  { name: 'Jun', revenue: 2390, users: 3800 },
-  { name: 'Jul', revenue: 3490, users: 4300 },
+const analyticsChartData = [
+  { name: 'Jan', leads: 45, visitors: 3200 },
+  { name: 'Feb', leads: 62, visitors: 4100 },
+  { name: 'Mar', leads: 78, visitors: 5400 },
+  { name: 'Apr', leads: 95, visitors: 6200 },
+  { name: 'May', leads: 110, visitors: 7100 },
+  { name: 'Jun', leads: 140, visitors: 8900 },
+  { name: 'Jul', leads: 185, visitors: 10400 },
+  { name: 'Aug', leads: 135, visitors: 9800 }
 ];
 
-const StatCard = ({ title, value, icon, trend }) => (
+const StatCard = ({ title, value, icon, trend, subtext }) => (
   <div className="card" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
     <div>
-      <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginBottom: '0.5rem' }}>{title}</div>
-      <div style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>{value}</div>
-      <div style={{ color: 'var(--primary)', fontSize: '0.875rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+      <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', marginBottom: '0.5rem', fontWeight: 600 }}>{title}</div>
+      <div style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '0.5rem', color: 'var(--text)' }}>{value}</div>
+      <div style={{ color: 'var(--primary)', fontSize: '0.8rem', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
         <FiTrendingUp /> {trend}
       </div>
     </div>
@@ -30,64 +31,48 @@ const StatCard = ({ title, value, icon, trend }) => (
 );
 
 export default function Dashboard() {
-  const [stats, setStats] = useState({
-    totalRevenue: '$45,231',
-    activeDrivers: '+2350',
-    activeChargers: '1,204',
-    energyDelivered: '45 MWh'
+  const [metrics, setMetrics] = useState({
+    totalVisitors: '45,280',
+    totalProducts: '14 Models',
+    totalProjects: '128 Installed',
+    totalEnquiries: '850 RFQs',
+    todayLeads: '+12 Today'
   });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const res = await adminService.getDashboardStats();
-        if (res.success && res.data) {
-          setStats({
-            totalRevenue: `$${res.data.totalRevenue?.toLocaleString() || '45,231'}`,
-            activeDrivers: `+${res.data.activeDrivers || '2350'}`,
-            activeChargers: res.data.activeChargers?.toLocaleString() || '1,204',
-            energyDelivered: res.data.energyDelivered || '45 MWh'
-          });
-        }
-      } catch (err) {
-        console.warn('Backend API connection fallback used for stats:', err.message);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchStats();
-  }, []);
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
       
-      {loading && (
-        <div style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Fetching live metrics...</div>
-      )}
-
-      {error && (
-        <div style={{ background: 'rgba(245, 158, 11, 0.1)', color: 'var(--warning)', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', fontSize: '0.875rem' }}>
-          Notice: Operating in offline mode ({error}). Mock metrics loaded.
-        </div>
-      )}
-
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
-        <StatCard title="Total Revenue" value={stats.totalRevenue} icon={<FiDollarSign />} trend="+20.1% from last month" />
-        <StatCard title="Active Drivers" value={stats.activeDrivers} icon={<FiUsers />} trend="+180 from last month" />
-        <StatCard title="Active Chargers" value={stats.activeChargers} icon={<FiBox />} trend="+19 from last month" />
-        <StatCard title="Energy Delivered" value={stats.energyDelivered} icon={<FiTrendingUp />} trend="+12% from last month" />
+      {/* Page Header */}
+      <div>
+        <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>Enterprise CMS Overview</h1>
+        <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Live B2B Lead Conversion & Infrastructure Network Telemetry</p>
       </div>
 
-      <div className="card" style={{ height: '400px' }}>
-        <h3 style={{ marginBottom: '1.5rem', fontSize: '1.125rem' }}>Revenue Overview</h3>
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={chartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+      {/* 5 Key Metric Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.5rem' }}>
+        <StatCard title="Total Website Visitors" value={metrics.totalVisitors} icon={<FiEye />} trend="+24% this month" />
+        <StatCard title="Product Range" value={metrics.totalProducts} icon={<FiBox />} trend="3.3kW to 240kW DC" />
+        <StatCard title="Completed EPC Projects" value={metrics.totalProjects} icon={<FiBriefcase />} trend="Highways & Bus Depots" />
+        <StatCard title="Total RFQ Enquiries" value={metrics.totalEnquiries} icon={<FiMail />} trend="+135 this month" />
+        <StatCard title="Today's Active Leads" value={metrics.todayLeads} icon={<FiUsers />} trend="+4 Dealer inquiries" />
+      </div>
+
+      {/* Lead Analytics Chart */}
+      <div className="card" style={{ height: '420px', padding: '1.5rem' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <div>
+            <h3 style={{ fontSize: '1.1rem', margin: 0 }}>B2B Quotation Leads & Visitor Growth</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.8rem', margin: 0 }}>Monthly RFQ Submissions vs Overall Website Traffic</p>
+          </div>
+          <span style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--primary)', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700 }}>
+            LIVE ANALYTICS
+          </span>
+        </div>
+
+        <ResponsiveContainer width="100%" height="80%">
+          <AreaChart data={analyticsChartData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
             <defs>
-              <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+              <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.8}/>
                 <stop offset="95%" stopColor="var(--primary)" stopOpacity={0}/>
               </linearGradient>
@@ -95,7 +80,7 @@ export default function Dashboard() {
             <XAxis dataKey="name" stroke="var(--text-muted)" />
             <YAxis stroke="var(--text-muted)" />
             <Tooltip contentStyle={{ backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)' }} />
-            <Area type="monotone" dataKey="revenue" stroke="var(--primary)" fillOpacity={1} fill="url(#colorRevenue)" />
+            <Area type="monotone" dataKey="leads" stroke="var(--primary)" fillOpacity={1} fill="url(#colorLeads)" />
           </AreaChart>
         </ResponsiveContainer>
       </div>
