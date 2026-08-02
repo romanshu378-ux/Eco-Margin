@@ -11,8 +11,8 @@ export default function FooterCMSPage() {
   const [footer, setFooter] = useState({
     companyName: "EcoMargin Infrastructure Pvt. Ltd.",
     address: "Plot 42, Industrial Area, Sector 62, Noida, UP - 201301, India",
-    phone: "+91-99999-99999",
-    altPhone: "+91-88888-88888",
+    phone: "+91-8302313065",
+    altPhone: "+91-90791 39959",
     email: "sales@ecomargin.com",
     supportEmail: "support@ecomargin.com",
     whatsapp: "+919999999999",
