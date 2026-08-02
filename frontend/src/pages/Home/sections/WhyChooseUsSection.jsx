@@ -1,14 +1,21 @@
+// EcoMargin Frontend — Dynamic Why Choose Us Section
+// src/pages/Home/sections/WhyChooseUsSection.jsx
 import React from 'react'
 import { motion } from 'framer-motion'
-import { fadeUp, staggerContainer, slideInLeft, slideInRight } from '@animations/variants'
+import { fadeUp, staggerContainer, slideInLeft } from '@animations/variants'
+import { useHomepage } from '../../../hooks/useCMS'
 
 export default function WhyChooseUsSection() {
+  const { data: homeData } = useHomepage()
+
   const points = [
     { title: '99.9% Uptime Guarantee', desc: 'Our redundant infrastructure ensures your chargers stay online.', icon: '🛡️' },
     { title: 'Automated Fault Recovery', desc: 'Remote reset capabilities resolve 70% of hardware faults automatically.', icon: '🤖' },
     { title: 'Bank-Grade Security', desc: 'PCI-DSS compliant payment gateways and encrypted OCPP communication.', icon: '🔒' },
     { title: '24/7 Global Support', desc: 'Dedicated NOC team monitoring your network around the clock.', icon: '🌐' }
   ]
+
+  const subtitle = homeData?.heroSubtitle || "Unlike generic software providers, we specialize exclusively in the EV charging domain. Our engineers understand the nuances of OCPP, load balancing, and EVSE hardware better than anyone else."
 
   return (
     <section style={{ padding: '8rem 0', position: 'relative', overflow: 'hidden' }}>
@@ -20,7 +27,7 @@ export default function WhyChooseUsSection() {
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={slideInLeft}>
             <h2 style={{ fontSize: '2.5rem', marginBottom: '1.5rem' }}>Why Choose <br/><span className="text-gradient">EcoMargin?</span></h2>
             <p style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem', marginBottom: '2rem', lineHeight: '1.6' }}>
-              Unlike generic software providers, we specialize exclusively in the EV charging domain. Our engineers understand the nuances of OCPP, load balancing, and EVSE hardware better than anyone else.
+              {subtitle}
             </p>
             <div style={{ padding: '2rem', background: 'var(--color-bg-card)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--color-primary)', borderLeft: '4px solid var(--color-primary)' }}>
               <p style={{ fontStyle: 'italic', color: 'var(--color-text)' }}>
