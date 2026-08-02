@@ -14,7 +14,7 @@ function extractPayload(res) {
     return res.data
   }
   // Unwrapped object check
-  if (typeof res === 'object' && (res.heroTitle || res.companyName || res.vision || res.metaTitle || res.phone)) {
+  if (typeof res === 'object' && (res.heroTitle || res.companyName || res.vision || res.metaTitle || res.phone || res.factoryArea)) {
     return res
   }
   return res.data || null
@@ -76,7 +76,35 @@ export function useAbout() {
   return { data, loading, error }
 }
 
-// 3. Hook for Footer & Contact CMS
+// 3. Hook for Manufacturing Page CMS
+export function useManufacturing() {
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    let isMounted = true
+    const fetchManufacturing = async () => {
+      try {
+        const res = await publicApi.getManufacturingCMS()
+        const payload = extractPayload(res)
+        if (isMounted && payload) {
+          setData(payload)
+        }
+      } catch (err) {
+        if (isMounted) setError(err.message)
+      } finally {
+        if (isMounted) setLoading(false)
+      }
+    }
+    fetchManufacturing()
+    return () => { isMounted = false }
+  }, [])
+
+  return { data, loading, error }
+}
+
+// 4. Hook for Footer & Contact CMS
 export function useFooter() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -104,7 +132,7 @@ export function useFooter() {
   return { data, loading, error }
 }
 
-// 4. Hook for SEO Metadata
+// 5. Hook for SEO Metadata
 export function useSEO() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)

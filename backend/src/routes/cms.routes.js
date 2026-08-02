@@ -13,6 +13,9 @@ router.put('/homepage', cmsController.updateHomepageCMS)
 router.get('/about', cmsController.getAboutCMS)
 router.put('/about', cmsController.updateAboutCMS)
 
+router.get('/manufacturing', cmsController.getManufacturingCMS)
+router.put('/manufacturing', cmsController.updateManufacturingCMS)
+
 router.get('/footer', cmsController.getFooterCMS)
 router.put('/footer', cmsController.updateFooterCMS)
 

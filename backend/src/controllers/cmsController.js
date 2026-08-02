@@ -28,12 +28,43 @@ let cmsStore = {
   about: {
     vision: "To accelerate global e-mobility adoption by manufacturing reliable, high-uptime EV charging hardware.",
     mission: "Engineering 100% indigenous Indian-manufactured commercial chargers tailored for harsh grid conditions.",
-    story: "Founded in 2020, EcoMargin has grown into a leading OEM charger manufacturer and EPC contractor with 50,000 sq.ft. facility.",
-    directorMessage: "India's EV revolution requires ultra-fast, robust charging stations backed by 24/7 NOC monitoring.",
+    story: "Founded in 2020, EcoMargin has grown into a leading OEM charger manufacturer and EPC contractor operating a 50,000 sq.ft. certified facility in Noida, India.",
+    directorMessage: "India's EV revolution requires ultra-fast, robust charging stations backed by 24/7 NOC monitoring."
+  },
+  manufacturing: {
+    heroTitle: "Designed & Built for Indian Operating Conditions",
+    heroSubtitle: "OEM & White Label Manufacturing",
+    description: "Grid fluctuations, extreme ambient temperatures (up to 55°C), and dust exposure require specialized hardware engineering. EcoMargin's chargers feature built-in isolation transformers, wide input voltage tolerance (200V–480V AC), and IP55 weatherproof enclosures.",
     factoryArea: "50,000 sq.ft.",
     annualCapacity: "50,000+ Units",
     burnInTestingHours: "48 Hours",
-    defectRate: "0.01%"
+    defectRate: "0.01%",
+    manufacturingSteps: [
+      {
+        title: '1. In-House SMT & PCB Assembly',
+        description: 'Automated surface mount lines assemble main controller boards, power metering units, and safety protection circuits under Class 100,000 cleanroom standards.'
+      },
+      {
+        title: '2. Enclosure Fabrication & IP Rating',
+        description: 'Heavy-duty Galvanized Steel and Stainless Steel outer cabinets coated with anti-corrosive outdoor UV powder coating (IP55/IP65 Outdoor Rated).'
+      },
+      {
+        title: '3. Full Power Burn-in Testing',
+        description: '100% of manufactured chargers undergo a 48-hour continuous full-load endurance test in environmental thermal chambers.'
+      },
+      {
+        title: '4. ARAI & CE Safety Inspection',
+        description: 'Rigorous insulation resistance, earth continuity, high-voltage withstand, surge suppression, and ground fault circuit breaker verification.'
+      },
+      {
+        title: '5. Firmware & OCPP Protocol Validation',
+        description: 'Automated software simulation testing compatibility across 50+ EV models and OCPP 1.6J/2.0.1 central management systems.'
+      },
+      {
+        title: '6. Quality Dispatch & Logistics',
+        description: 'Sealed shockproof packaging with complete test calibration reports, installation manuals, and warranty documentation.'
+      }
+    ]
   },
   footer: {
     companyName: "EcoMargin Infrastructure Pvt. Ltd.",
@@ -142,6 +173,23 @@ exports.updateAboutCMS = async (req, res) => {
     success: true,
     message: "Saved Successfully",
     data: cmsStore.about
+  })
+}
+
+// ── GET Manufacturing CMS ────────────────────────────────────────
+exports.getManufacturingCMS = async (req, res) => {
+  return res.status(200).json({ success: true, message: "Fetched Successfully", data: cmsStore.manufacturing })
+}
+
+// ── PUT/POST Manufacturing CMS (UPSERT Engine) ───────────────────
+exports.updateManufacturingCMS = async (req, res) => {
+  console.log('📝 [PUT /api/v1/cms/manufacturing] Request Payload:', JSON.stringify(req.body, null, 2))
+  cmsStore.manufacturing = { ...cmsStore.manufacturing, ...req.body }
+
+  return res.status(200).json({
+    success: true,
+    message: "Saved Successfully",
+    data: cmsStore.manufacturing
   })
 }
 

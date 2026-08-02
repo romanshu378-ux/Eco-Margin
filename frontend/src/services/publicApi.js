@@ -15,13 +15,24 @@ export const publicApi = {
     }
   },
 
-  // Fetch About Page Vision, Mission, Story & Metrics
+  // Fetch About Page Vision, Mission, Story & Messages
   getAboutCMS: async () => {
     try {
       const response = await api.get('/public/about')
       return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for about CMS:', error.message)
+      return { success: false, data: null }
+    }
+  },
+
+  // Fetch Manufacturing Page Process, Factory Metrics & Standards
+  getManufacturingCMS: async () => {
+    try {
+      const response = await api.get('/public/manufacturing')
+      return response
+    } catch (error) {
+      console.warn('[PublicAPI] Offline fallback for manufacturing CMS:', error.message)
       return { success: false, data: null }
     }
   },

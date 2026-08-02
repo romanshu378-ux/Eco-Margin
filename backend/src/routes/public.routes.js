@@ -10,6 +10,7 @@ const publicController = require('../controllers/publicController')
 // Public Unauthenticated CMS GET Endpoints
 router.get('/homepage', publicController.getPublicHomepage)
 router.get('/about', publicController.getPublicAbout)
+router.get('/manufacturing', publicController.getPublicManufacturing)
 router.get('/footer', publicController.getPublicFooter)
 router.get('/contact', publicController.getPublicContact)
 router.get('/seo', publicController.getPublicSEO)

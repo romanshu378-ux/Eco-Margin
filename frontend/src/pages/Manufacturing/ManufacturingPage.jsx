@@ -1,3 +1,5 @@
+// EcoMargin Frontend — Dynamic Manufacturing Page Component
+// src/pages/Manufacturing/ManufacturingPage.jsx
 import React from 'react'
 import SEO from '@seo/SEO'
 import PageHeader from '@components/common/PageHeader/PageHeader'
@@ -5,8 +7,9 @@ import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer } from '@animations/variants'
 import Button from '@components/ui/Button/Button'
 import { Link } from 'react-router-dom'
+import { useManufacturing } from '../../hooks/useCMS'
 
-const manufacturingSteps = [
+const fallbackSteps = [
   {
     title: '1. In-House SMT & PCB Assembly',
     description: 'Automated surface mount lines assemble main controller boards, power metering units, and safety protection circuits under Class 100,000 cleanroom standards.'
@@ -34,6 +37,17 @@ const manufacturingSteps = [
 ]
 
 export default function ManufacturingPage() {
+  const { data: mfgData } = useManufacturing()
+
+  const heroTitle = mfgData?.heroTitle || 'Designed & Built for Indian Operating Conditions'
+  const heroSubtitle = mfgData?.heroSubtitle || 'OEM & White Label Manufacturing'
+  const description = mfgData?.description || "Grid fluctuations, extreme ambient temperatures (up to 55°C), and dust exposure require specialized hardware engineering. EcoMargin's chargers feature built-in isolation transformers, wide input voltage tolerance (200V–480V AC), and IP55 weatherproof enclosures."
+  const factoryArea = mfgData?.factoryArea || '50,000 sq.ft.'
+  const annualCapacity = mfgData?.annualCapacity || '50,000+ Units'
+  const burnInTestingHours = mfgData?.burnInTestingHours || '48 Hours'
+  const defectRate = mfgData?.defectRate || '0.01%'
+  const manufacturingSteps = mfgData?.manufacturingSteps || fallbackSteps
+
   return (
     <>
       <SEO 
@@ -52,13 +66,13 @@ export default function ManufacturingPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', alignItems: 'center', marginBottom: '6rem' }}>
           <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}>
             <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-              OEM & White Label Manufacturing
+              {heroSubtitle}
             </span>
             <h2 style={{ fontSize: '2.25rem', marginTop: '0.5rem', marginBottom: '1.25rem', fontFamily: 'Outfit, sans-serif' }}>
-              Designed & Built for Indian Operating Conditions
+              {heroTitle}
             </h2>
             <p style={{ color: 'var(--color-text-muted)', fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-              Grid fluctuations, extreme ambient temperatures (up to 55°C), and dust exposure require specialized hardware engineering. EcoMargin's chargers feature built-in isolation transformers, wide input voltage tolerance (200V–480V AC), and IP55 weatherproof enclosures.
+              {description}
             </p>
             <div style={{ display: 'flex', gap: '1rem' }}>
               <Link to="/contact">
@@ -73,19 +87,19 @@ export default function ManufacturingPage() {
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
               <div>
-                <div style={{ fontSize: '2.25rem', fontWeight: 800, color: 'var(--color-primary)' }}>50,000 sq.ft.</div>
+                <div style={{ fontSize: '2.25rem', fontWeight: 800, color: 'var(--color-primary)' }}>{factoryArea}</div>
                 <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Factory Floor Area</div>
               </div>
               <div>
-                <div style={{ fontSize: '2.25rem', fontWeight: 800, color: 'var(--color-primary)' }}>50,000+</div>
+                <div style={{ fontSize: '2.25rem', fontWeight: 800, color: 'var(--color-primary)' }}>{annualCapacity}</div>
                 <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Chargers Produced / Year</div>
               </div>
               <div>
-                <div style={{ fontSize: '2.25rem', fontWeight: 800, color: 'var(--color-primary)' }}>48 Hours</div>
+                <div style={{ fontSize: '2.25rem', fontWeight: 800, color: 'var(--color-primary)' }}>{burnInTestingHours}</div>
                 <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>Full Burn-in Testing</div>
               </div>
               <div>
-                <div style={{ fontSize: '2.25rem', fontWeight: 800, color: 'var(--color-primary)' }}>0.01%</div>
+                <div style={{ fontSize: '2.25rem', fontWeight: 800, color: 'var(--color-primary)' }}>{defectRate}</div>
                 <div style={{ fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>RMA Defect Rate</div>
               </div>
             </div>

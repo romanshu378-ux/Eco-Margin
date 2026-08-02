@@ -16,6 +16,11 @@ exports.getPublicAbout = async (req, res) => {
   return cmsController.getAboutCMS(req, res)
 }
 
+// Public GET Manufacturing CMS
+exports.getPublicManufacturing = async (req, res) => {
+  return cmsController.getManufacturingCMS(req, res)
+}
+
 // Public GET Footer CMS
 exports.getPublicFooter = async (req, res) => {
   return cmsController.getFooterCMS(req, res)

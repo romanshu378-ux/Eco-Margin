@@ -22,12 +22,14 @@ export const adminService = {
   // CMS GET Endpoints
   getHomepageCMS: () => api.get('/cms/homepage'),
   getAboutCMS: () => api.get('/cms/about'),
+  getManufacturingCMS: () => api.get('/cms/manufacturing'),
   getFooterCMS: () => api.get('/cms/footer'),
   getSEOCMS: () => api.get('/cms/seo'),
 
   // CMS Mutation Endpoints (Save/Update)
   updateHomepageCMS: (data) => api.put('/cms/homepage', data),
   updateAboutCMS: (data) => api.put('/cms/about', data),
+  updateManufacturingCMS: (data) => api.put('/cms/manufacturing', data),
   updateFooterCMS: (data) => api.put('/cms/footer', data),
   updateSEOCMS: (data) => api.put('/cms/seo', data),
 
@@ -40,3 +42,5 @@ export const adminService = {
   createDownload: (data) => api.post('/admin/downloads', data),
   deleteDownload: (id) => api.delete(`/admin/downloads/${id}`),
 };
+
+export default adminService;
