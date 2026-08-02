@@ -9,19 +9,19 @@ export default function FooterCMSPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [footer, setFooter] = useState({
-    companyName: "EcoMargin Infrastructure Pvt. Ltd.",
+    companyName: "EcoMargin LLP.",
     address: "Plot 42, Industrial Area, Sector 62, Noida, UP - 201301, India",
     phone: "+91-8302313065",
     altPhone: "+91-90791 39959",
     email: "sales@ecomargin.com",
     supportEmail: "support@ecomargin.com",
-    whatsapp: "+919999999999",
+    whatsapp: "+918302313065",
     googleMapsEmbedUrl: "https://maps.google.com/maps?q=Noida%20Sector%2062&t=&z=13&ie=UTF8&iwloc=&output=embed",
     businessHours: "Monday – Saturday: 09:00 AM – 07:00 PM IST",
     linkedin: "https://linkedin.com/company/ecomargin",
     twitter: "https://twitter.com/ecomargin",
     facebook: "https://facebook.com/ecomargin",
-    copyright: "© 2026 EcoMargin Infrastructure Pvt. Ltd. All Rights Reserved."
+    copyright: "© 2026 EcoMargin LLP. All Rights Reserved."
   });
 
   useEffect(() => {
