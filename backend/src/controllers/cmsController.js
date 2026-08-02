@@ -10,7 +10,7 @@ let cmsStore = {
   homepage: {
     heroTitle: "Powering India's EV Infrastructure",
     heroSubtitle: "Design • Manufacturing • EPC Installation • OCPP Software • AMC Services",
-    heroVideoUrl: "https://res.cloudinary.com/ecomargin/video/upload/v1/hero-ev.mp4",
+    heroVideoUrl: "https://res.cloudinary.com/dcumpbswm/video/upload/v1785698504/123456_mwb4qr.mp4",
     primaryButtonText: "Request Quote",
     secondaryButtonText: "Contact Sales",
     brochureButtonText: "Download Brochure",

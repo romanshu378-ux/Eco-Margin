@@ -14,7 +14,7 @@ export default function HeroSection() {
   const [heroCMS, setHeroCMS] = useState({
     heroTitle: "Powering India's EV Infrastructure",
     heroSubtitle: "Design • Manufacturing • EPC Installation • OCPP Software • AMC Services",
-    heroVideoUrl: "https://res.cloudinary.com/ecomargin/video/upload/v1/hero-ev.mp4",
+    heroVideoUrl: "https://res.cloudinary.com/dcumpbswm/video/upload/v1785698504/123456_mwb4qr.mp4",
     primaryButtonText: "Request Quote",
     secondaryButtonText: "Contact Sales",
     brochureButtonText: "Download Brochure",
@@ -39,6 +39,8 @@ export default function HeroSection() {
     fetchHeroCMS()
   }, [])
 
+  const videoSrc = heroCMS.heroVideoUrl || "https://res.cloudinary.com/dcumpbswm/video/upload/v1785698504/123456_mwb4qr.mp4"
+
   return (
     <>
       <section style={{ 
@@ -48,14 +50,46 @@ export default function HeroSection() {
         position: 'relative',
         overflow: 'hidden',
         padding: '6rem 0 4rem 0',
-        background: 'linear-gradient(180deg, #0B0F19 0%, #111827 100%)',
+        background: '#0B0F19',
         color: '#ffffff'
       }}>
-        {/* Glow Effects */}
-        <div style={{ position: 'absolute', top: '-10%', right: '-5%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%)', filter: 'blur(80px)', zIndex: 0 }} />
-        <div style={{ position: 'absolute', bottom: '-20%', left: '-10%', width: '700px', height: '700px', background: 'radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%)', filter: 'blur(90px)', zIndex: 0 }} />
 
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
+        {/* 1. Responsive Full-Screen Cloudinary Background Video */}
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          onError={(e) => { e.currentTarget.style.display = 'none' }}
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            zIndex: 0
+          }}
+        >
+          <source src={videoSrc} type="video/mp4" />
+        </video>
+
+        {/* 2. Dark Overlay for Contrast & Text Readability (60% Opacity) */}
+        <div 
+          style={{ 
+            position: 'absolute', 
+            inset: 0, 
+            background: 'rgba(11, 15, 25, 0.60)', 
+            zIndex: 1 
+          }} 
+        />
+
+        {/* Glow Ambient Highlights */}
+        <div style={{ position: 'absolute', top: '-10%', right: '-5%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, transparent 70%)', filter: 'blur(80px)', zIndex: 1 }} />
+        <div style={{ position: 'absolute', bottom: '-20%', left: '-10%', width: '700px', height: '700px', background: 'radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%)', filter: 'blur(90px)', zIndex: 1 }} />
+
+        {/* 3. Hero Content Wrapper (Positioned above video & overlay with zIndex: 2) */}
+        <div className="container" style={{ position: 'relative', zIndex: 2 }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '4rem', alignItems: 'center' }}>
             
             {/* Left Content */}
@@ -119,12 +153,13 @@ export default function HeroSection() {
             {/* Right Product Industrial Showcase */}
             <motion.div variants={slideInRight} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ position: 'relative' }}>
               <div style={{ 
-                background: 'rgba(21, 26, 45, 0.8)', 
-                border: '1px solid rgba(255, 255, 255, 0.1)', 
+                background: 'rgba(21, 26, 45, 0.85)', 
+                border: '1px solid rgba(255, 255, 255, 0.15)', 
                 borderRadius: '24px', 
                 padding: '2.5rem', 
                 boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
-                position: 'relative'
+                position: 'relative',
+                backdropFilter: 'blur(12px)'
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
                   <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-primary)', letterSpacing: '1px' }}>
