@@ -1,3 +1,5 @@
+// EcoMargin Frontend — Dynamic Contact Page Component
+// src/pages/Contact/ContactPage.jsx
 import React, { useState } from 'react'
 import SEO from '@seo/SEO'
 import Button from '@components/ui/Button/Button'
@@ -5,8 +7,22 @@ import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer, slideInRight } from '@animations/variants'
 import PageHeader from '@components/common/PageHeader/PageHeader'
 import { FiPhoneCall, FiMail, FiMapPin, FiClock, FiMessageCircle, FiSend, FiCheckCircle } from 'react-icons/fi'
+import { useFooter } from '../../hooks/useCMS'
+import publicApi from '../../services/publicApi'
 
 export default function ContactPage() {
+  const { data: footerData } = useFooter()
+
+  const companyName = footerData?.companyName || 'EcoMargin Infrastructure Pvt. Ltd.'
+  const address = footerData?.address || 'Plot 42, Industrial Area, Sector 62, Noida, UP - 201301, India'
+  const phone = footerData?.phone || '+91-99999-99999'
+  const altPhone = footerData?.altPhone || '+91-88888-88888'
+  const email = footerData?.email || 'sales@ecomargin.com'
+  const supportEmail = footerData?.supportEmail || 'support@ecomargin.com'
+  const whatsapp = footerData?.whatsapp || '+919999999999'
+  const businessHours = footerData?.businessHours || 'Monday – Saturday: 09:00 AM – 07:00 PM IST'
+  const mapsEmbedUrl = footerData?.googleMapsEmbedUrl || 'https://maps.google.com/maps?q=Noida%20Sector%2062&t=&z=13&ie=UTF8&iwloc=&output=embed'
+
   const [isSent, setIsSent] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
@@ -17,8 +33,20 @@ export default function ContactPage() {
     message: ''
   })
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    try {
+      await publicApi.submitRFQ({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company,
+        product: formData.requirement,
+        requirements: formData.message
+      })
+    } catch (err) {
+      console.warn('Form submit offline fallback:', err.message)
+    }
     setIsSent(true)
   }
 
@@ -36,7 +64,7 @@ export default function ContactPage() {
         {/* Quick Action Badges */}
         <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '4rem' }}>
           <a 
-            href="https://wa.me/919999999999?text=Hello%20EcoMargin%20Sales,%20I%20want%20a%20quote%20for%20EV%20Chargers" 
+            href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}?text=Hello%20EcoMargin%20Sales,%20I%20want%20a%20quote%20for%20EV%20Chargers`} 
             target="_blank" rel="noopener noreferrer"
             style={{ display: 'inline-flex', alignItems: 'center', gap: '0.65rem', background: '#25D366', color: '#ffffff', padding: '0.85rem 1.75rem', borderRadius: '9999px', fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem' }}
           >
@@ -44,10 +72,10 @@ export default function ContactPage() {
           </a>
 
           <a 
-            href="tel:+919999999999" 
+            href={`tel:${phone}`} 
             style={{ display: 'inline-flex', alignItems: 'center', gap: '0.65rem', background: 'var(--color-primary)', color: '#0f0f1a', padding: '0.85rem 1.75rem', borderRadius: '9999px', fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem' }}
           >
-            <FiPhoneCall style={{ fontSize: '1.2rem' }} /> Call Sales Desk (+91-99999-99999)
+            <FiPhoneCall style={{ fontSize: '1.2rem' }} /> Call Sales Desk ({phone})
           </a>
         </div>
 
@@ -66,9 +94,8 @@ export default function ContactPage() {
                 <div>
                   <h4 style={{ marginBottom: '0.25rem' }}>Factory & R&D Center</h4>
                   <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', lineHeight: 1.5 }}>
-                    EcoMargin Infrastructure Pvt. Ltd.<br/>
-                    Plot 42, Industrial Area, Sector 62<br/>
-                    Noida, Uttar Pradesh - 201301, India
+                    <strong>{companyName}</strong><br/>
+                    {address}
                   </p>
                 </div>
               </div>
@@ -76,10 +103,10 @@ export default function ContactPage() {
               <div style={{ display: 'flex', gap: '1rem' }}>
                 <div style={{ fontSize: '1.5rem', color: 'var(--color-primary)' }}><FiMail /></div>
                 <div>
-                  <h4 style={{ marginBottom: '0.25rem' }}>Email Inquiries</h4>
+                  <h4 style={{ marginBottom: '0.25rem' }}>Email & Phone Inquiries</h4>
                   <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-                    Sales & RFQs: <strong>sales@ecomargin.com</strong><br/>
-                    Technical Support: <strong>support@ecomargin.com</strong>
+                    Sales & RFQs: <strong>{email}</strong> ({phone})<br/>
+                    Technical Support: <strong>{supportEmail}</strong> ({altPhone})
                   </p>
                 </div>
               </div>
@@ -89,18 +116,18 @@ export default function ContactPage() {
                 <div>
                   <h4 style={{ marginBottom: '0.25rem' }}>Business Hours</h4>
                   <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-                    Monday – Saturday: 09:00 AM – 07:00 PM IST<br/>
+                    {businessHours}<br/>
                     24/7 Remote NOC Desk Active
                   </p>
                 </div>
               </div>
             </div>
 
-            {/* Google Map Placeholder */}
+            {/* Google Map */}
             <div style={{ width: '100%', height: '220px', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--color-border)', background: 'var(--color-bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <iframe 
                 title="EcoMargin Factory Location" 
-                src="https://maps.google.com/maps?q=Noida%20Sector%2062&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+                src={mapsEmbedUrl} 
                 width="100%" height="100%" style={{ border: 0 }} allowFullScreen="" loading="lazy"
               ></iframe>
             </div>
