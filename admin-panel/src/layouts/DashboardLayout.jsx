@@ -5,9 +5,9 @@ import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { 
   FiHome, FiBox, FiList, FiFileText, FiImage, 
-  FiBriefcase, FiUsers, FiMail, FiMessageSquare, 
+  FiBriefcase, FiUsers, FiMessageSquare, 
   FiSettings, FiSearch, FiFolder, FiLogOut, FiInbox, 
-  FiSliders, FiGlobe, FiDownload, FiLayers, FiTool
+  FiSliders, FiGlobe, FiDownload, FiLayers, FiTool, FiCpu
 } from 'react-icons/fi';
 
 export default function DashboardLayout() {
@@ -31,6 +31,7 @@ export default function DashboardLayout() {
       items: [
         { name: 'Homepage CMS', path: '/cms/home', icon: <FiSliders /> },
         { name: 'About Page CMS', path: '/cms/about', icon: <FiLayers /> },
+        { name: 'Manufacturing CMS', path: '/cms/manufacturing', icon: <FiCpu /> },
         { name: 'Footer & Contact CMS', path: '/cms/footer', icon: <FiGlobe /> },
         { name: 'SEO & Schema Manager', path: '/seo', icon: <FiSearch /> },
         { name: 'Media Manager (Cloudinary)', path: '/media', icon: <FiFolder /> }

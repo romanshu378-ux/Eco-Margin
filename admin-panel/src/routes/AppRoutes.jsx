@@ -13,6 +13,7 @@ const LoginPage = lazy(() => import('../pages/Auth/LoginPage'))
 const Dashboard = lazy(() => import('../pages/Dashboard/Dashboard'))
 const HomepageCMSPage = lazy(() => import('../pages/CMS/HomepageCMSPage'))
 const AboutCMSPage = lazy(() => import('../pages/CMS/AboutCMSPage'))
+const ManufacturingCMSPage = lazy(() => import('../pages/CMS/ManufacturingCMSPage'))
 const FooterCMSPage = lazy(() => import('../pages/CMS/FooterCMSPage'))
 const DownloadsCMSPage = lazy(() => import('../pages/CMS/DownloadsCMSPage'))
 const ServicesCMSPage = lazy(() => import('../pages/CMS/ServicesCMSPage'))
@@ -64,6 +65,7 @@ export default function AppRoutes() {
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/cms/home" element={<HomepageCMSPage />} />
           <Route path="/cms/about" element={<AboutCMSPage />} />
+          <Route path="/cms/manufacturing" element={<ManufacturingCMSPage />} />
           <Route path="/cms/footer" element={<FooterCMSPage />} />
           <Route path="/cms/services" element={<ServicesCMSPage />} />
           <Route path="/cms/industries" element={<IndustriesCMSPage />} />
