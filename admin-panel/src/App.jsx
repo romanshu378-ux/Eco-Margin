@@ -1,17 +1,16 @@
-import React from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
-import AppRoutes from './routes/AppRoutes';
-import './styles/globals.css';
+// EcoMargin Admin Panel — Main Application Component
+// src/App.jsx
+import React from 'react'
+import { AuthProvider } from './context/AuthContext'
+import AppRoutes from './routes/AppRoutes'
+import './styles/globals.css'
 
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <AppRoutes />
-      </BrowserRouter>
+      <AppRoutes />
     </AuthProvider>
-  );
+  )
 }
 
-export default App;
+export default App

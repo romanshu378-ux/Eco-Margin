@@ -1,3 +1,5 @@
+// EcoMargin Admin Panel — Protected Route Guard
+// src/routes/ProtectedRoute.jsx
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -8,8 +10,16 @@ export default function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', background: 'var(--bg-main)', color: 'var(--primary)' }}>
-        Loading session...
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        minHeight: '100vh', 
+        background: 'var(--bg-main)', 
+        color: 'var(--primary)',
+        fontWeight: 500
+      }}>
+        Authenticating Admin Session...
       </div>
     );
   }

@@ -1,3 +1,5 @@
+// EcoMargin Admin Panel — Dashboard Layout
+// src/layouts/DashboardLayout.jsx
 import React from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -68,8 +70,8 @@ export default function DashboardLayout() {
           <div style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>Dashboard</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>{user?.name}</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user?.role}</div>
+              <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>{user?.name || 'Super Admin'}</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user?.role || 'Administrator'}</div>
             </div>
             <button onClick={handleLogout} className="btn btn-outline" style={{ padding: '0.5rem', borderRadius: '50%' }} title="Logout">
               <FiLogOut />
