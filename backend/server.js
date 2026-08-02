@@ -1,41 +1,36 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const { connectDB } = require('./src/config/db.config');
-const routes = require('./src/routes');
-const { errorHandler, notFound } = require('./src/middlewares/error.middleware');
+// EcoMargin — Server Entry Point
+// server.js
 
-// Initialize App
-const app = express();
+'use strict'
 
-// Global Middlewares
-app.use(express.json()); // Body parser
-app.use(express.urlencoded({ extended: true }));
-app.use(cors()); // Allow cross-origin requests
-app.use(helmet()); // Security headers
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev')); // Request logging
+require('dotenv').config()
+const app = require('./src/app')
+const { connectDB } = require('./src/config/db.config')
+
+// Dynamic Port configuration for Render (never hardcode)
+const PORT = process.env.PORT || 5000
+
+// Initialize Database connection then start Express server
+const startServer = async () => {
+  try {
+    // Attempt connection to TiDB Cloud / MySQL
+    await connectDB()
+
+    app.listen(PORT, () => {
+      console.log(`
+=====================================================
+🚀 EcoMargin API Server Running
+📡 Environment : ${process.env.NODE_ENV || 'development'}
+🌐 Port        : ${PORT}
+🗄️ Database    : ${process.env.DB_NAME || 'ecomargin_db'} (TiDB Cloud)
+☁️ Storage     : Cloudinary Enabled
+=====================================================
+      `)
+    })
+  } catch (error) {
+    console.error('❌ Failed to start server due to fatal connection error:', error.message)
+    process.exit(1)
+  }
 }
 
-// Connect to Database
-connectDB();
-
-// API Routes
-app.use('/api/v1', routes);
-
-// Base route for easy checking
-app.get('/', (req, res) => {
-  res.send('EcoMargin Backend API is Running');
-});
-
-// 404 & Error Handling
-app.use(notFound);
-app.use(errorHandler);
-
-// Start Server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-});
+startServer()
