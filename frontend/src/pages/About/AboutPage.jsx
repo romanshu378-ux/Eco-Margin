@@ -15,22 +15,22 @@ export default function AboutPage() {
   const mission = aboutData?.mission || "Engineering 100% indigenous Indian-manufactured commercial chargers tailored for harsh grid conditions."
   const directorMessage = aboutData?.directorMessage || "India's EV revolution requires ultra-fast, robust charging stations backed by 24/7 NOC monitoring."
   const factoryArea = aboutData?.factoryArea || "50,000 sq.ft."
-  const annualCapacity = aboutData?.annualCapacity || "50,000+ Units"
+  const annualCapacity = aboutData?.annualCapacity || "5,000+ Units"
   const burnInTestingHours = aboutData?.burnInTestingHours || "48 Hours"
   const defectRate = aboutData?.defectRate || "0.01%"
 
   return (
     <>
       <SEO title="About Us" description="Learn more about EcoMargin's manufacturing mission and EV charging infrastructure." />
-      
-      <PageHeader 
-        title="About EcoMargin OEM Factory" 
+
+      <PageHeader
+        title="About EcoMargin OEM Factory"
         description="Pioneering Indigenous EV Charger Manufacturing & Turnkey EPC Infrastructure."
       />
 
       <div className="container" style={{ padding: '6rem 0' }}>
         <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} style={{ maxWidth: '900px', margin: '0 auto' }}>
-          
+
           {/* Corporate Story */}
           <motion.div variants={fadeUp} style={{ background: 'var(--color-bg-card)', padding: '3rem', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-border)', marginBottom: '3rem' }}>
             <h2 style={{ marginBottom: '1rem', color: 'var(--color-primary)' }}>Our Manufacturing Legacy</h2>

@@ -19,9 +19,18 @@ export default function ContactPage() {
   const altPhone = footerData?.altPhone || '+91-8302313065'
   const email = footerData?.email || 'sales@ecomargin.com'
   const supportEmail = footerData?.supportEmail || 'support@ecomargin.com'
-  const whatsapp = footerData?.whatsapp || '+91-9982148474'
+  const rawWhatsapp = footerData?.whatsapp || '8302313065'
   const businessHours = footerData?.businessHours || 'Monday – Saturday: 09:00 AM – 07:00 PM IST'
   const mapsEmbedUrl = footerData?.googleMapsEmbedUrl || 'https://maps.google.com/maps?q=Noida%20Sector%2062&t=&z=13&ie=UTF8&iwloc=&output=embed'
+
+  // Sanitize WhatsApp number to digits-only format (e.g. 918302313065)
+  let cleanWhatsapp = rawWhatsapp.replace(/[^0-9]/g, '')
+  if (cleanWhatsapp.length === 10) {
+    cleanWhatsapp = '91' + cleanWhatsapp
+  }
+  if (!cleanWhatsapp) {
+    cleanWhatsapp = '918302313065'
+  }
 
   const [isSent, setIsSent] = useState(false)
   const [formData, setFormData] = useState({
@@ -50,8 +59,6 @@ export default function ContactPage() {
     setIsSent(true)
   }
 
-  const sanitizedWhatsapp = whatsapp.replace(/[^0-9]/g, '')
-
   return (
     <>
       <SEO title="Contact Corporate Sales & Factory" description="Contact EcoMargin's EV Charger engineering sales team, request factory quotes, or schedule a plant visit." />
@@ -66,11 +73,12 @@ export default function ContactPage() {
         {/* Quick Action Badges */}
         <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '4rem' }}>
           <a 
-            href={`https://wa.me/${sanitizedWhatsapp}?text=Hello%20EcoMargin%20Sales,%20I%20want%20a%20quote%20for%20EV%20Chargers`} 
-            target="_blank" rel="noopener noreferrer"
+            href={`https://wa.me/${cleanWhatsapp}?text=Hello%20EcoMargin%20Sales,%20I%20want%20a%20quote%20for%20EV%20Chargers`} 
+            target="_blank" 
+            rel="noopener noreferrer"
             style={{ display: 'inline-flex', alignItems: 'center', gap: '0.65rem', background: '#25D366', color: '#ffffff', padding: '0.85rem 1.75rem', borderRadius: '9999px', fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem' }}
           >
-            <FiMessageCircle style={{ fontSize: '1.3rem' }} /> Chat on WhatsApp Sales ({whatsapp})
+            <FiMessageCircle style={{ fontSize: '1.3rem' }} /> Chat on WhatsApp Sales
           </a>
 
           <a 
