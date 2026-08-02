@@ -1,10 +1,36 @@
-import React from 'react'
+// EcoMargin Frontend — Dynamic Footer Component
+// src/components/common/Footer/Footer.jsx
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import LogoIcon from '@assets/icons/LogoIcon'
 import { FiShield, FiCheckCircle, FiPhoneCall, FiMail, FiMapPin } from 'react-icons/fi'
+import publicApi from '../../../services/publicApi'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
+  const [footerCMS, setFooterCMS] = useState({
+    companyName: "EcoMargin Infrastructure Pvt. Ltd.",
+    address: "Plot 42, Industrial Area, Sector 62, Noida, UP - 201301, India",
+    phone: "+91-99999-99999",
+    altPhone: "+91-88888-88888",
+    email: "sales@ecomargin.com",
+    supportEmail: "support@ecomargin.com",
+    copyright: `© ${currentYear} EcoMargin Infrastructure Pvt. Ltd. All Rights Reserved.`
+  })
+
+  useEffect(() => {
+    const fetchFooter = async () => {
+      try {
+        const res = await publicApi.getFooterCMS()
+        if (res && res.data) {
+          setFooterCMS(prev => ({ ...prev, ...res.data }))
+        }
+      } catch (err) {
+        console.warn('Footer CMS live fetch notice:', err.message)
+      }
+    }
+    fetchFooter()
+  }, [])
 
   return (
     <footer style={{ 
@@ -64,17 +90,17 @@ export default function Footer() {
               </span>
             </Link>
             <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', fontSize: '0.875rem', lineHeight: 1.6 }}>
-              EcoMargin is a leading OEM EV Charger Manufacturer and Infrastructure EPC Contractor. We manufacture commercial AC Fast Chargers (3.3kW–22kW) and heavy-duty DC Charging Stations (20kW–240kW) with integrated OCPP Cloud software.
+              {footerCMS.companyName} is a leading OEM EV Charger Manufacturer and Infrastructure EPC Contractor. We manufacture commercial AC Fast Chargers (3.3kW–22kW) and heavy-duty DC Charging Stations (20kW–240kW) with integrated OCPP Cloud software.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <FiMapPin style={{ color: 'var(--color-primary)' }} /> Factory & R&D Center: Plot 42, Industrial Area, Sector 62, Noida, India
+                <FiMapPin style={{ color: 'var(--color-primary)' }} /> Factory & R&D Center: {footerCMS.address}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <FiPhoneCall style={{ color: 'var(--color-primary)' }} /> Sales & Support: +91-99999-99999 / +91-88888-88888
+                <FiPhoneCall style={{ color: 'var(--color-primary)' }} /> Sales & Support: {footerCMS.phone} / {footerCMS.altPhone}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <FiMail style={{ color: 'var(--color-primary)' }} /> Sales Enquiries: sales@ecomargin.com
+                <FiMail style={{ color: 'var(--color-primary)' }} /> Sales Enquiries: {footerCMS.email}
               </div>
             </div>
           </div>
@@ -138,7 +164,7 @@ export default function Footer() {
           fontSize: '0.8rem',
           color: 'var(--color-text-muted)'
         }}>
-          <p>&copy; {currentYear} EcoMargin Infrastructure Pvt. Ltd. All Rights Reserved.</p>
+          <p>{footerCMS.copyright || `© ${currentYear} EcoMargin Infrastructure Pvt. Ltd. All Rights Reserved.`}</p>
           <div style={{ display: 'flex', gap: '1.5rem' }}>
             <Link to="/privacy-policy" style={{ color: 'var(--color-text-muted)' }}>Privacy Policy</Link>
             <Link to="/terms" style={{ color: 'var(--color-text-muted)' }}>Terms of Service</Link>

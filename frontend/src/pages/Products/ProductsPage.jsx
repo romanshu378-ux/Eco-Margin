@@ -1,14 +1,17 @@
-import React, { useState } from 'react'
+// EcoMargin Frontend — Dynamic Products Catalog Page
+// src/pages/Products/ProductsPage.jsx
+import React, { useState, useEffect } from 'react'
 import SEO from '@seo/SEO'
 import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer } from '@animations/variants'
 import PageHeader from '@components/common/PageHeader/PageHeader'
 import Button from '@components/ui/Button/Button'
 import QuoteModal from '@components/common/QuoteModal/QuoteModal'
-import { FiDownload, FiCheckCircle, FiShield, FiCpu, FiZap, FiFileText } from 'react-icons/fi'
+import { FiDownload, FiCheckCircle } from 'react-icons/fi'
 import { Link } from 'react-router-dom'
+import publicApi from '../../services/publicApi'
 
-const productCategories = [
+const fallbackCategories = [
   {
     category: 'Commercial AC Chargers (3.3kW to 22kW)',
     description: 'Smart Destination Chargers for Offices, Hotels, Residential Societies, and Malls.',
@@ -86,6 +89,62 @@ const productCategories = [
 export default function ProductsPage() {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState('')
+  const [productCategories, setProductCategories] = useState(fallbackCategories)
+
+  useEffect(() => {
+    const fetchLiveProducts = async () => {
+      try {
+        const res = await publicApi.getProducts()
+        if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+          // Group flat products list into categories dynamically
+          const acItems = res.data.filter(p => p.category === 'AC EV Chargers').map(p => ({
+            name: p.name,
+            power: p.power,
+            connector: p.connector || 'Type 2 Gun',
+            protection: p.protection || 'IP55 Outdoor',
+            efficiency: p.efficiency || '>98%',
+            warranty: p.warranty || '3 Years Warranty',
+            features: ['OCPP Protocol Compliant', 'RFID Auth', 'Dynamic Load Balancing'],
+            applications: p.applications || 'Apartments, Hotels, Offices'
+          }))
+
+          const dcItems = res.data.filter(p => p.category !== 'AC EV Chargers').map(p => ({
+            name: p.name,
+            power: p.power,
+            connector: p.connector || 'Dual CCS2',
+            protection: p.protection || 'IP55 Outdoor Cabinet',
+            efficiency: p.efficiency || '≥96%',
+            warranty: p.warranty || '3 Years AMC Included',
+            features: ['Dynamic Power Matrix Split', 'Liquid-Cooled Cable Option', '24/7 NOC Cloud Diagnostics'],
+            applications: p.applications || 'Highways, Bus Depots, Fleet Hubs'
+          }))
+
+          const liveCategories = []
+          if (acItems.length > 0) {
+            liveCategories.push({
+              category: 'Commercial AC Chargers (3.3kW to 22kW)',
+              description: 'Smart Destination Chargers for Offices, Hotels, Residential Societies, and Malls.',
+              items: acItems
+            })
+          }
+          if (dcItems.length > 0) {
+            liveCategories.push({
+              category: 'Heavy-Duty DC Fast Chargers (20kW to 240kW)',
+              description: 'Ultra-Fast Direct Current Charging Stations for Highways, Commercial Fleets, and Bus Depots.',
+              items: dcItems
+            })
+          }
+
+          if (liveCategories.length > 0) {
+            setProductCategories(liveCategories)
+          }
+        }
+      } catch (err) {
+        console.warn('Products live fetch notice:', err.message)
+      }
+    }
+    fetchLiveProducts()
+  }, [])
 
   const handleOpenQuote = (productName) => {
     setSelectedProduct(productName)

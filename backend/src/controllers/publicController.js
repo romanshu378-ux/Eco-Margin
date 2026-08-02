@@ -4,8 +4,29 @@
 'use strict'
 
 const { db } = require('../config/db.config')
+const cmsController = require('./cmsController')
 
-// Public endpoints allowing frontend to dynamically fetch live CMS data from Database
+// Public GET Homepage CMS
+exports.getPublicHomepage = async (req, res) => {
+  return cmsController.getHomepageCMS(req, res)
+}
+
+// Public GET About CMS
+exports.getPublicAbout = async (req, res) => {
+  return cmsController.getAboutCMS(req, res)
+}
+
+// Public GET Footer CMS
+exports.getPublicFooter = async (req, res) => {
+  return cmsController.getFooterCMS(req, res)
+}
+
+// Public GET SEO CMS
+exports.getPublicSEO = async (req, res) => {
+  return cmsController.getSEOCMS(req, res)
+}
+
+// Public GET Active Products Catalog
 exports.getPublicProducts = async (req, res) => {
   try {
     if (db && typeof db.query === 'function') {
@@ -73,6 +94,7 @@ exports.getPublicProducts = async (req, res) => {
   })
 }
 
+// Public GET Active Services
 exports.getPublicServices = async (req, res) => {
   try {
     if (db && typeof db.query === 'function') {
@@ -95,6 +117,7 @@ exports.getPublicServices = async (req, res) => {
   })
 }
 
+// Public GET Technical Downloads
 exports.getPublicDownloads = async (req, res) => {
   try {
     if (db && typeof db.query === 'function') {
@@ -117,6 +140,7 @@ exports.getPublicDownloads = async (req, res) => {
   })
 }
 
+// Public POST RFQ Enquiry Submission
 exports.submitRFQEnquiry = async (req, res) => {
   const { name, email, phone, company, product, quantity, requirements } = req.body
   console.log('📝 [POST /api/v1/public/rfq] Lead Received:', { name, email, phone, company, product, quantity })

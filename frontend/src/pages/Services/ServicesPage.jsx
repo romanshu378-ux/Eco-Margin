@@ -1,13 +1,16 @@
-import React, { useState } from 'react'
+// EcoMargin Frontend — Dynamic Services Page
+// src/pages/Services/ServicesPage.jsx
+import React, { useState, useEffect } from 'react'
 import SEO from '@seo/SEO'
 import PageHeader from '@components/common/PageHeader/PageHeader'
 import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer } from '@animations/variants'
 import Button from '@components/ui/Button/Button'
 import QuoteModal from '@components/common/QuoteModal/QuoteModal'
-import { FiCheckCircle, FiTool, FiZap, FiActivity, FiShield, FiSend } from 'react-icons/fi'
+import { FiCheckCircle, FiTool, FiZap, FiActivity, FiShield } from 'react-icons/fi'
+import publicApi from '../../services/publicApi'
 
-const epcServices = [
+const fallbackServices = [
   {
     title: '1. Site Feasibility & Power Load Survey',
     icon: <FiZap />,
@@ -42,6 +45,26 @@ const epcServices = [
 
 export default function ServicesPage() {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
+  const [epcServices, setEpcServices] = useState(fallbackServices)
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const res = await publicApi.getServices()
+        if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
+          const liveSrv = res.data.map((s, idx) => ({
+            title: s.title || s.name || `${idx + 1}. Service`,
+            icon: idx % 2 === 0 ? <FiZap /> : <FiTool />,
+            desc: s.description
+          }))
+          setEpcServices(liveSrv)
+        }
+      } catch (err) {
+        console.warn('Services live fetch notice:', err.message)
+      }
+    }
+    fetchServices()
+  }, [])
 
   return (
     <>

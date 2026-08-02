@@ -1,13 +1,43 @@
-import React, { useState } from 'react'
+// EcoMargin Frontend — Dynamic Hero Section Component
+// src/pages/Home/sections/HeroSection.jsx
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Button from '@components/ui/Button/Button'
 import { fadeUp, staggerContainer, slideInRight } from '@animations/variants'
 import QuoteModal from '@components/common/QuoteModal/QuoteModal'
-import { FiDownload, FiArrowRight, FiShield, FiCpu, FiCheckCircle } from 'react-icons/fi'
+import { FiDownload, FiArrowRight } from 'react-icons/fi'
+import publicApi from '../../../services/publicApi'
 
 export default function HeroSection() {
   const [quoteOpen, setQuoteOpen] = useState(false)
+  const [heroCMS, setHeroCMS] = useState({
+    heroTitle: "Powering India's EV Infrastructure",
+    heroSubtitle: "Design • Manufacturing • EPC Installation • OCPP Software • AMC Services",
+    heroVideoUrl: "https://res.cloudinary.com/ecomargin/video/upload/v1/hero-ev.mp4",
+    primaryButtonText: "Request Quote",
+    secondaryButtonText: "Contact Sales",
+    brochureButtonText: "Download Brochure",
+    stats: [
+      { label: "AC & DC Fast Range", value: "3.3kW – 240kW" },
+      { label: "Certified Factory", value: "ISO & ARAI" },
+      { label: "Network Uptime", value: "99.8%" }
+    ]
+  })
+
+  useEffect(() => {
+    const fetchHeroCMS = async () => {
+      try {
+        const res = await publicApi.getHomepageCMS()
+        if (res && res.data) {
+          setHeroCMS(prev => ({ ...prev, ...res.data }))
+        }
+      } catch (err) {
+        console.warn('Hero CMS live fetch notice:', err.message)
+      }
+    }
+    fetchHeroCMS()
+  }, [])
 
   return (
     <>
@@ -39,15 +69,21 @@ export default function HeroSection() {
               </motion.div>
               
               <motion.h1 variants={fadeUp} style={{ fontSize: 'clamp(2.5rem, 5.5vw, 4.25rem)', marginBottom: '1.25rem', lineHeight: '1.1', fontWeight: '800', fontFamily: 'Outfit, sans-serif' }}>
-                Powering India's <br />
-                <span style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 50%, #3B82F6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                  EV Infrastructure.
-                </span>
+                {heroCMS.heroTitle.includes('Infrastructure') ? (
+                  <>
+                    Powering India's <br />
+                    <span style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 50%, #3B82F6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                      EV Infrastructure.
+                    </span>
+                  </>
+                ) : (
+                  heroCMS.heroTitle
+                )}
               </motion.h1>
 
               {/* Core Pillars */}
               <motion.div variants={fadeUp} style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.75rem', fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-primary)' }}>
-                <span>Design</span> • <span>Manufacturing</span> • <span>EPC Installation</span> • <span>OCPP Software</span> • <span>AMC</span>
+                {heroCMS.heroSubtitle}
               </motion.div>
               
               <motion.p variants={fadeUp} style={{ color: '#9CA3AF', fontSize: '1.15rem', marginBottom: '2.5rem', maxWidth: '540px', lineHeight: '1.6' }}>
@@ -56,32 +92,26 @@ export default function HeroSection() {
               
               <motion.div variants={fadeUp} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 <Button size="lg" variant="primary" onClick={() => setQuoteOpen(true)}>
-                  Request Quote <FiArrowRight style={{ marginLeft: '0.5rem' }} />
+                  {heroCMS.primaryButtonText} <FiArrowRight style={{ marginLeft: '0.5rem' }} />
                 </Button>
                 <Link to="/contact">
-                  <Button size="lg" variant="outline">Contact Sales</Button>
+                  <Button size="lg" variant="outline">{heroCMS.secondaryButtonText}</Button>
                 </Link>
                 <Link to="/downloads">
                   <Button size="lg" variant="ghost" style={{ color: '#9CA3AF' }}>
-                    <FiDownload style={{ marginRight: '0.5rem' }} /> Brochure
+                    <FiDownload style={{ marginRight: '0.5rem' }} /> {heroCMS.brochureButtonText}
                   </Button>
                 </Link>
               </motion.div>
 
               {/* Trust Badges */}
               <motion.div variants={fadeUp} style={{ display: 'flex', gap: '2rem', marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                <div>
-                  <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#ffffff' }}>3.3kW – 240kW</div>
-                  <div style={{ fontSize: '0.8rem', color: '#9CA3AF' }}>AC & DC Fast Range</div>
-                </div>
-                <div>
-                  <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#ffffff' }}>ISO & ARAI</div>
-                  <div style={{ fontSize: '0.8rem', color: '#9CA3AF' }}>Certified Factory</div>
-                </div>
-                <div>
-                  <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#ffffff' }}>99.8%</div>
-                  <div style={{ fontSize: '0.8rem', color: '#9CA3AF' }}>Network Uptime</div>
-                </div>
+                {heroCMS.stats.map((st, i) => (
+                  <div key={i}>
+                    <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#ffffff' }}>{st.value}</div>
+                    <div style={{ fontSize: '0.8rem', color: '#9CA3AF' }}>{st.label}</div>
+                  </div>
+                ))}
               </motion.div>
 
             </motion.div>
