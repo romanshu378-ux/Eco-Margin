@@ -21,6 +21,11 @@ exports.getPublicFooter = async (req, res) => {
   return cmsController.getFooterCMS(req, res)
 }
 
+// Public GET Contact CMS (Delegates to Footer/Contact CMS)
+exports.getPublicContact = async (req, res) => {
+  return cmsController.getFooterCMS(req, res)
+}
+
 // Public GET SEO CMS
 exports.getPublicSEO = async (req, res) => {
   return cmsController.getSEOCMS(req, res)

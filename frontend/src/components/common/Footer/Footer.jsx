@@ -1,36 +1,21 @@
 // EcoMargin Frontend — Dynamic Footer Component
 // src/components/common/Footer/Footer.jsx
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import LogoIcon from '@assets/icons/LogoIcon'
 import { FiShield, FiCheckCircle, FiPhoneCall, FiMail, FiMapPin } from 'react-icons/fi'
-import publicApi from '../../../services/publicApi'
+import { useFooter } from '../../../hooks/useCMS'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
-  const [footerCMS, setFooterCMS] = useState({
-    companyName: "EcoMargin Infrastructure Pvt. Ltd.",
-    address: "Plot 42, Industrial Area, Sector 62, Noida, UP - 201301, India",
-    phone: "+91-99999-99999",
-    altPhone: "+91-88888-88888",
-    email: "sales@ecomargin.com",
-    supportEmail: "support@ecomargin.com",
-    copyright: `© ${currentYear} EcoMargin Infrastructure Pvt. Ltd. All Rights Reserved.`
-  })
+  const { data: footerCMS } = useFooter()
 
-  useEffect(() => {
-    const fetchFooter = async () => {
-      try {
-        const res = await publicApi.getFooterCMS()
-        if (res && res.data) {
-          setFooterCMS(prev => ({ ...prev, ...res.data }))
-        }
-      } catch (err) {
-        console.warn('Footer CMS live fetch notice:', err.message)
-      }
-    }
-    fetchFooter()
-  }, [])
+  const companyName = footerCMS?.companyName || "EcoMargin Infrastructure Pvt. Ltd."
+  const address = footerCMS?.address || "Plot 42, Industrial Area, Sector 62, Noida, UP - 201301, India"
+  const phone = footerCMS?.phone || "+91-8302313065"
+  const altPhone = footerCMS?.altPhone || "+91-8302313065"
+  const email = footerCMS?.email || "sales@ecomargin.com"
+  const copyright = footerCMS?.copyright || `© ${currentYear} EcoMargin Infrastructure Pvt. Ltd. All Rights Reserved.`
 
   return (
     <footer style={{ 
@@ -90,17 +75,17 @@ export default function Footer() {
               </span>
             </Link>
             <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', fontSize: '0.875rem', lineHeight: 1.6 }}>
-              {footerCMS.companyName} is a leading OEM EV Charger Manufacturer and Infrastructure EPC Contractor. We manufacture commercial AC Fast Chargers (3.3kW–22kW) and heavy-duty DC Charging Stations (20kW–240kW) with integrated OCPP Cloud software.
+              {companyName} is a leading OEM EV Charger Manufacturer and Infrastructure EPC Contractor. We manufacture commercial AC Fast Chargers (3.3kW–22kW) and heavy-duty DC Charging Stations (20kW–240kW) with integrated OCPP Cloud software.
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <FiMapPin style={{ color: 'var(--color-primary)' }} /> Factory & R&D Center: {footerCMS.address}
+                <FiMapPin style={{ color: 'var(--color-primary)' }} /> Factory & R&D Center: {address}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <FiPhoneCall style={{ color: 'var(--color-primary)' }} /> Sales & Support: {footerCMS.phone} / {footerCMS.altPhone}
+                <FiPhoneCall style={{ color: 'var(--color-primary)' }} /> Sales & Support: {phone} / {altPhone}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <FiMail style={{ color: 'var(--color-primary)' }} /> Sales Enquiries: {footerCMS.email}
+                <FiMail style={{ color: 'var(--color-primary)' }} /> Sales Enquiries: {email}
               </div>
             </div>
           </div>
@@ -164,7 +149,7 @@ export default function Footer() {
           fontSize: '0.8rem',
           color: 'var(--color-text-muted)'
         }}>
-          <p>{footerCMS.copyright || `© ${currentYear} EcoMargin Infrastructure Pvt. Ltd. All Rights Reserved.`}</p>
+          <p>{copyright}</p>
           <div style={{ display: 'flex', gap: '1.5rem' }}>
             <Link to="/privacy-policy" style={{ color: 'var(--color-text-muted)' }}>Privacy Policy</Link>
             <Link to="/terms" style={{ color: 'var(--color-text-muted)' }}>Terms of Service</Link>

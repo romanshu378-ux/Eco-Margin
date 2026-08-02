@@ -3,16 +3,19 @@
 import React, { useState, useEffect } from 'react'
 import { Helmet } from 'react-helmet-async'
 import publicApi from '../services/publicApi'
+import { useFooter } from '../hooks/useCMS'
 
 export default function SEO({ title, description, keywords, schemaType = 'Organization', schemaData = null }) {
   const [seoData, setSeoData] = useState(null)
+  const { data: footerData } = useFooter()
 
   useEffect(() => {
     const loadSEO = async () => {
       try {
         const res = await publicApi.getSEOCMS()
-        if (res && res.data) {
-          setSeoData(res.data)
+        const payload = res?.data || (res?.metaTitle ? res : null)
+        if (payload) {
+          setSeoData(payload)
         }
       } catch (err) {
         console.warn('Live SEO fetch notice:', err.message)
@@ -31,28 +34,28 @@ export default function SEO({ title, description, keywords, schemaType = 'Organi
   const fullTitle = title ? `${title} | ${siteName}` : defaultTitle
   const metaDesc = description || defaultDesc
 
+  const phone = footerData?.phone || '+91-8302313065'
+  const email = footerData?.email || 'sales@ecomargin.com'
+
   // JSON-LD Organization & Manufacturer Schema
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    'name': 'EcoMargin Infrastructure Pvt. Ltd.',
+    'name': footerData?.companyName || 'EcoMargin Infrastructure Pvt. Ltd.',
     'url': canonical,
     'logo': 'https://ecomargin.vercel.app/logo.png',
     'description': defaultDesc,
     'contactPoint': {
       '@type': 'ContactPoint',
-      'telephone': '+91-99999-99999',
+      'telephone': phone,
       'contactType': 'sales',
-      'email': 'sales@ecomargin.com',
+      'email': email,
       'areaServed': 'IN',
       'availableLanguage': ['en', 'hi']
     },
     'address': {
       '@type': 'PostalAddress',
-      'streetAddress': 'Plot 42, Sector 62',
-      'addressLocality': 'Noida',
-      'addressRegion': 'UP',
-      'postalCode': '201301',
+      'streetAddress': footerData?.address || 'Plot 42, Sector 62, Noida, UP - 201301, India',
       'addressCountry': 'IN'
     }
   }

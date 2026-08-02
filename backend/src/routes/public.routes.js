@@ -11,6 +11,7 @@ const publicController = require('../controllers/publicController')
 router.get('/homepage', publicController.getPublicHomepage)
 router.get('/about', publicController.getPublicAbout)
 router.get('/footer', publicController.getPublicFooter)
+router.get('/contact', publicController.getPublicContact)
 router.get('/seo', publicController.getPublicSEO)
 
 // Catalog & Portfolio Endpoints

@@ -8,7 +8,7 @@ export const publicApi = {
   getHomepageCMS: async () => {
     try {
       const response = await api.get('/public/homepage')
-      return response.data || response
+      return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for homepage CMS:', error.message)
       return { success: false, data: null }
@@ -19,7 +19,7 @@ export const publicApi = {
   getAboutCMS: async () => {
     try {
       const response = await api.get('/public/about')
-      return response.data || response
+      return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for about CMS:', error.message)
       return { success: false, data: null }
@@ -30,9 +30,20 @@ export const publicApi = {
   getFooterCMS: async () => {
     try {
       const response = await api.get('/public/footer')
-      return response.data || response
+      return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for footer CMS:', error.message)
+      return { success: false, data: null }
+    }
+  },
+
+  // Fetch Contact Info (Same as Footer CMS)
+  getContactCMS: async () => {
+    try {
+      const response = await api.get('/public/contact')
+      return response
+    } catch (error) {
+      console.warn('[PublicAPI] Offline fallback for contact CMS:', error.message)
       return { success: false, data: null }
     }
   },
@@ -41,7 +52,7 @@ export const publicApi = {
   getSEOCMS: async () => {
     try {
       const response = await api.get('/public/seo')
-      return response.data || response
+      return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for SEO CMS:', error.message)
       return { success: false, data: null }
@@ -52,7 +63,7 @@ export const publicApi = {
   getProducts: async () => {
     try {
       const response = await api.get('/public/products')
-      return response.data || response
+      return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for products:', error.message)
       return { success: false, data: [] }
@@ -63,7 +74,7 @@ export const publicApi = {
   getServices: async () => {
     try {
       const response = await api.get('/public/services')
-      return response.data || response
+      return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for services:', error.message)
       return { success: false, data: [] }
@@ -74,7 +85,7 @@ export const publicApi = {
   getDownloads: async () => {
     try {
       const response = await api.get('/public/downloads')
-      return response.data || response
+      return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for downloads:', error.message)
       return { success: false, data: [] }
@@ -85,7 +96,7 @@ export const publicApi = {
   submitRFQ: async (payload) => {
     try {
       const response = await api.post('/public/rfq', payload)
-      return response.data || response
+      return response
     } catch (error) {
       console.warn('[PublicAPI] Submitting RFQ in offline mode:', error.message)
       return { success: true, message: 'RFQ submitted successfully.' }
