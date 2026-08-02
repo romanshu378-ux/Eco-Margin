@@ -7,11 +7,11 @@ import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer, slideInRight } from '@animations/variants'
 import PageHeader from '@components/common/PageHeader/PageHeader'
 import { FiPhoneCall, FiMail, FiMapPin, FiClock, FiMessageCircle, FiSend, FiCheckCircle } from 'react-icons/fi'
-import { useFooter } from '../../hooks/useCMS'
+import { useFooterCMS } from '../../hooks/useCMS'
 import publicApi from '../../services/publicApi'
 
 export default function ContactPage() {
-  const { data: footerData } = useFooter()
+  const { data: footerData } = useFooterCMS()
 
   const companyName = footerData?.companyName || 'EcoMargin Infrastructure Pvt. Ltd.'
   const address = footerData?.address || 'Plot 42, Industrial Area, Sector 62, Noida, UP - 201301, India'

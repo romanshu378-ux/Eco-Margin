@@ -7,7 +7,9 @@ export const publicApi = {
   // Fetch Homepage CMS Banners, Headlines & Section Toggles
   getHomepageCMS: async () => {
     try {
-      const response = await api.get('/public/homepage')
+      const response = await api.get('/public/homepage', {
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
+      })
       return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for homepage CMS:', error.message)
@@ -18,7 +20,9 @@ export const publicApi = {
   // Fetch About Page Vision, Mission, Story & Messages
   getAboutCMS: async () => {
     try {
-      const response = await api.get('/public/about')
+      const response = await api.get('/public/about', {
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
+      })
       return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for about CMS:', error.message)
@@ -29,7 +33,9 @@ export const publicApi = {
   // Fetch Manufacturing Page Process, Factory Metrics & Standards
   getManufacturingCMS: async () => {
     try {
-      const response = await api.get('/public/manufacturing')
+      const response = await api.get('/public/manufacturing', {
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
+      })
       return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for manufacturing CMS:', error.message)
@@ -40,7 +46,9 @@ export const publicApi = {
   // Fetch Footer Company Info, Phones, Emails, Address & Copyright
   getFooterCMS: async () => {
     try {
-      const response = await api.get('/public/footer')
+      const response = await api.get('/public/footer', {
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
+      })
       return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for footer CMS:', error.message)
@@ -51,7 +59,9 @@ export const publicApi = {
   // Fetch Contact Info (Same as Footer CMS)
   getContactCMS: async () => {
     try {
-      const response = await api.get('/public/contact')
+      const response = await api.get('/public/contact', {
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
+      })
       return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for contact CMS:', error.message)
@@ -62,7 +72,9 @@ export const publicApi = {
   // Fetch SEO Metadata, Open Graph & Canonical URLs
   getSEOCMS: async () => {
     try {
-      const response = await api.get('/public/seo')
+      const response = await api.get('/public/seo', {
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
+      })
       return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for SEO CMS:', error.message)

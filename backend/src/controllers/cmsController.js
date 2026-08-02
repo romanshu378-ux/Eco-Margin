@@ -99,6 +99,7 @@ let cmsStore = {
 
 // ── GET Homepage CMS ─────────────────────────────────────────────
 exports.getHomepageCMS = async (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
   try {
     if (db && typeof db.query === 'function') {
       const [rows] = await db.query('SELECT * FROM homepage WHERE id = 1')
@@ -145,9 +146,10 @@ exports.updateHomepageCMS = async (req, res) => {
       console.log('✅ [SQL Query Executed] Homepage UPSERT affectedRows:', result?.affectedRows || 1)
     }
 
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
     return res.status(200).json({
       success: true,
-      message: "Saved Successfully",
+      message: "Data saved successfully",
       data: cmsStore.homepage
     })
   } catch (err) {
@@ -161,6 +163,7 @@ exports.updateHomepageCMS = async (req, res) => {
 
 // ── GET About CMS ────────────────────────────────────────────────
 exports.getAboutCMS = async (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
   return res.status(200).json({ success: true, message: "Fetched Successfully", data: cmsStore.about })
 }
 
@@ -169,15 +172,17 @@ exports.updateAboutCMS = async (req, res) => {
   console.log('📝 [PUT /api/v1/cms/about] Request Payload:', JSON.stringify(req.body, null, 2))
   cmsStore.about = { ...cmsStore.about, ...req.body }
 
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
   return res.status(200).json({
     success: true,
-    message: "Saved Successfully",
+    message: "Data saved successfully",
     data: cmsStore.about
   })
 }
 
 // ── GET Manufacturing CMS ────────────────────────────────────────
 exports.getManufacturingCMS = async (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
   return res.status(200).json({ success: true, message: "Fetched Successfully", data: cmsStore.manufacturing })
 }
 
@@ -186,20 +191,38 @@ exports.updateManufacturingCMS = async (req, res) => {
   console.log('📝 [PUT /api/v1/cms/manufacturing] Request Payload:', JSON.stringify(req.body, null, 2))
   cmsStore.manufacturing = { ...cmsStore.manufacturing, ...req.body }
 
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
   return res.status(200).json({
     success: true,
-    message: "Saved Successfully",
+    message: "Data saved successfully",
     data: cmsStore.manufacturing
   })
 }
 
 // ── GET Footer CMS ───────────────────────────────────────────────
 exports.getFooterCMS = async (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+  res.setHeader('Pragma', 'no-cache')
+  res.setHeader('Expires', '0')
+
   try {
     if (db && typeof db.query === 'function') {
       const [rows] = await db.query('SELECT * FROM footer WHERE id = 1')
       if (rows && rows.length > 0) {
-        return res.status(200).json({ success: true, message: "Fetched Successfully", data: rows[0] })
+        const row = rows[0]
+        const dbData = {
+          companyName: row.company_bio || row.companyName || cmsStore.footer.companyName,
+          address: row.address || cmsStore.footer.address,
+          phone: row.phone || cmsStore.footer.phone,
+          altPhone: row.altPhone || row.alt_phone || cmsStore.footer.altPhone,
+          email: row.email || cmsStore.footer.email,
+          supportEmail: row.supportEmail || row.support_email || cmsStore.footer.supportEmail,
+          whatsapp: row.whatsapp || cmsStore.footer.whatsapp,
+          googleMapsEmbedUrl: row.googleMapsEmbedUrl || row.google_maps_embed_url || cmsStore.footer.googleMapsEmbedUrl,
+          businessHours: row.businessHours || row.business_hours || cmsStore.footer.businessHours,
+          copyright: row.copyright_text || row.copyright || cmsStore.footer.copyright
+        }
+        return res.status(200).json({ success: true, message: "Fetched Successfully", data: dbData })
       }
     }
   } catch (err) {
@@ -235,13 +258,16 @@ exports.updateFooterCMS = async (req, res) => {
         req.body.copyright || cmsStore.footer.copyright
       ]
 
+      console.log('🔍 [SQL Query Execution]:', query)
+      console.log('🔍 [SQL Values]:', values)
       const [result] = await db.query(query, values)
       console.log('✅ [SQL Query Executed] Footer UPSERT affectedRows:', result?.affectedRows || 1)
     }
 
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
     return res.status(200).json({
       success: true,
-      message: "Saved Successfully",
+      message: "Data saved successfully",
       data: cmsStore.footer
     })
   } catch (err) {
@@ -255,6 +281,7 @@ exports.updateFooterCMS = async (req, res) => {
 
 // ── GET SEO CMS ──────────────────────────────────────────────────
 exports.getSEOCMS = async (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
   return res.status(200).json({ success: true, message: "Fetched Successfully", data: cmsStore.seo })
 }
 
@@ -263,9 +290,10 @@ exports.updateSEOCMS = async (req, res) => {
   console.log('📝 [PUT /api/v1/cms/seo] Request Payload:', JSON.stringify(req.body, null, 2))
   cmsStore.seo = { ...cmsStore.seo, ...req.body }
 
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
   return res.status(200).json({
     success: true,
-    message: "Saved Successfully",
+    message: "Data saved successfully",
     data: cmsStore.seo
   })
 }

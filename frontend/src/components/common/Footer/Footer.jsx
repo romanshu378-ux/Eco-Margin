@@ -4,11 +4,11 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import LogoIcon from '@assets/icons/LogoIcon'
 import { FiShield, FiCheckCircle, FiPhoneCall, FiMail, FiMapPin } from 'react-icons/fi'
-import { useFooter } from '../../../hooks/useCMS'
+import { useFooterCMS } from '../../../hooks/useCMS'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
-  const { data: footerCMS } = useFooter()
+  const { data: footerCMS } = useFooterCMS()
 
   const companyName = footerCMS?.companyName || "EcoMargin Infrastructure Pvt. Ltd."
   const address = footerCMS?.address || "Plot 42, Industrial Area, Sector 62, Noida, UP - 201301, India"

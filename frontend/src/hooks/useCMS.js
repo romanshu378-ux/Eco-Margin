@@ -104,7 +104,7 @@ export function useManufacturing() {
   return { data, loading, error }
 }
 
-// 4. Hook for Footer & Contact CMS
+// 4. Hook for Footer & Contact CMS (Primary Hook & Alias useFooterCMS)
 export function useFooter() {
   const [data, setData] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -131,6 +131,9 @@ export function useFooter() {
 
   return { data, loading, error }
 }
+
+// Export useFooterCMS as explicit hook alias for Footer & Contact CMS
+export const useFooterCMS = useFooter
 
 // 5. Hook for SEO Metadata
 export function useSEO() {
