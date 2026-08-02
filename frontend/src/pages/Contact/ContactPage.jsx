@@ -59,20 +59,20 @@ export default function ContactPage() {
   return (
     <>
       <SEO title="Contact Corporate Sales & Factory" description="Contact EcoMargin's EV Charger engineering sales team, request factory quotes, or schedule a plant visit." />
-      
-      <PageHeader 
-        title="Contact Corporate Sales & Factory" 
+
+      <PageHeader
+        title="Contact Corporate Sales & Factory"
         description="Get Direct Technical Proposals, Custom RFQs, and Turnkey EPC Estimates."
       />
 
       <div className="container" style={{ padding: '5rem 0' }}>
-        
+
         {/* Quick Action Badges */}
         <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '4rem' }}>
           {cleanWhatsapp && (
-            <a 
-              href={`https://wa.me/${cleanWhatsapp}?text=Hello%20EcoMargin%20Sales,%20I%20want%20a%20quote%20for%20EV%20Chargers`} 
-              target="_blank" 
+            <a
+              href={`https://wa.me/${cleanWhatsapp}?text=Hello%20EcoMargin%20Sales,%20I%20want%20a%20quote%20for%20EV%20Chargers`}
+              target="_blank"
               rel="noopener noreferrer"
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.65rem', background: '#25D366', color: '#ffffff', padding: '0.85rem 1.75rem', borderRadius: '9999px', fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem' }}
             >
@@ -81,17 +81,17 @@ export default function ContactPage() {
           )}
 
           {phone && (
-            <a 
-              href={`tel:${phone}`} 
+            <a
+              href={`tel:${phone}`}
               style={{ display: 'inline-flex', alignItems: 'center', gap: '0.65rem', background: 'var(--color-primary)', color: '#0f0f1a', padding: '0.85rem 1.75rem', borderRadius: '9999px', fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem' }}
             >
-              <FiPhoneCall style={{ fontSize: '1.2rem' }} /> Call Sales Desk ({phone})
+              <FiPhoneCall style={{ fontSize: '1.2rem' }} /> Call Sales Desk {phone}
             </a>
           )}
         </div>
 
         <motion.div variants={staggerContainer} initial="hidden" animate="visible" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '4rem', alignItems: 'flex-start' }}>
-          
+
           {/* Left Info */}
           <motion.div variants={fadeUp}>
             <h2 style={{ fontSize: '2rem', marginBottom: '1rem', fontFamily: 'Outfit, sans-serif' }}>Factory Headquarters</h2>
@@ -105,19 +105,19 @@ export default function ContactPage() {
                 <div>
                   <h4 style={{ marginBottom: '0.25rem' }}>Factory & R&D Center</h4>
                   <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', lineHeight: 1.5 }}>
-                    <strong>{companyName}</strong><br/>
+                    <strong>{companyName}</strong><br />
                     {address}
                   </p>
                 </div>
               </div>
-              
+
               <div style={{ display: 'flex', gap: '1rem' }}>
                 <div style={{ fontSize: '1.5rem', color: 'var(--color-primary)' }}><FiMail /></div>
                 <div>
                   <h4 style={{ marginBottom: '0.25rem' }}>Email & Phone Inquiries</h4>
                   <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-                    Sales & RFQs: <strong>{email}</strong> ({phone})<br/>
-                    Technical Support: <strong>{supportEmail}</strong> ({altPhone})
+                    Sales & RFQs: <strong>{email}</strong> {phone ? `• ${phone}` : ''}<br />
+                    Technical Support: <strong>{supportEmail}</strong> {altPhone ? `• ${altPhone}` : ''}
                   </p>
                 </div>
               </div>
@@ -127,7 +127,7 @@ export default function ContactPage() {
                 <div>
                   <h4 style={{ marginBottom: '0.25rem' }}>Business Hours</h4>
                   <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-                    {businessHours}<br/>
+                    {businessHours}<br />
                     24/7 Remote NOC Desk Active
                   </p>
                 </div>
@@ -137,9 +137,9 @@ export default function ContactPage() {
             {/* Google Map */}
             {mapsEmbedUrl && (
               <div style={{ width: '100%', height: '220px', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--color-border)', background: 'var(--color-bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <iframe 
-                  title="EcoMargin Factory Location" 
-                  src={mapsEmbedUrl} 
+                <iframe
+                  title="EcoMargin Factory Location"
+                  src={mapsEmbedUrl}
                   width="100%" height="100%" style={{ border: 0 }} allowFullScreen="" loading="lazy"
                 ></iframe>
               </div>
@@ -167,48 +167,48 @@ export default function ContactPage() {
 
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Full Name *</label>
-                  <input 
+                  <input
                     type="text" required value={formData.name}
                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                    placeholder="e.g. Ramesh Kumar" 
-                    style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none' }} 
+                    placeholder="e.g. Ramesh Kumar"
+                    style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none' }}
                   />
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Work Email *</label>
-                    <input 
+                    <input
                       type="email" required value={formData.email}
                       onChange={e => setFormData({ ...formData, email: e.target.value })}
-                      placeholder="ramesh@company.com" 
-                      style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none' }} 
+                      placeholder="ramesh@company.com"
+                      style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none' }}
                     />
                   </div>
                   <div>
                     <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Phone Number *</label>
-                    <input 
+                    <input
                       type="tel" required value={formData.phone}
                       onChange={e => setFormData({ ...formData, phone: e.target.value })}
-                      placeholder="+91 98765 43210" 
-                      style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none' }} 
+                      placeholder="+91 98765 43210"
+                      style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none' }}
                     />
                   </div>
                 </div>
 
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Company / Organization *</label>
-                  <input 
+                  <input
                     type="text" required value={formData.company}
                     onChange={e => setFormData({ ...formData, company: e.target.value })}
-                    placeholder="e.g. GreenTrans Logistics Ltd" 
-                    style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none' }} 
+                    placeholder="e.g. GreenTrans Logistics Ltd"
+                    style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none' }}
                   />
                 </div>
 
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Requirement Type</label>
-                  <select 
+                  <select
                     value={formData.requirement}
                     onChange={e => setFormData({ ...formData, requirement: e.target.value })}
                     style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none' }}
@@ -223,11 +223,11 @@ export default function ContactPage() {
 
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Project Message / Requirements</label>
-                  <textarea 
+                  <textarea
                     rows="3" value={formData.message}
                     onChange={e => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Mention charger quantity, target location, or technical requirements..."
-                    style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none', resize: 'vertical' }} 
+                    style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none', resize: 'vertical' }}
                   />
                 </div>
 
