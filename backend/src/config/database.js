@@ -1,35 +1,42 @@
-// EcoMargin — Sequelize + MySQL Database Config
-// src/config/database.js
+'use strict';
 
-'use strict'
-
-const { Sequelize } = require('sequelize')
-const logger = require('./logger')
+const { Sequelize } = require('sequelize');
+const logger = require('./logger');
 
 const sequelize = new Sequelize(
-  process.env.DB_NAME     || 'ecomargin_db',
-  process.env.DB_USER     || 'root',
-  process.env.DB_PASSWORD || '',
+  process.env.DB_NAME || 'ecomargin_db',
+  process.env.DB_USER || 'root',
+  process.env.DB_PASSWORD || 'fnYNgvLwRvYcD3We',
   {
-    host:    process.env.DB_HOST || 'localhost',
-    port:    parseInt(process.env.DB_PORT) || 3306,
+    host: process.env.DB_HOST || 'localhost',
+    port: parseInt(process.env.DB_PORT) || 4000,
     dialect: 'mysql',
+
+    // ===== TiDB Cloud SSL =====
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
+
     pool: {
-      max:     parseInt(process.env.DB_CONNECTION_LIMIT) || 10,
-      min:     2,
+      max: parseInt(process.env.DB_CONNECTION_LIMIT) || 10,
+      min: 2,
       acquire: 30000,
-      idle:    10000,
+      idle: 10000,
     },
-    logging: (sql) => {
-      if (process.env.NODE_ENV === 'development') {
-        logger.debug(sql)
-      }
-    },
+
+    logging:
+      process.env.NODE_ENV === 'development'
+        ? (sql) => logger.debug(sql)
+        : false,
+
     define: {
-      timestamps:  true,
+      timestamps: true,
       underscored: true,
     },
-  },
-)
+  }
+);
 
-module.exports = { sequelize }
+module.exports = { sequelize };
