@@ -6,6 +6,7 @@
 require('dotenv').config()
 const app = require('./src/app')
 const { connectDB } = require('./src/config/db.config')
+const { allowedOrigins } = require('./src/config/cors')
 
 // Dynamic Port configuration for Render (never hardcode)
 const PORT = process.env.PORT || 5000
@@ -23,7 +24,8 @@ const startServer = async () => {
 📡 Environment : ${process.env.NODE_ENV || 'development'}
 🌐 Port        : ${PORT}
 🗄️ Database    : ${process.env.DB_NAME || 'ecomargin_db'} (TiDB Cloud)
-☁️ Storage     : Cloudinary Enabled
+🔒 CORS Allowed Origins:
+   ${allowedOrigins.join('\n   ')}
 =====================================================
       `)
     })
