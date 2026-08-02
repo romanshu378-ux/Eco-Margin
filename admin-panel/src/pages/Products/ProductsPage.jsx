@@ -142,8 +142,10 @@ export default function ProductsPage() {
     const fetchProducts = async () => {
       try {
         const res = await adminService.getProducts();
-        if (res && res.data && res.data.data && Array.isArray(res.data.data)) {
-          setProducts(res.data.data);
+        if (res && res.data && Array.isArray(res.data)) {
+          setProducts(res.data);
+        } else if (res && Array.isArray(res)) {
+          setProducts(res);
         }
       } catch (err) {
         console.warn('Initial Products load notice:', err.message);
@@ -184,7 +186,7 @@ export default function ProductsPage() {
         setProducts(products.map(p => p.id === editingProduct.id ? { ...formData, id: editingProduct.id } : p));
       } else {
         const res = await adminService.createProduct(formData);
-        const newId = res.data?.id || Date.now();
+        const newId = res?.id || res?.data?.id || Date.now();
         setProducts([...products, { ...formData, id: newId }]);
       }
       setShowModal(false);

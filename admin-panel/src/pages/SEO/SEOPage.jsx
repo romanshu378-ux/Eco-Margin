@@ -32,8 +32,8 @@ export default function SEOPage() {
     const fetchSEO = async () => {
       try {
         const res = await adminService.getSEOCMS();
-        if (res && res.data && res.data.data) {
-          setSeo(prev => ({ ...prev, ...res.data.data }));
+        if (res && res.data) {
+          setSeo(prev => ({ ...prev, ...res.data }));
         }
       } catch (err) {
         console.warn('Initial SEO CMS load notice:', err.message);
@@ -49,15 +49,15 @@ export default function SEOPage() {
 
     try {
       const res = await adminService.updateSEOCMS(seo);
-      if (res && (res.data?.success || res.status === 200)) {
+      if (res && (res.success === true || res.data)) {
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
       } else {
-        throw new Error(res.data?.message || 'Failed to save SEO Metadata');
+        throw new Error(res?.message || 'Failed to save SEO Metadata');
       }
     } catch (err) {
       console.error('❌ Error saving SEO Metadata:', err);
-      setError(err.message || 'Error saving changes to database');
+      setError(err.message || err.data?.message || 'Error saving changes to database');
     } finally {
       setLoading(false);
     }
@@ -71,7 +71,7 @@ export default function SEOPage() {
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Manage Search Engine Metadata, Open Graph, Twitter Cards, JSON-LD Schemas, Robots & Sitemap</p>
         </div>
         <button onClick={handleSave} disabled={loading} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          {loading ? 'Saving to Database...' : saved ? <><FiCheck /> Saved to Database!</> : <><FiSave /> Save SEO Changes</>}
+          {loading ? 'Saving to Database...' : saved ? <><FiCheck /> Saved Successfully</> : <><FiSave /> Save SEO Changes</>}
         </button>
       </div>
 

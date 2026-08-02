@@ -28,8 +28,8 @@ export default function FooterCMSPage() {
     const fetchFooter = async () => {
       try {
         const res = await adminService.getFooterCMS();
-        if (res && res.data && res.data.data) {
-          setFooter(prev => ({ ...prev, ...res.data.data }));
+        if (res && res.data) {
+          setFooter(prev => ({ ...prev, ...res.data }));
         }
       } catch (err) {
         console.warn('Initial Footer CMS load notice:', err.message);
@@ -45,15 +45,16 @@ export default function FooterCMSPage() {
 
     try {
       const res = await adminService.updateFooterCMS(footer);
-      if (res && (res.data?.success || res.status === 200)) {
+      // res is ALREADY response.data from Axios interceptor
+      if (res && (res.success === true || res.data)) {
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
       } else {
-        throw new Error(res.data?.message || 'Failed to save Footer CMS');
+        throw new Error(res?.message || 'Failed to save Footer CMS');
       }
     } catch (err) {
       console.error('❌ Error saving Footer CMS:', err);
-      setError(err.message || 'Error saving changes to database');
+      setError(err.message || err.data?.message || 'Error saving changes to database');
     } finally {
       setLoading(false);
     }
@@ -67,7 +68,7 @@ export default function FooterCMSPage() {
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Manage Corporate Address, Phones, Emails, WhatsApp Desk, Google Maps & Copyright</p>
         </div>
         <button onClick={handleSave} disabled={loading} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          {loading ? 'Saving to Database...' : saved ? <><FiCheck /> Saved to Database!</> : <><FiSave /> Save Changes</>}
+          {loading ? 'Saving to Database...' : saved ? <><FiCheck /> Saved Successfully</> : <><FiSave /> Save Changes</>}
         </button>
       </div>
 

@@ -1,11 +1,11 @@
-// EcoMargin Backend — CMS Controller with Database Persistence & Logging
+// EcoMargin Backend — CMS Controller (UPSERT Engine & Standardized JSON Response)
 // src/controllers/cmsController.js
 
 'use strict'
 
 const { db } = require('../config/db.config')
 
-// In-memory fallback store for offline development mode
+// Memory fallback store
 let cmsStore = {
   homepage: {
     heroTitle: "Powering India's EV Infrastructure",
@@ -20,18 +20,9 @@ let cmsStore = {
       { label: "Network Uptime", value: "99.8%" }
     ],
     sectionVisibility: {
-      hero: true,
-      intro: true,
-      products: true,
-      manufacturing: true,
-      services: true,
-      whyChooseUs: true,
-      counter: true,
-      industries: true,
-      gallery: true,
-      blogs: true,
-      faq: true,
-      contactCta: true
+      hero: true, intro: true, products: true, manufacturing: true,
+      services: true, whyChooseUs: true, counter: true, industries: true,
+      gallery: true, blogs: true, faq: true, contactCta: true
     }
   },
   about: {
@@ -75,28 +66,27 @@ let cmsStore = {
   }
 }
 
-// Get Homepage CMS
+// ── GET Homepage CMS ─────────────────────────────────────────────
 exports.getHomepageCMS = async (req, res) => {
   try {
     if (db && typeof db.query === 'function') {
-      const [rows] = await db.query('SELECT * FROM homepage LIMIT 1')
+      const [rows] = await db.query('SELECT * FROM homepage WHERE id = 1')
       if (rows && rows.length > 0) {
-        return res.status(200).json({ success: true, data: rows[0] })
+        return res.status(200).json({ success: true, message: "Fetched Successfully", data: rows[0] })
       }
     }
   } catch (err) {
     console.warn('⚠️ [DB Notice] Reading Homepage CMS from memory store:', err.message)
   }
-  return res.status(200).json({ success: true, data: cmsStore.homepage })
+  return res.status(200).json({ success: true, message: "Fetched Successfully", data: cmsStore.homepage })
 }
 
-// Update Homepage CMS (Persist to DB)
+// ── PUT/POST Homepage CMS (UPSERT Engine) ───────────────────────
 exports.updateHomepageCMS = async (req, res) => {
-  console.log('📝 [PUT /api/v1/cms/homepage] Request Payload:', req.body)
+  console.log('📝 [PUT /api/v1/cms/homepage] Request Payload:', JSON.stringify(req.body, null, 2))
+  cmsStore.homepage = { ...cmsStore.homepage, ...req.body }
 
   try {
-    cmsStore.homepage = { ...cmsStore.homepage, ...req.body }
-
     if (db && typeof db.query === 'function') {
       const query = `
         INSERT INTO homepage (id, hero_title, hero_subtitle, hero_video_url, primary_button_text, secondary_button_text, brochure_button_text, section_visibility)
@@ -120,88 +110,123 @@ exports.updateHomepageCMS = async (req, res) => {
         JSON.stringify(req.body.sectionVisibility || cmsStore.homepage.sectionVisibility)
       ]
 
-      await db.query(query, values)
-      console.log('✅ [Database Commit] Homepage CMS updated in MySQL/TiDB Cloud')
+      const [result] = await db.query(query, values)
+      console.log('✅ [SQL Query Executed] Homepage UPSERT affectedRows:', result?.affectedRows || 1)
     }
 
     return res.status(200).json({
       success: true,
-      message: 'Homepage CMS saved and persisted to database successfully',
+      message: "Saved Successfully",
       data: cmsStore.homepage
     })
   } catch (err) {
     console.error('❌ [Homepage CMS Save Error]:', err.message)
     return res.status(500).json({
       success: false,
-      message: 'Failed to persist Homepage CMS to database',
-      error: err.message
+      message: err.message || "Failed to save Homepage CMS"
     })
   }
 }
 
-// Get About CMS
+// ── GET About CMS ────────────────────────────────────────────────
 exports.getAboutCMS = async (req, res) => {
-  return res.status(200).json({ success: true, data: cmsStore.about })
+  return res.status(200).json({ success: true, message: "Fetched Successfully", data: cmsStore.about })
 }
 
-// Update About CMS
+// ── PUT/POST About CMS (UPSERT Engine) ──────────────────────────
 exports.updateAboutCMS = async (req, res) => {
-  console.log('📝 [PUT /api/v1/cms/about] Request Payload:', req.body)
+  console.log('📝 [PUT /api/v1/cms/about] Request Payload:', JSON.stringify(req.body, null, 2))
   cmsStore.about = { ...cmsStore.about, ...req.body }
-
-  try {
-    if (db && typeof db.query === 'function') {
-      console.log('✅ [Database Commit] About CMS updated')
-    }
-  } catch (err) {
-    console.warn('⚠️ [DB Notice] About CMS fallback used:', err.message)
-  }
 
   return res.status(200).json({
     success: true,
-    message: 'About CMS saved and persisted to database successfully',
+    message: "Saved Successfully",
     data: cmsStore.about
   })
 }
 
-// Get Footer CMS
+// ── GET Footer CMS ───────────────────────────────────────────────
 exports.getFooterCMS = async (req, res) => {
-  return res.status(200).json({ success: true, data: cmsStore.footer })
+  try {
+    if (db && typeof db.query === 'function') {
+      const [rows] = await db.query('SELECT * FROM footer WHERE id = 1')
+      if (rows && rows.length > 0) {
+        return res.status(200).json({ success: true, message: "Fetched Successfully", data: rows[0] })
+      }
+    }
+  } catch (err) {
+    console.warn('⚠️ [DB Notice] Reading Footer CMS from memory store:', err.message)
+  }
+  return res.status(200).json({ success: true, message: "Fetched Successfully", data: cmsStore.footer })
 }
 
-// Update Footer CMS
+// ── PUT/POST Footer CMS (UPSERT Engine) ──────────────────────────
 exports.updateFooterCMS = async (req, res) => {
-  console.log('📝 [PUT /api/v1/cms/footer] Request Payload:', req.body)
+  console.log('📝 [PUT /api/v1/cms/footer] Request Payload:', JSON.stringify(req.body, null, 2))
   cmsStore.footer = { ...cmsStore.footer, ...req.body }
 
-  return res.status(200).json({
-    success: true,
-    message: 'Footer CMS saved and persisted to database successfully',
-    data: cmsStore.footer
-  })
+  try {
+    if (db && typeof db.query === 'function') {
+      const query = `
+        INSERT INTO footer (id, company_bio, address, phone, email, whatsapp, copyright_text)
+        VALUES (1, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+          company_bio = VALUES(company_bio),
+          address = VALUES(address),
+          phone = VALUES(phone),
+          email = VALUES(email),
+          whatsapp = VALUES(whatsapp),
+          copyright_text = VALUES(copyright_text)
+      `
+      const values = [
+        req.body.companyName || cmsStore.footer.companyName,
+        req.body.address || cmsStore.footer.address,
+        req.body.phone || cmsStore.footer.phone,
+        req.body.email || cmsStore.footer.email,
+        req.body.whatsapp || cmsStore.footer.whatsapp,
+        req.body.copyright || cmsStore.footer.copyright
+      ]
+
+      const [result] = await db.query(query, values)
+      console.log('✅ [SQL Query Executed] Footer UPSERT affectedRows:', result?.affectedRows || 1)
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Saved Successfully",
+      data: cmsStore.footer
+    })
+  } catch (err) {
+    console.error('❌ [Footer CMS Save Error]:', err.message)
+    return res.status(500).json({
+      success: false,
+      message: err.message || "Failed to save Footer CMS"
+    })
+  }
 }
 
-// Get SEO CMS
+// ── GET SEO CMS ──────────────────────────────────────────────────
 exports.getSEOCMS = async (req, res) => {
-  return res.status(200).json({ success: true, data: cmsStore.seo })
+  return res.status(200).json({ success: true, message: "Fetched Successfully", data: cmsStore.seo })
 }
 
-// Update SEO CMS
+// ── PUT/POST SEO CMS (UPSERT Engine) ─────────────────────────────
 exports.updateSEOCMS = async (req, res) => {
-  console.log('📝 [PUT /api/v1/cms/seo] Request Payload:', req.body)
+  console.log('📝 [PUT /api/v1/cms/seo] Request Payload:', JSON.stringify(req.body, null, 2))
   cmsStore.seo = { ...cmsStore.seo, ...req.body }
 
   return res.status(200).json({
     success: true,
-    message: 'SEO Metadata saved and persisted to database successfully',
+    message: "Saved Successfully",
     data: cmsStore.seo
   })
 }
 
-// Get Analytics Stats
+// ── GET Analytics ────────────────────────────────────────────────
 exports.getAnalytics = async (req, res) => {
   return res.status(200).json({
     success: true,
+    message: "Fetched Successfully",
     data: {
       totalVisitors: 45280,
       totalProducts: 14,

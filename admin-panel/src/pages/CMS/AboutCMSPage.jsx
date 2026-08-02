@@ -23,8 +23,8 @@ export default function AboutCMSPage() {
     const fetchAbout = async () => {
       try {
         const res = await adminService.getAboutCMS();
-        if (res && res.data && res.data.data) {
-          setAbout(prev => ({ ...prev, ...res.data.data }));
+        if (res && res.data) {
+          setAbout(prev => ({ ...prev, ...res.data }));
         }
       } catch (err) {
         console.warn('Initial About CMS load notice:', err.message);
@@ -40,15 +40,15 @@ export default function AboutCMSPage() {
 
     try {
       const res = await adminService.updateAboutCMS(about);
-      if (res && (res.data?.success || res.status === 200)) {
+      if (res && (res.success === true || res.data)) {
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
       } else {
-        throw new Error(res.data?.message || 'Failed to save About CMS');
+        throw new Error(res?.message || 'Failed to save About CMS');
       }
     } catch (err) {
       console.error('❌ Error saving About CMS:', err);
-      setError(err.message || 'Error saving changes to database');
+      setError(err.message || err.data?.message || 'Error saving changes to database');
     } finally {
       setLoading(false);
     }
@@ -62,7 +62,7 @@ export default function AboutCMSPage() {
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Manage Vision, Mission, Story, Director's Message & Factory Plant Metrics</p>
         </div>
         <button onClick={handleSave} disabled={loading} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          {loading ? 'Saving to Database...' : saved ? <><FiCheck /> Saved to Database!</> : <><FiSave /> Save Changes</>}
+          {loading ? 'Saving to Database...' : saved ? <><FiCheck /> Saved Successfully</> : <><FiSave /> Save Changes</>}
         </button>
       </div>
 

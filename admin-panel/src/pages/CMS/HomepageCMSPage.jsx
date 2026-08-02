@@ -21,18 +21,9 @@ export default function HomepageCMSPage() {
       { label: "Network Uptime", value: "99.8%" }
     ],
     sectionVisibility: {
-      hero: true,
-      intro: true,
-      products: true,
-      manufacturing: true,
-      services: true,
-      whyChooseUs: true,
-      counter: true,
-      industries: true,
-      gallery: true,
-      blogs: true,
-      faq: true,
-      contactCta: true
+      hero: true, intro: true, products: true, manufacturing: true,
+      services: true, whyChooseUs: true, counter: true, industries: true,
+      gallery: true, blogs: true, faq: true, contactCta: true
     }
   });
 
@@ -40,8 +31,8 @@ export default function HomepageCMSPage() {
     const fetchCMS = async () => {
       try {
         const res = await adminService.getHomepageCMS();
-        if (res && res.data && res.data.data) {
-          setCms(prev => ({ ...prev, ...res.data.data }));
+        if (res && res.data) {
+          setCms(prev => ({ ...prev, ...res.data }));
         }
       } catch (err) {
         console.warn('Initial CMS load notice:', err.message);
@@ -57,15 +48,15 @@ export default function HomepageCMSPage() {
 
     try {
       const res = await adminService.updateHomepageCMS(cms);
-      if (res && (res.data?.success || res.status === 200)) {
+      if (res && (res.success === true || res.data)) {
         setSaved(true);
         setTimeout(() => setSaved(false), 3000);
       } else {
-        throw new Error(res.data?.message || 'Failed to save Homepage CMS');
+        throw new Error(res?.message || 'Failed to save Homepage CMS');
       }
     } catch (err) {
       console.error('❌ Error saving Homepage CMS:', err);
-      setError(err.message || 'Error saving changes to database');
+      setError(err.message || err.data?.message || 'Error saving changes to database');
     } finally {
       setLoading(false);
     }
@@ -89,7 +80,7 @@ export default function HomepageCMSPage() {
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Manage Hero Banners, Videos, CTA Buttons, Stats Counters & Section Visibility</p>
         </div>
         <button onClick={handleSave} disabled={loading} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          {loading ? 'Saving to Database...' : saved ? <><FiCheck /> Saved to Database!</> : <><FiSave /> Save Changes</>}
+          {loading ? 'Saving to Database...' : saved ? <><FiCheck /> Saved Successfully</> : <><FiSave /> Save Changes</>}
         </button>
       </div>
 
