@@ -7,6 +7,7 @@ require('dotenv').config()
 
 // ── Whitelist of Allowed Production & Development Origins ──────────
 const defaultAllowedOrigins = [
+  'https://admin.ecomargin.in',
   'https://ecomargin.in',
   'https://www.ecomargin.in',
   'https://eco-margin-frontend.vercel.app',
@@ -52,10 +53,10 @@ const corsOptions = {
 
     if (allowedOrigins.includes(normalizedOrigin) || process.env.NODE_ENV === 'development') {
       return callback(null, true)
+    } else {
+      console.warn(`⚠️ [CORS Blocked Origin]: ${origin}`)
+      return callback(new Error('Not allowed by CORS'))
     }
-
-    console.warn(`⚠️ [CORS Blocked Origin]: ${origin}`)
-    return callback(null, false)
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -71,7 +72,7 @@ const corsOptions = {
     'Access-Control-Allow-Request-Headers'
   ],
   exposedHeaders: ['Authorization', 'Content-Range', 'X-Content-Range'],
-  optionsSuccessStatus: 204 // 204 No Content for preflight OPTIONS checks
+  optionsSuccessStatus: 200 // 200 OK for preflight OPTIONS checks
 }
 
 module.exports = {
