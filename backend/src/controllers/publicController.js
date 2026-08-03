@@ -129,26 +129,20 @@ exports.getPublicServices = async (req, res) => {
 
 // Public GET Technical Downloads
 exports.getPublicDownloads = async (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
   try {
-    if (db && typeof db.query === 'function') {
-      const [rows] = await db.query('SELECT * FROM downloads ORDER BY id DESC')
-      if (rows && rows.length > 0) {
-        return res.status(200).json({ success: true, data: rows })
-      }
-    }
+    const { Download } = require('../models')
+    const rows = await Download.findAll({
+      where: { status: 'Active' },
+      order: [['displayOrder', 'ASC'], ['id', 'DESC']]
+    })
+    return res.status(200).json({ success: true, data: rows })
   } catch (err) {
-    console.warn('⚠️ [DB Notice] Serving default downloads data:', err.message)
+    console.error('❌ [Public Downloads Fetch Error]:', err.message)
+    return res.status(500).json({ success: false, message: err.message })
   }
-
-  res.status(200).json({
-    success: true,
-    data: [
-      { id: 1, name: 'EcoWall 7.4kW AC Single Phase Charger Specification Sheet', category: 'Technical Datasheet', size: '1.2 MB', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/7.4kW-AC.pdf' },
-      { id: 2, name: 'ARAI Test Compliance Certificate (AIS 138 Part 1 & 2)', category: 'Certificates', size: '2.1 MB', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/certs/arai-ais138.pdf' },
-      { id: 3, name: 'ISO 9001:2015 Quality Management System Certificate', category: 'Certificates', size: '1.4 MB', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/certs/iso9001.pdf' }
-    ]
-  })
 }
+
 
 // Public POST RFQ Enquiry Submission
 exports.submitRFQEnquiry = async (req, res) => {

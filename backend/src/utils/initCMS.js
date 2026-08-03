@@ -2,7 +2,7 @@
 // src/utils/initCMS.js
 'use strict'
 
-const { Homepage, About, Manufacturing, Footer, SEO } = require('../models')
+const { Homepage, About, Manufacturing, Footer, SEO, Download } = require('../models')
 const logger = require('../config/logger')
 
 const defaultHomepage = {
@@ -98,6 +98,16 @@ const defaultSEO = {
 }`
 }
 
+const defaultDownloads = [
+  { name: 'EcoWall 7.4kW AC Single Phase Charger Specification Sheet', category: 'Technical Datasheet', fileSize: '1.2 MB', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/7.4kW-AC.pdf', displayOrder: 1, status: 'Active' },
+  { name: 'EcoWall 22kW Dual Gun AC Charger Spec & CAD Drawing', category: 'Technical Datasheet', fileSize: '1.8 MB', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/22kW-AC.pdf', displayOrder: 2, status: 'Active' },
+  { name: 'EcoCharge 30kW DC Fast Charger Technical Manual', category: 'Technical Datasheet', fileSize: '2.5 MB', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/30kW-DC.pdf', displayOrder: 3, status: 'Active' },
+  { name: 'EcoCharge 60kW Dual CCS2 DC Charger Brochure', category: 'Technical Datasheet', fileSize: '3.1 MB', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/60kW-DC.pdf', displayOrder: 4, status: 'Active' },
+  { name: 'ARAI Test Compliance Certificate (AIS 138 Part 1 & 2)', category: 'Certificates', fileSize: '2.1 MB', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/certs/arai-ais138.pdf', displayOrder: 5, status: 'Active' },
+  { name: 'ISO 9001:2015 Quality Management System Certificate', category: 'Certificates', fileSize: '1.4 MB', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/certs/iso9001.pdf', displayOrder: 6, status: 'Active' },
+  { name: 'CE Mark Electrical Safety Test Declaration', category: 'Certificates', fileSize: '1.1 MB', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/certs/ce-mark.pdf', displayOrder: 7, status: 'Active' }
+]
+
 /**
  * Initializes default CMS content ONLY IF tables are completely empty.
  * If any record already exists, it is left untouched.
@@ -142,6 +152,14 @@ async function initCMSDefaults() {
       logger.info('🌱 Created default SEO CMS record (table was empty)')
     } else {
       logger.info('🔒 SEO CMS data exists in database. Skipped default seeding.')
+    }
+
+    const downloadCount = await Download.count()
+    if (downloadCount === 0) {
+      await Download.bulkCreate(defaultDownloads)
+      logger.info('🌱 Created default Downloads CMS records (table was empty)')
+    } else {
+      logger.info('🔒 Downloads CMS data exists in database. Skipped default seeding.')
     }
   } catch (error) {
     logger.error('❌ Error initializing CMS defaults:', error)

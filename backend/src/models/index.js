@@ -12,6 +12,7 @@ const About = require('./About')
 const Manufacturing = require('./Manufacturing')
 const Footer = require('./Footer')
 const SEO = require('./SEO')
+const Download = require('./Download')
 
 module.exports = {
   User,
@@ -24,4 +25,5 @@ module.exports = {
   Manufacturing,
   Footer,
   SEO,
+  Download,
 }

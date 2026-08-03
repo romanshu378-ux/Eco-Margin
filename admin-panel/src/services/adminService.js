@@ -38,9 +38,14 @@ export const adminService = {
   updateProduct: (id, data) => api.put(`/admin/products/${id}`, data),
   deleteProduct: (id) => api.delete(`/admin/products/${id}`),
 
-  // Downloads Mutations
+  // Downloads Mutations & Reads
+  getDownloads: () => api.get('/admin/downloads'),
   createDownload: (data) => api.post('/admin/downloads', data),
+  updateDownload: (id, data) => api.put(`/admin/downloads/${id}`, data),
   deleteDownload: (id) => api.delete(`/admin/downloads/${id}`),
+  uploadPdf: (formData) => api.post('/media/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
 };
 
 export default adminService;

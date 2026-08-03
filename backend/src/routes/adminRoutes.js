@@ -60,8 +60,8 @@ router.get('/gallery', (req, res) => paginateResponse(res, [], req.query.page, r
 router.get('/projects', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
 router.get('/contact', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
 router.get('/newsletter', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
-router.get('/settings', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
-router.get('/seo', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
-router.get('/media', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
+const downloadsRoutes = require('./downloadsRoutes')
+
+router.use('/downloads', downloadsRoutes)
 
 module.exports = router
