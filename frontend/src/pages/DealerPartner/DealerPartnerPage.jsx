@@ -135,9 +135,9 @@ export default function DealerPartnerPage() {
                       />
                     </div>
                     <div>
-                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Company Name *</label>
+                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Company Name</label>
                       <input
-                        type="text" required value={formData.company}
+                        type="text" value={formData.company}
                         onChange={e => setFormData({ ...formData, company: e.target.value })}
                         placeholder="e.g. Apex Electricals"
                         style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none', fontSize: '0.875rem' }}

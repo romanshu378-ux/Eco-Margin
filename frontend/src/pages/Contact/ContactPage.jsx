@@ -228,9 +228,9 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Company / Organization *</label>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Company / Organization</label>
                   <input
-                    type="text" required value={formData.company}
+                    type="text" value={formData.company}
                     onChange={e => setFormData({ ...formData, company: e.target.value })}
                     placeholder="e.g. National Logistics Ltd."
                     style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none' }}

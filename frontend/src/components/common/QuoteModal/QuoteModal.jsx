@@ -146,10 +146,9 @@ export default function QuoteModal({ isOpen, onClose, defaultProduct = '' }) {
                     />
                   </div>
                   <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Company / Business *</label>
+                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Company / Business</label>
                     <input
                       type="text"
-                      required
                       value={formData.company}
                       onChange={e => setFormData({ ...formData, company: e.target.value })}
                       placeholder="e.g. Metro Infra Ltd"
