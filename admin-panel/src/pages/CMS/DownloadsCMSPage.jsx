@@ -2,7 +2,7 @@
 // src/pages/CMS/DownloadsCMSPage.jsx
 
 import React, { useState, useEffect } from 'react';
-import { FiPlus, FiTrash2, FiEdit2, FiFileText, FiCheck, FiRefreshCw, FiAlertCircle } from 'react-icons/fi';
+import { FiPlus, FiTrash2, FiEdit2, FiFileText, FiCheck, FiRefreshCw, FiAlertCircle, FiImage } from 'react-icons/fi';
 import downloadsService from '../../services/downloadsService';
 import DownloadForm from '../../components/CMS/DownloadForm';
 
@@ -50,8 +50,8 @@ export default function DownloadsCMSPage() {
     setShowModal(true);
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this document?')) return;
+  const handleDelete = async (id, docName) => {
+    if (!window.confirm(`Are you sure you want to delete "${docName || 'this document'}" permanently?`)) return;
 
     try {
       await downloadsService.deleteDownload(id);
@@ -79,7 +79,7 @@ export default function DownloadsCMSPage() {
     <div style={{ padding: '1.5rem' }}>
       
       {/* Top Action Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>Downloads & Certificates CMS</h1>
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Manage Technical Datasheets, CAD Drawings, ARAI, ISO & CE Certificates</p>
@@ -122,6 +122,7 @@ export default function DownloadsCMSPage() {
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.875rem' }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)' }}>
+                <th style={{ padding: '0.75rem 1rem' }}>Icon</th>
                 <th style={{ padding: '0.75rem 1rem' }}>Document Name</th>
                 <th style={{ padding: '0.75rem 1rem' }}>Category</th>
                 <th style={{ padding: '0.75rem 1rem' }}>File Size</th>
@@ -132,40 +133,58 @@ export default function DownloadsCMSPage() {
               </tr>
             </thead>
             <tbody>
-              {downloads.map((item) => (
-                <tr key={item.id} style={{ borderBottom: '1px solid var(--border)' }}>
-                  <td style={{ padding: '1rem', fontWeight: 600 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <FiFileText style={{ color: 'var(--primary)' }} /> {item.name}
-                    </div>
-                  </td>
-                  <td style={{ padding: '1rem' }}>
-                    <span style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--primary)', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
-                      {item.category}
-                    </span>
-                  </td>
-                  <td style={{ padding: '1rem', color: 'var(--text-muted)' }}>{item.fileSize || item.file_size || 'N/A'}</td>
-                  <td style={{ padding: '1rem', color: 'var(--text-muted)' }}>{item.displayOrder ?? item.display_order ?? 0}</td>
-                  <td style={{ padding: '1rem' }}>
-                    <span style={{ padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, background: item.status === 'Active' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: item.status === 'Active' ? 'var(--primary)' : 'var(--danger)' }}>
-                      {item.status || 'Active'}
-                    </span>
-                  </td>
-                  <td style={{ padding: '1rem', color: 'var(--text-muted)', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                    <a href={item.fileUrl || item.file_url} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'underline' }}>View PDF</a>
-                  </td>
-                  <td style={{ padding: '1rem', textAlign: 'right' }}>
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                      <button onClick={() => handleOpenEdit(item)} className="btn btn-outline" style={{ padding: '0.4rem', color: 'var(--primary)' }} title="Edit Document">
-                        <FiEdit2 />
-                      </button>
-                      <button onClick={() => handleDelete(item.id)} className="btn btn-outline" style={{ padding: '0.4rem', color: 'var(--danger)' }} title="Delete Document">
-                        <FiTrash2 />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {downloads.map((item) => {
+                const docName = item.name || item.title;
+                const pdfUrl = item.fileUrl || item.file_url || item.pdfUrl;
+                const iconUrl = item.iconUrl || item.icon_url;
+
+                return (
+                  <tr key={item.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                    <td style={{ padding: '1rem' }}>
+                      {iconUrl ? (
+                        <img src={iconUrl} alt="Logo" style={{ width: '32px', height: '32px', objectFit: 'contain', borderRadius: '4px', background: '#fff', padding: '2px', border: '1px solid var(--border)' }} />
+                      ) : (
+                        <div style={{ width: '32px', height: '32px', borderRadius: '4px', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                          <FiFileText />
+                        </div>
+                      )}
+                    </td>
+                    <td style={{ padding: '1rem', fontWeight: 600 }}>
+                      <div>{docName}</div>
+                      {item.description && <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 400 }}>{item.description}</div>}
+                    </td>
+                    <td style={{ padding: '1rem' }}>
+                      <span style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--primary)', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
+                        {item.category}
+                      </span>
+                    </td>
+                    <td style={{ padding: '1rem', color: 'var(--text-muted)' }}>{item.fileSize || item.file_size || 'N/A'}</td>
+                    <td style={{ padding: '1rem', color: 'var(--text-muted)' }}>{item.displayOrder ?? item.display_order ?? 0}</td>
+                    <td style={{ padding: '1rem' }}>
+                      <span style={{ padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, background: item.status === 'Active' ? 'rgba(16, 185, 129, 0.15)' : 'rgba(239, 68, 68, 0.15)', color: item.status === 'Active' ? 'var(--primary)' : 'var(--danger)' }}>
+                        {item.status || 'Active'}
+                      </span>
+                    </td>
+                    <td style={{ padding: '1rem', color: 'var(--text-muted)', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                      {pdfUrl ? (
+                        <a href={pdfUrl} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--primary)', textDecoration: 'underline' }}>View PDF</a>
+                      ) : (
+                        <span style={{ color: 'var(--danger)' }}>No PDF</span>
+                      )}
+                    </td>
+                    <td style={{ padding: '1rem', textAlign: 'right' }}>
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                        <button onClick={() => handleOpenEdit(item)} className="btn btn-outline" style={{ padding: '0.4rem', color: 'var(--primary)' }} title="Edit Document">
+                          <FiEdit2 />
+                        </button>
+                        <button onClick={() => handleDelete(item.id, docName)} className="btn btn-outline" style={{ padding: '0.4rem', color: 'var(--danger)' }} title="Delete Document">
+                          <FiTrash2 />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         )}

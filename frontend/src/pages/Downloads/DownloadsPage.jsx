@@ -1,64 +1,65 @@
-// EcoMargin Frontend — Dynamic Technical Downloads Page
+// EcoMargin Frontend — Dynamic Technical Downloads & Certificates Page
 // src/pages/Downloads/DownloadsPage.jsx
-import React, { useState, useEffect } from 'react'
+
+import React, { useState, useEffect, useMemo } from 'react'
 import SEO from '@seo/SEO'
 import PageHeader from '@components/common/PageHeader/PageHeader'
 import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer } from '@animations/variants'
-import { FiDownload, FiFileText } from 'react-icons/fi'
+import { FiDownload, FiFileText, FiAlertCircle, FiFolder, FiCheckCircle } from 'react-icons/fi'
 import publicApi from '../../services/publicApi'
 
-const fallbackDownloadsList = [
-  {
-    category: 'Product Technical Datasheets (PDF)',
-    files: [
-      { name: 'EcoWall 7.4kW AC Single Phase Charger Specification Sheet', size: '1.2 MB', type: 'PDF', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/7.4kW-AC.pdf' },
-      { name: 'EcoWall 22kW Dual Gun AC Charger Spec & CAD Drawing', size: '1.8 MB', type: 'PDF', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/22kW-AC.pdf' },
-      { name: 'EcoCharge 30kW DC Fast Charger Technical Manual', size: '2.5 MB', type: 'PDF', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/30kW-DC.pdf' },
-      { name: 'EcoCharge 60kW Dual CCS2 DC Charger Brochure & Wiring Diagram', size: '3.1 MB', type: 'PDF', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/60kW-DC.pdf' },
-      { name: 'EcoCharge 120kW / 160kW Ultra-Fast DC Station Specification', size: '4.2 MB', type: 'PDF', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/120kW-DC.pdf' },
-      { name: 'EcoCharge 240kW Heavy Duty Bus & Truck Charger Spec Sheet', size: '4.8 MB', type: 'PDF', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/240kW-DC.pdf' }
-    ]
-  },
-  {
-    category: 'Certifications & Compliance Reports',
-    files: [
-      { name: 'ARAI Test Compliance Certificate (AIS 138 Part 1 & 2)', size: '2.1 MB', type: 'PDF', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/certs/arai-ais138.pdf' },
-      { name: 'ISO 9001:2015 Quality Management System Certificate', size: '1.4 MB', type: 'PDF', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/certs/iso9001.pdf' },
-      { name: 'CE Mark Electrical Safety Test Declaration', size: '1.1 MB', type: 'PDF', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/certs/ce-mark.pdf' },
-      { name: 'IP55 / IP65 Weatherproof & Ingress Protection Test Report', size: '2.9 MB', type: 'PDF', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/certs/ip65-report.pdf' }
-    ]
-  }
-]
-
 export default function DownloadsPage() {
-  const [downloadsList, setDownloadsList] = useState(fallbackDownloadsList)
+  const [downloads, setDownloads] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  const fetchDownloads = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      // Pass cache-busting timestamp parameter to prevent stale browser caching
+      const res = await publicApi.getDownloads()
+      let rawData = []
+      if (res && res.data && Array.isArray(res.data)) {
+        rawData = res.data
+      } else if (Array.isArray(res)) {
+        rawData = res
+      }
+
+      // Filter ONLY Active status records
+      const activeRecords = rawData.filter(d => (d.status === 'Active' || !d.status))
+      setDownloads(activeRecords)
+    } catch (err) {
+      console.error('❌ Error fetching public downloads:', err)
+      setError(err.message || 'Failed to load downloads from database.')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
-    const fetchDownloads = async () => {
-      try {
-        const res = await publicApi.getDownloads()
-        if (res && res.data && Array.isArray(res.data) && res.data.length > 0) {
-          const liveFiles = res.data.map(d => ({
-            name: d.name,
-            size: d.size || d.file_size || '1.5 MB',
-            type: 'PDF',
-            fileUrl: d.fileUrl || d.file_url || '#'
-          }))
-
-          setDownloadsList([
-            {
-              category: 'Live Technical Datasheets & Compliance Certificates',
-              files: liveFiles
-            }
-          ])
-        }
-      } catch (err) {
-        console.warn('Downloads live fetch notice:', err.message)
-      }
-    }
     fetchDownloads()
   }, [])
+
+  // Group active download records by category
+  const groupedDownloads = useMemo(() => {
+    if (!downloads || downloads.length === 0) return []
+
+    const groups = {}
+    downloads.forEach(item => {
+      const cat = item.category || 'General Downloads'
+      if (!groups[cat]) {
+        groups[cat] = []
+      }
+      groups[cat].push(item)
+    })
+
+    return Object.keys(groups).map(catName => ({
+      category: catName,
+      files: groups[catName]
+    }))
+  }, [downloads])
 
   return (
     <>
@@ -74,68 +75,117 @@ export default function DownloadsPage() {
 
       <div className="container" style={{ padding: '5rem 0' }}>
         
-        {downloadsList.map((section, idx) => (
+        {/* Loading Indicator */}
+        {loading && (
+          <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--color-primary)' }}>
+            <div style={{ width: '44px', height: '44px', borderRadius: '50%', border: '3px solid var(--color-border)', borderTopColor: 'var(--color-primary)', animation: 'spin 1s linear infinite', margin: '0 auto 1rem auto' }}></div>
+            <span style={{ fontSize: '1rem', fontWeight: 500 }}>Fetching live datasheets and certificates from database...</span>
+            <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+          </div>
+        )}
+
+        {/* Error Alert */}
+        {error && (
+          <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid #ef4444', padding: '1rem 1.5rem', borderRadius: 'var(--radius-md)', marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <FiAlertCircle style={{ fontSize: '1.25rem' }} /> Notice: {error}
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && !error && downloads.length === 0 && (
+          <div style={{ textAlignment: 'center', textAlign: 'center', padding: '4rem 1rem', background: 'var(--color-bg-card)', border: '1px border var(--color-border)', borderRadius: 'var(--radius-xl)' }}>
+            <FiFolder style={{ fontSize: '3rem', color: 'var(--color-text-muted)', marginBottom: '1rem', opacity: 0.5 }} />
+            <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>No Technical Downloads Available</h3>
+            <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
+              Check back soon for updated ARAI certificates and charger datasheets.
+            </p>
+          </div>
+        )}
+
+        {/* Dynamic Category Sections */}
+        {!loading && groupedDownloads.map((section, idx) => (
           <div key={idx} style={{ marginBottom: '4rem' }}>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', fontFamily: 'Outfit, sans-serif', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.75rem', color: 'var(--color-primary)' }}>
-              {section.category}
+            <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', fontFamily: 'Outfit, sans-serif', borderBottom: '1px solid var(--color-border)', paddingBottom: '0.75rem', color: 'var(--color-primary)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <FiCheckCircle style={{ fontSize: '1.25rem' }} /> {section.category}
             </h2>
 
             <motion.div 
               variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}
               style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}
             >
-              {section.files.map((file, fIdx) => (
-                <motion.div
-                  key={fIdx}
-                  variants={fadeUp}
-                  style={{
-                    background: 'var(--color-bg-card)',
-                    border: '1px solid var(--color-border)',
-                    borderRadius: 'var(--radius-lg)',
-                    padding: '1.5rem',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                    boxShadow: 'var(--shadow-sm)'
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{ fontSize: '1.75rem', color: 'var(--color-primary)', background: 'rgba(16, 185, 129, 0.1)', padding: '0.75rem', borderRadius: 'var(--radius-md)' }}>
-                      <FiFileText />
-                    </div>
-                    <div>
-                      <div style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.25rem' }}>{file.name}</div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>{file.type} • {file.size}</div>
-                    </div>
-                  </div>
+              {section.files.map((file) => {
+                const docName = file.name || file.title || 'Technical Document'
+                const pdfUrl = file.fileUrl || file.file_url || file.pdfUrl || '#'
+                const iconUrl = file.iconUrl || file.icon_url
+                const sizeStr = file.fileSize || file.file_size || 'PDF'
 
-                  <a 
-                    href={file.fileUrl || '#'} 
-                    target="_blank" 
-                    rel="noopener noreferrer"
-                    onClick={(e) => {
-                      if (!file.fileUrl || file.fileUrl === '#') {
-                        e.preventDefault()
-                        alert(`Downloading ${file.name}...`)
-                      }
-                    }}
+                return (
+                  <motion.div
+                    key={file.id}
+                    variants={fadeUp}
                     style={{
-                      background: 'var(--color-primary)',
-                      color: '#0f0f1a',
-                      padding: '0.5rem 1rem',
-                      borderRadius: 'var(--radius-md)',
-                      fontWeight: 600,
-                      fontSize: '0.85rem',
-                      display: 'inline-flex',
+                      background: 'var(--color-bg-card)',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: 'var(--radius-lg)',
+                      padding: '1.5rem',
+                      display: 'flex',
                       alignItems: 'center',
-                      gap: '0.35rem',
-                      textDecoration: 'none'
+                      justifyContent: 'space-between',
+                      boxShadow: 'var(--shadow-sm)',
+                      gap: '1rem'
                     }}
                   >
-                    <FiDownload /> Download
-                  </a>
-                </motion.div>
-              ))}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flex: 1, overflow: 'hidden' }}>
+                      {/* Logo / Icon image or fallback SVG */}
+                      {iconUrl ? (
+                        <div style={{ width: '48px', height: '48px', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', background: '#ffffff', padding: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                          <img src={iconUrl} alt="Logo" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                        </div>
+                      ) : (
+                        <div style={{ fontSize: '1.75rem', color: 'var(--color-primary)', background: 'rgba(16, 185, 129, 0.1)', padding: '0.75rem', borderRadius: 'var(--radius-md)', flexShrink: 0 }}>
+                          <FiFileText />
+                        </div>
+                      )}
+
+                      <div style={{ flex: 1, overflow: 'hidden' }}>
+                        <div style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '0.25rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }} title={docName}>
+                          {docName}
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
+                          {file.category} • {sizeStr}
+                        </div>
+                        {file.description && (
+                          <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)', marginTop: '0.2rem', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                            {file.description}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Download Button */}
+                    <a 
+                      href={pdfUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      style={{
+                        background: 'var(--color-primary)',
+                        color: '#0f0f1a',
+                        padding: '0.55rem 1.1rem',
+                        borderRadius: 'var(--radius-md)',
+                        fontWeight: 700,
+                        fontSize: '0.85rem',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.35rem',
+                        textDecoration: 'none',
+                        flexShrink: 0
+                      }}
+                    >
+                      <FiDownload /> Download
+                    </a>
+                  </motion.div>
+                )
+              })}
             </motion.div>
           </div>
         ))}

@@ -2,8 +2,9 @@
 // src/components/CMS/DownloadForm.jsx
 
 import React, { useState, useEffect } from 'react';
-import { FiX, FiUploadCloud, FiSave, FiPlus, FiAlertCircle } from 'react-icons/fi';
+import { FiX, FiUploadCloud, FiSave, FiPlus, FiAlertCircle, FiImage, FiFileText } from 'react-icons/fi';
 import downloadsService from '../../services/downloadsService';
+import adminService from '../../services/adminService';
 
 export default function DownloadForm({ initialData, onClose, onSuccess }) {
   const isEditing = Boolean(initialData && initialData.id);
@@ -11,23 +12,28 @@ export default function DownloadForm({ initialData, onClose, onSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
     category: 'Technical Datasheet',
+    description: '',
     fileSize: '1.5 MB',
     fileUrl: '',
+    iconUrl: '',
     displayOrder: 0,
     status: 'Active'
   });
 
-  const [uploading, setUploading] = useState(false);
+  const [pdfUploading, setPdfUploading] = useState(false);
+  const [iconUploading, setIconUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     if (initialData) {
       setFormData({
-        name: initialData.name || '',
+        name: initialData.name || initialData.title || '',
         category: initialData.category || 'Technical Datasheet',
+        description: initialData.description || '',
         fileSize: initialData.fileSize || initialData.file_size || '1.5 MB',
-        fileUrl: initialData.fileUrl || initialData.file_url || '',
+        fileUrl: initialData.fileUrl || initialData.file_url || initialData.pdfUrl || '',
+        iconUrl: initialData.iconUrl || initialData.icon_url || '',
         displayOrder: initialData.displayOrder ?? initialData.display_order ?? 0,
         status: initialData.status || 'Active'
       });
@@ -39,7 +45,8 @@ export default function DownloadForm({ initialData, onClose, onSuccess }) {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleFileUpload = async (e) => {
+  // Upload PDF File to Cloudinary
+  const handlePdfUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -48,7 +55,7 @@ export default function DownloadForm({ initialData, onClose, onSuccess }) {
       return;
     }
 
-    setUploading(true);
+    setPdfUploading(true);
     setError(null);
 
     const sizeInMB = (file.size / (1024 * 1024)).toFixed(1) + ' MB';
@@ -73,7 +80,44 @@ export default function DownloadForm({ initialData, onClose, onSuccess }) {
       console.error('❌ Error uploading PDF to Cloudinary:', err);
       setError(err.message || 'Failed to upload PDF file to Cloudinary');
     } finally {
-      setUploading(false);
+      setPdfUploading(false);
+    }
+  };
+
+  // Upload Logo/Icon (Image) to Cloudinary
+  const handleIconUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/svg+xml', 'image/webp'];
+    if (!allowedTypes.includes(file.type) && !file.name.match(/\.(jpg|jpeg|png|svg|webp)$/i)) {
+      setError('Please select a valid image file (JPG, PNG, SVG, or WEBP).');
+      return;
+    }
+
+    setIconUploading(true);
+    setError(null);
+
+    try {
+      const data = new FormData();
+      data.append('image', file);
+
+      const res = await adminService.uploadMedia(data);
+      const uploadedUrl = res?.data?.url || res?.url || res?.data?.secure_url;
+
+      if (uploadedUrl) {
+        setFormData(prev => ({
+          ...prev,
+          iconUrl: uploadedUrl
+        }));
+      } else {
+        throw new Error('Upload succeeded but no image URL was returned.');
+      }
+    } catch (err) {
+      console.error('❌ Error uploading icon image to Cloudinary:', err);
+      setError(err.message || 'Failed to upload icon image to Cloudinary');
+    } finally {
+      setIconUploading(false);
     }
   };
 
@@ -82,7 +126,7 @@ export default function DownloadForm({ initialData, onClose, onSuccess }) {
     setError(null);
 
     if (!formData.name.trim()) {
-      setError('Document Name is required.');
+      setError('Document Title / Name is required.');
       return;
     }
     if (!formData.fileUrl.trim()) {
@@ -107,12 +151,12 @@ export default function DownloadForm({ initialData, onClose, onSuccess }) {
   };
 
   return (
-    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.7)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-      <div className="card" style={{ width: '100%', maxWidth: '550px', padding: '2rem', maxHeight: '90vh', overflowY: 'auto' }}>
+    <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.75)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
+      <div className="card" style={{ width: '100%', maxWidth: '600px', padding: '2rem', maxHeight: '90vh', overflowY: 'auto' }}>
         
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h3 style={{ fontSize: '1.25rem', fontWeight: 700, margin: 0 }}>
-            {isEditing ? 'Edit Datasheet / Certificate' : 'Add Datasheet / Certificate'}
+            {isEditing ? 'Edit Technical Datasheet / Certificate' : 'Add Technical Datasheet / Certificate'}
           </h3>
           <button type="button" onClick={onClose} className="btn btn-outline" style={{ border: 'none', padding: '0.4rem' }}>
             <FiX size={20} />
@@ -127,8 +171,9 @@ export default function DownloadForm({ initialData, onClose, onSuccess }) {
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           
+          {/* Title */}
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Document Name *</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Document Title / Name *</label>
             <input
               type="text"
               name="name"
@@ -140,6 +185,7 @@ export default function DownloadForm({ initialData, onClose, onSuccess }) {
             />
           </div>
 
+          {/* Category & File Size */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Category *</label>
@@ -164,28 +210,83 @@ export default function DownloadForm({ initialData, onClose, onSuccess }) {
             </div>
           </div>
 
+          {/* Description */}
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Upload PDF to Cloudinary</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Short Description</label>
+            <input
+              type="text"
+              name="description"
+              className="input"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder="e.g. Detailed wiring specs and CAD dimensions for 120kW CCS2"
+            />
+          </div>
+
+          {/* Logo / Icon Upload (Cloudinary) */}
+          <div>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>
+              Document Logo / Icon (JPG, PNG, SVG, WEBP)
+            </label>
+            <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+              <div style={{ flex: 1, border: '2px dashed var(--border)', borderRadius: 'var(--radius-md)', padding: '0.85rem', textAlign: 'center', background: 'rgba(255,255,255,0.02)' }}>
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/svg+xml,image/webp"
+                  onChange={handleIconUpload}
+                  style={{ display: 'none' }}
+                  id="icon-upload-input"
+                  disabled={iconUploading}
+                />
+                <label htmlFor="icon-upload-input" style={{ cursor: iconUploading ? 'not-allowed' : 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', color: 'var(--primary)', fontSize: '0.85rem', fontWeight: 600 }}>
+                  <FiImage size={18} />
+                  {iconUploading ? 'Uploading Logo...' : 'Upload Logo / Icon Image'}
+                </label>
+              </div>
+
+              {formData.iconUrl && (
+                <div style={{ width: '48px', height: '48px', borderRadius: '8px', border: '1px solid var(--border)', padding: '4px', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <img src={formData.iconUrl} alt="Icon Preview" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                </div>
+              )}
+            </div>
+            {formData.iconUrl && (
+              <input
+                type="text"
+                name="iconUrl"
+                className="input"
+                value={formData.iconUrl}
+                onChange={handleChange}
+                placeholder="Logo URL"
+                style={{ marginTop: '0.5rem', fontSize: '0.75rem' }}
+              />
+            )}
+          </div>
+
+          {/* PDF File Upload (Cloudinary) */}
+          <div>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Upload PDF Document to Cloudinary *</label>
             <div style={{ border: '2px dashed var(--border)', borderRadius: 'var(--radius-md)', padding: '1rem', textAlign: 'center', background: 'rgba(255,255,255,0.02)' }}>
               <input
                 type="file"
                 accept=".pdf,application/pdf"
-                onChange={handleFileUpload}
+                onChange={handlePdfUpload}
                 style={{ display: 'none' }}
                 id="pdf-upload-input"
-                disabled={uploading}
+                disabled={pdfUploading}
               />
-              <label htmlFor="pdf-upload-input" style={{ cursor: uploading ? 'not-allowed' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)' }}>
+              <label htmlFor="pdf-upload-input" style={{ cursor: pdfUploading ? 'not-allowed' : 'pointer', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem', color: 'var(--primary)' }}>
                 <FiUploadCloud size={24} />
                 <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>
-                  {uploading ? 'Uploading PDF to Cloudinary...' : 'Click to select and upload PDF'}
+                  {pdfUploading ? 'Uploading PDF to Cloudinary...' : 'Click to select and upload PDF file'}
                 </span>
               </label>
             </div>
           </div>
 
+          {/* PDF URL Input */}
           <div>
-            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>PDF File URL (Direct or Cloudinary) *</label>
+            <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>PDF Document URL *</label>
             <input
               type="url"
               name="fileUrl"
@@ -197,6 +298,7 @@ export default function DownloadForm({ initialData, onClose, onSuccess }) {
             />
           </div>
 
+          {/* Display Order & Status */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             <div>
               <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Display Order</label>
@@ -210,20 +312,22 @@ export default function DownloadForm({ initialData, onClose, onSuccess }) {
               />
             </div>
             <div>
-              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Status</label>
+              <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Status *</label>
               <select name="status" className="input" value={formData.status} onChange={handleChange}>
-                <option value="Active">Active</option>
-                <option value="Draft">Draft</option>
+                <option value="Active">Active (Visible on Frontend)</option>
+                <option value="Draft">Draft (Hidden)</option>
+                <option value="Inactive">Inactive</option>
               </select>
             </div>
           </div>
 
+          {/* Actions */}
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
             <button type="button" onClick={onClose} disabled={saving} className="btn btn-outline">
               Cancel
             </button>
-            <button type="submit" disabled={saving || uploading} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              {saving ? 'Saving to Database...' : isEditing ? <><FiSave /> Save Changes</> : <><FiPlus /> Add Document</>}
+            <button type="submit" disabled={saving || pdfUploading || iconUploading} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              {saving ? 'Saving to MySQL Database...' : isEditing ? <><FiSave /> Save Changes</> : <><FiPlus /> Add Document</>}
             </button>
           </div>
 

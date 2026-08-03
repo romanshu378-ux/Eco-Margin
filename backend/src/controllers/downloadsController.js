@@ -3,7 +3,7 @@
 
 'use strict'
 
-const { Download } = require('../models')
+const { Download, ActivityLog } = require('../models')
 
 // Helper for cache headers
 const setNoCache = (res) => {
@@ -12,7 +12,7 @@ const setNoCache = (res) => {
   res.setHeader('Expires', '0')
 }
 
-// GET /api/v1/admin/downloads (Fetch all documents for admin)
+// GET /api/v1/admin/downloads or /api/downloads (Fetch all documents for admin)
 exports.getAllDownloads = async (req, res) => {
   setNoCache(res)
   try {
@@ -29,6 +29,28 @@ exports.getAllDownloads = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: error.message || 'Failed to fetch downloads'
+    })
+  }
+}
+
+// GET /api/v1/public/downloads (Fetch active documents for public website)
+exports.getPublicDownloads = async (req, res) => {
+  setNoCache(res)
+  try {
+    const downloads = await Download.findAll({
+      where: { status: 'Active' },
+      order: [['displayOrder', 'ASC'], ['id', 'DESC']]
+    })
+    return res.status(200).json({
+      success: true,
+      message: 'Active public downloads retrieved successfully',
+      data: downloads
+    })
+  } catch (error) {
+    console.error('❌ [Public Downloads Fetch Error]:', error)
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to fetch public downloads'
     })
   }
 }
@@ -53,23 +75,41 @@ exports.getDownloadById = async (req, res) => {
 // POST /api/v1/admin/downloads (Create new document)
 exports.createDownload = async (req, res) => {
   setNoCache(res)
-  const { name, category, fileSize, fileUrl, displayOrder, status } = req.body
+  const { name, title, category, description, fileSize, fileUrl, pdfUrl, iconUrl, displayOrder, status } = req.body
 
-  if (!name || !fileUrl) {
+  const docTitle = (title || name || '').trim()
+  const docFileUrl = (pdfUrl || fileUrl || '').trim()
+
+  if (!docTitle) {
     return res.status(400).json({
       success: false,
-      message: 'Document Name and PDF File URL are required.'
+      message: 'Document Title / Name is required.'
+    })
+  }
+  if (!docFileUrl) {
+    return res.status(400).json({
+      success: false,
+      message: 'PDF File URL is required.'
     })
   }
 
   try {
     const newDownload = await Download.create({
-      name,
-      category: category || 'Technical Datasheet',
-      fileSize: fileSize || '1.0 MB',
-      fileUrl,
+      name: docTitle,
+      category: category ? category.trim() : 'Technical Datasheet',
+      description: description ? description.trim() : '',
+      fileSize: fileSize ? fileSize.trim() : '1.5 MB',
+      fileUrl: docFileUrl,
+      iconUrl: iconUrl ? iconUrl.trim() : null,
       displayOrder: parseInt(displayOrder, 10) || 0,
       status: status || 'Active'
+    })
+
+    ActivityLog.log({
+      action: 'Download Document Created',
+      type: 'CMS',
+      description: `Created document "${docTitle}" (${newDownload.category})`,
+      ipAddress: req.ip
     })
 
     console.log('✅ [Database Commit] Created download record ID:', newDownload.id)
@@ -91,7 +131,7 @@ exports.createDownload = async (req, res) => {
 exports.updateDownload = async (req, res) => {
   setNoCache(res)
   const { id } = req.params
-  const { name, category, fileSize, fileUrl, displayOrder, status } = req.body
+  const { name, title, category, description, fileSize, fileUrl, pdfUrl, iconUrl, displayOrder, status } = req.body
 
   try {
     const download = await Download.findByPk(id)
@@ -102,14 +142,26 @@ exports.updateDownload = async (req, res) => {
       })
     }
 
-    if (name !== undefined) download.name = name
-    if (category !== undefined) download.category = category
-    if (fileSize !== undefined) download.fileSize = fileSize
-    if (fileUrl !== undefined) download.fileUrl = fileUrl
+    const docTitle = title || name
+    const docFileUrl = pdfUrl || fileUrl
+
+    if (docTitle !== undefined) download.name = docTitle.trim()
+    if (category !== undefined) download.category = category.trim()
+    if (description !== undefined) download.description = description.trim()
+    if (fileSize !== undefined) download.fileSize = fileSize.trim()
+    if (docFileUrl !== undefined) download.fileUrl = docFileUrl.trim()
+    if (iconUrl !== undefined) download.iconUrl = iconUrl ? iconUrl.trim() : null
     if (displayOrder !== undefined) download.displayOrder = parseInt(displayOrder, 10) || 0
     if (status !== undefined) download.status = status
 
     await download.save()
+
+    ActivityLog.log({
+      action: 'Download Document Updated',
+      type: 'CMS',
+      description: `Updated document "${download.name}" (ID ${id})`,
+      ipAddress: req.ip
+    })
 
     console.log('✅ [Database Commit] Updated download record ID:', id)
     return res.status(200).json({
@@ -139,7 +191,16 @@ exports.deleteDownload = async (req, res) => {
       })
     }
 
+    const docTitle = download.name
     await download.destroy()
+
+    ActivityLog.log({
+      action: 'Download Document Deleted',
+      type: 'CMS',
+      description: `Deleted document "${docTitle}" (ID ${id})`,
+      ipAddress: req.ip
+    })
+
     console.log('🗑️ [Database Delete] Removed download record ID:', id)
     return res.status(200).json({
       success: true,
