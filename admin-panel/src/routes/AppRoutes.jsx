@@ -65,11 +65,13 @@ export default function AppRoutes() {
           <Route index element={<Dashboard />} />
           <Route path="/admin" element={<Dashboard />} />
           <Route path="/cms/home" element={<HomepageCMSPage />} />
+          <Route path="/cms/homepage" element={<HomepageCMSPage />} />
           <Route path="/cms/about" element={<AboutCMSPage />} />
           <Route path="/cms/manufacturing" element={<ManufacturingCMSPage />} />
           <Route path="/cms/footer" element={<FooterCMSPage />} />
           <Route path="/cms/services" element={<ServicesCMSPage />} />
           <Route path="/cms/industries" element={<IndustriesCMSPage />} />
+          <Route path="/industries" element={<IndustriesCMSPage />} />
           <Route path="/downloads" element={<DownloadsCMSPage />} />
           <Route path="/products" element={<ProductsPage />} />
           <Route path="/categories" element={<CategoriesPage />} />
@@ -81,8 +83,10 @@ export default function AppRoutes() {
           <Route path="/leads" element={<ContactPage />} />
           <Route path="/dealer-applications" element={<DealerApplicationsPage />} />
           <Route path="/newsletter" element={<NewsletterPage />} />
+          <Route path="/newsletters" element={<NewsletterPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/seo" element={<SEOPage />} />
+          <Route path="/cms/seo" element={<SEOPage />} />
           <Route path="/media" element={<MediaPage />} />
         </Route>
 

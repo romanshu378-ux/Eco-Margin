@@ -1,28 +1,65 @@
-// EcoMargin Admin Panel — Real-Time Analytics & Telemetry Dashboard
+// EcoMargin Admin Panel — Real-Time Interactive Analytics & Control Dashboard
 // src/pages/Dashboard/Dashboard.jsx
 
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
-  FiTrendingUp, FiUsers, FiBox, FiBriefcase, FiMail, FiEye, 
-  FiRefreshCw, FiGrid, FiFileText, FiFolder, FiAward, FiClock, FiActivity
+  FiTrendingUp, FiUsers, FiBox, FiBriefcase, FiMail, 
+  FiRefreshCw, FiGrid, FiFileText, FiFolder, FiAward, FiClock, 
+  FiActivity, FiSliders, FiLayers, FiCpu, FiGlobe, FiSearch, 
+  FiImage, FiMessageSquare, FiSettings, FiExternalLink
 } from 'react-icons/fi';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import adminService from '../../services/adminService';
 
-const StatCard = ({ title, value, icon, trend, color = 'var(--primary)' }) => (
-  <div className="card" style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', padding: '1.25rem' }}>
-    <div>
-      <div style={{ color: 'var(--text-muted)', fontSize: '0.8rem', marginBottom: '0.35rem', fontWeight: 600 }}>{title}</div>
-      <div style={{ fontSize: '1.75rem', fontWeight: 'bold', marginBottom: '0.35rem', color: 'var(--text-main)' }}>{value}</div>
-      <div style={{ color: color, fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 600 }}>
-        <FiTrendingUp /> {trend}
+const ClickableStatCard = ({ title, value, icon, trend, path, color = 'var(--primary)', isSmall = false }) => {
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <Link 
+      to={path}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'flex',
+        alignItems: 'flex-start',
+        justifyContent: 'space-between',
+        padding: isSmall ? '1rem 1.15rem' : '1.25rem',
+        background: 'var(--bg-card)',
+        borderRadius: 'var(--radius-xl)',
+        border: hovered ? `1px solid ${color}` : '1px solid var(--border)',
+        boxShadow: hovered ? '0 12px 28px -6px rgba(0, 0, 0, 0.45)' : 'var(--shadow-md)',
+        transform: hovered ? 'translateY(-4px) scale(1.02)' : 'none',
+        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+        cursor: 'pointer',
+        textDecoration: 'none',
+        color: 'inherit',
+        position: 'relative'
+      }}
+    >
+      <div>
+        <div style={{ color: 'var(--text-muted)', fontSize: isSmall ? '0.75rem' : '0.8rem', marginBottom: '0.35rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+          {title} {hovered && <FiExternalLink style={{ fontSize: '0.75rem', color: color }} />}
+        </div>
+        <div style={{ fontSize: isSmall ? '1.4rem' : '1.75rem', fontWeight: 'bold', marginBottom: '0.35rem', color: 'var(--text-main)' }}>{value}</div>
+        <div style={{ color: color, fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.25rem', fontWeight: 600 }}>
+          <FiTrendingUp /> {trend}
+        </div>
       </div>
-    </div>
-    <div style={{ padding: '0.85rem', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', fontSize: '1.25rem', color: color }}>
-      {icon}
-    </div>
-  </div>
-);
+      <div style={{ 
+        padding: isSmall ? '0.65rem' : '0.85rem', 
+        background: hovered ? `${color}20` : 'rgba(255,255,255,0.03)', 
+        border: `1px solid ${hovered ? color : 'var(--border)'}`, 
+        borderRadius: 'var(--radius-md)', 
+        fontSize: isSmall ? '1.1rem' : '1.25rem', 
+        color: color,
+        transition: 'all 0.25s ease'
+      }}>
+        {icon}
+      </div>
+    </Link>
+  );
+};
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
@@ -68,8 +105,8 @@ export default function Dashboard() {
       {/* Page Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>Real-Time Enterprise Analytics</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Live B2B Lead Conversion & Infrastructure Telemetry from MySQL Database</p>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>Real-Time Enterprise Control Dashboard</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Click any card below to navigate directly to its related management module</p>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(16, 185, 129, 0.1)', color: 'var(--primary)', border: '1px solid var(--primary)', padding: '0.4rem 0.85rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700 }}>
@@ -88,16 +125,21 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* 14 Key Real-Time MySQL Metric Cards Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
-        <StatCard title="Total Enquiries & RFQs" value={stats?.totalContactEnquiries ?? '...'} icon={<FiMail />} trend={`${stats?.todayEnquiries ?? 0} Today`} color="#3b82f6" />
-        <StatCard title="Dealer Applications" value={stats?.totalDealerApplications ?? '...'} icon={<FiUsers />} trend={`${stats?.newDealerApplications ?? 0} New`} color="#f59e0b" />
-        <StatCard title="Product Range & Models" value={stats?.totalProducts ?? '...'} icon={<FiBox />} trend="3.3kW – 240kW DC" color="#10b981" />
-        <StatCard title="Completed EPC Projects" value={stats?.totalProjects ?? '...'} icon={<FiBriefcase />} trend="Turnkey Substation Plinths" color="#8b5cf6" />
-        <StatCard title="Product Categories" value={stats?.totalCategories ?? '...'} icon={<FiGrid />} trend="AC, LVDC, DC Fast & OCPP" color="#ec4899" />
-        <StatCard title="Industry Sectors" value={stats?.totalIndustries ?? '...'} icon={<FiFolder />} trend="Highways & Bus Depots" color="#06b6d4" />
-        <StatCard title="Technical Downloads" value={stats?.totalDownloads ?? '...'} icon={<FiAward />} trend="Datasheets & Certifications" color="#84cc16" />
-        <StatCard title="Published Whitepapers" value={stats?.totalBlogs ?? '...'} icon={<FiFileText />} trend="ARAI & AIS-138 Guides" color="#6366f1" />
+      {/* Section 1: Core Business Telemetry & Lead Shortcuts */}
+      <div>
+        <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary)', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.85rem' }}>
+          📊 Business Telemetry & Active Lead Modules (Click to Open)
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
+          <ClickableStatCard title="Total Enquiries & RFQs" value={stats?.totalContactEnquiries ?? '...'} icon={<FiMail />} trend={`${stats?.todayEnquiries ?? 0} Today`} path="/contact" color="#3b82f6" />
+          <ClickableStatCard title="Dealer Applications" value={stats?.totalDealerApplications ?? '...'} icon={<FiUsers />} trend={`${stats?.newDealerApplications ?? 0} New`} path="/dealer-applications" color="#f59e0b" />
+          <ClickableStatCard title="Product Range & Models" value={stats?.totalProducts ?? '...'} icon={<FiBox />} trend="3.3kW – 240kW DC" path="/products" color="#10b981" />
+          <ClickableStatCard title="Completed EPC Projects" value={stats?.totalProjects ?? '...'} icon={<FiBriefcase />} trend="Turnkey Plinths" path="/projects" color="#8b5cf6" />
+          <ClickableStatCard title="Product Categories" value={stats?.totalCategories ?? '...'} icon={<FiGrid />} trend="AC, LVDC & DC Fast" path="/categories" color="#ec4899" />
+          <ClickableStatCard title="Industry Sectors" value={stats?.totalIndustries ?? '...'} icon={<FiFolder />} trend="Highways & Depots" path="/cms/industries" color="#06b6d4" />
+          <ClickableStatCard title="Technical Downloads" value={stats?.totalDownloads ?? '...'} icon={<FiAward />} trend="Datasheets & Certs" path="/downloads" color="#84cc16" />
+          <ClickableStatCard title="Published Whitepapers" value={stats?.totalBlogs ?? '...'} icon={<FiFileText />} trend="ARAI & AIS Guides" path="/blogs" color="#6366f1" />
+        </div>
       </div>
 
       {/* Dynamic Charts Section */}
@@ -160,6 +202,24 @@ export default function Dashboard() {
           </ResponsiveContainer>
         </div>
 
+      </div>
+
+      {/* Section 2: Quick Enterprise Control Shortcuts */}
+      <div>
+        <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary)', letterSpacing: '1px', textTransform: 'uppercase', marginBottom: '0.85rem' }}>
+          ⚡ CMS & Administration Shortcuts (Click to Open)
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+          <ClickableStatCard isSmall title="Newsletter Subscribers" value={stats?.totalNewsletterSubscribers ?? '...'} icon={<FiMessageSquare />} trend="Subscribers" path="/newsletter" color="#f43f5e" />
+          <ClickableStatCard isSmall title="Homepage CMS" value="Active" icon={<FiSliders />} trend="Live Editor" path="/cms/home" color="#3b82f6" />
+          <ClickableStatCard isSmall title="About CMS" value="Active" icon={<FiLayers />} trend="Vision & Mission" path="/cms/about" color="#10b981" />
+          <ClickableStatCard isSmall title="Manufacturing CMS" value="Active" icon={<FiCpu />} trend="SLA & Testing" path="/cms/manufacturing" color="#8b5cf6" />
+          <ClickableStatCard isSmall title="Footer & Contact CMS" value="Active" icon={<FiGlobe />} trend="Global Location" path="/cms/footer" color="#06b6d4" />
+          <ClickableStatCard isSmall title="SEO & Schema Manager" value="Active" icon={<FiSearch />} trend="Google Metadata" path="/seo" color="#f59e0b" />
+          <ClickableStatCard isSmall title="Media Manager" value="Cloudinary" icon={<FiImage />} trend="Assets Gallery" path="/media" color="#ec4899" />
+          <ClickableStatCard isSmall title="Website Settings" value="Configured" icon={<FiSettings />} trend="System Params" path="/settings" color="#84cc16" />
+          <ClickableStatCard isSmall title="Users & Permissions" value={stats?.totalAdminUsers ?? '2 Admins'} icon={<FiUsers />} trend="RBAC Access" path="/users" color="#6366f1" />
+        </div>
       </div>
 
       {/* Recent Activity Timeline Feed (Latest 20 Activity Logs) */}
