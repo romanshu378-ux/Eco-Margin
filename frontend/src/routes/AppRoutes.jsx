@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import { PATHS } from './paths'
 
@@ -56,6 +56,7 @@ export default function AppRoutes() {
           <Route path={PATHS.SERVICES} element={<Suspense fallback={<PageLoader />}><ServicesPage /></Suspense>} />
           <Route path={PATHS.PROJECTS} element={<Suspense fallback={<PageLoader />}><ProjectsPage /></Suspense>} />
           <Route path={PATHS.DEALER_PARTNER} element={<Suspense fallback={<PageLoader />}><DealerPartnerPage /></Suspense>} />
+          <Route path="/dealer" element={<Navigate to={PATHS.DEALER_PARTNER} replace />} />
           <Route path={PATHS.DOWNLOADS} element={<Suspense fallback={<PageLoader />}><DownloadsPage /></Suspense>} />
           <Route path={PATHS.GALLERY} element={<Suspense fallback={<PageLoader />}><GalleryPage /></Suspense>} />
           <Route path={PATHS.BLOGS} element={<Suspense fallback={<PageLoader />}><BlogsPage /></Suspense>} />
