@@ -1,10 +1,27 @@
-const fs = require('fs');
-const path = require('path');
+// EcoMargin — Sequelize Models Index
+// src/models/index.js
+'use strict'
 
-// Ensure models directory exists
-const models = {};
+const User = require('./User')
+const Station = require('./Station')
+const Booking = require('./Booking')
+const Payment = require('./Payment')
+const Review = require('./Review')
+const Homepage = require('./Homepage')
+const About = require('./About')
+const Manufacturing = require('./Manufacturing')
+const Footer = require('./Footer')
+const SEO = require('./SEO')
 
-// We will export the initialized models here later
-// For now, it just acts as a placeholder to prevent import errors in server.js
-
-module.exports = models;
+module.exports = {
+  User,
+  Station,
+  Booking,
+  Payment,
+  Review,
+  Homepage,
+  About,
+  Manufacturing,
+  Footer,
+  SEO,
+}
