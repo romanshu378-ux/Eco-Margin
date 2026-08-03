@@ -6,6 +6,8 @@
 const express = require('express')
 const router = express.Router()
 const publicController = require('../controllers/publicController')
+const dealerController = require('../controllers/dealerController')
+const newsletterController = require('../controllers/newsletterController')
 
 // Public Unauthenticated CMS GET Endpoints
 router.get('/homepage', publicController.getPublicHomepage)
@@ -26,7 +28,9 @@ router.get('/products', publicController.getPublicProducts)
 router.get('/services', publicController.getPublicServices)
 router.get('/downloads', publicController.getPublicDownloads)
 
-// RFQ Lead Submission
+// Form Submissions
 router.post('/rfq', publicController.submitRFQEnquiry)
+router.post('/dealer-apply', dealerController.createDealer)
+router.post('/newsletter', newsletterController.subscribeNewsletter)
 
 module.exports = router

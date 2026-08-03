@@ -10,6 +10,8 @@ const userRoutes = require('./userRoutes');
 const cmsRoutes = require('./cms.routes');
 const publicRoutes = require('./public.routes');
 const leadRoutes = require('./leadRoutes');
+const dealerRoutes = require('./dealerRoutes');
+const newsletterRoutes = require('./newsletterRoutes');
 const mediaController = require('../controllers/mediaController');
 
 // Mount domain routes
@@ -23,6 +25,8 @@ router.use('/users', userRoutes);
 router.use('/cms', cmsRoutes);
 router.use('/public', publicRoutes);
 router.use('/leads', leadRoutes);
+router.use('/dealer-applications', dealerRoutes);
+router.use('/newsletters', newsletterRoutes);
 
 // Media Upload & Delete Endpoints
 router.post('/media/upload', mediaController.uploadMedia);

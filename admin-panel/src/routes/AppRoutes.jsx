@@ -25,6 +25,7 @@ const GalleryPage = lazy(() => import('../pages/Gallery/GalleryPage'))
 const ProjectsPage = lazy(() => import('../pages/Projects/ProjectsPage'))
 const UsersPage = lazy(() => import('../pages/Users/UsersPage'))
 const ContactPage = lazy(() => import('../pages/Contact/ContactPage'))
+const DealerApplicationsPage = lazy(() => import('../pages/Dealer/DealerApplicationsPage'))
 const NewsletterPage = lazy(() => import('../pages/Newsletter/NewsletterPage'))
 const SettingsPage = lazy(() => import('../pages/Settings/SettingsPage'))
 const SEOPage = lazy(() => import('../pages/SEO/SEOPage'))
@@ -42,7 +43,7 @@ const Loader = () => (
   }}>
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
       <div style={{ width: '40px', height: '40px', borderRadius: '50%', border: '3px solid var(--border)', borderTopColor: 'var(--primary)', animation: 'spin 1s linear infinite' }}></div>
-      <span>Loading Enterprise CMS...</span>
+      <span>Loading Enterprise Control Center...</span>
     </div>
     <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
   </div>
@@ -77,6 +78,8 @@ export default function AppRoutes() {
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/users" element={<UsersPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/leads" element={<ContactPage />} />
+          <Route path="/dealer-applications" element={<DealerApplicationsPage />} />
           <Route path="/newsletter" element={<NewsletterPage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/seo" element={<SEOPage />} />

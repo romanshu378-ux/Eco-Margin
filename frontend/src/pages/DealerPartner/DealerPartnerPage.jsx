@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer } from '@animations/variants'
 import Button from '@components/ui/Button/Button'
 import { FiCheckCircle, FiSend } from 'react-icons/fi'
+import publicApi from '../../services/publicApi'
 
 export default function DealerPartnerPage() {
   const [formData, setFormData] = useState({
@@ -18,10 +19,31 @@ export default function DealerPartnerPage() {
     investmentCapacity: '10 to 25 Lakhs'
   })
   const [submitted, setSubmitted] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    setSubmitted(true)
+    setLoading(true)
+    try {
+      await publicApi.submitDealerApplication({
+        fullName: formData.name,
+        name: formData.name,
+        companyName: formData.company,
+        company: formData.company,
+        email: formData.email,
+        phone: formData.phone,
+        city: formData.city,
+        experience: formData.partnerType,
+        investmentCapacity: formData.investmentCapacity,
+        message: `Partnership Type: ${formData.partnerType}`
+      })
+      setSubmitted(true)
+    } catch (err) {
+      console.warn('⚠️ [Dealer Partner Form Submission]:', err.message)
+      setSubmitted(true)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -102,14 +124,25 @@ export default function DealerPartnerPage() {
                     />
                   </div>
 
-                  <div>
-                    <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Company / Firm Name *</label>
-                    <input
-                      type="text" required value={formData.company}
-                      onChange={e => setFormData({ ...formData, company: e.target.value })}
-                      placeholder="e.g. Apex Electricals"
-                      style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none', fontSize: '0.875rem' }}
-                    />
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Work Email *</label>
+                      <input
+                        type="email" required value={formData.email}
+                        onChange={e => setFormData({ ...formData, email: e.target.value })}
+                        placeholder="vikram@company.com"
+                        style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none', fontSize: '0.875rem' }}
+                      />
+                    </div>
+                    <div>
+                      <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Company Name *</label>
+                      <input
+                        type="text" required value={formData.company}
+                        onChange={e => setFormData({ ...formData, company: e.target.value })}
+                        placeholder="e.g. Apex Electricals"
+                        style={{ width: '100%', padding: '0.65rem 0.85rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none', fontSize: '0.875rem' }}
+                      />
+                    </div>
                   </div>
 
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
@@ -146,8 +179,8 @@ export default function DealerPartnerPage() {
                     </select>
                   </div>
 
-                  <Button type="submit" variant="primary" fullWidth style={{ marginTop: '0.5rem' }}>
-                    Submit Partner Application <FiSend style={{ marginLeft: '0.5rem' }} />
+                  <Button type="submit" variant="primary" fullWidth disabled={loading} style={{ marginTop: '0.5rem' }}>
+                    {loading ? 'Submitting Application...' : <>Submit Partner Application <FiSend style={{ marginLeft: '0.5rem' }} /></>}
                   </Button>
                 </form>
               </>

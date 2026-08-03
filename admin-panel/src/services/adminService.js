@@ -4,13 +4,15 @@
 import api from './api';
 
 export const adminService = {
-  // Read Endpoints
-  getDashboardStats: () => api.get('/admin/dashboard'),
+  // Real-Time Dashboard & Analytics
+  getDashboardStats: () => api.get('/admin/dashboard/stats'),
+  getDashboardAnalytics: () => api.get('/admin/dashboard/analytics'),
+  getDashboardActivities: () => api.get('/admin/dashboard/activities'),
+
   getUsers: () => api.get('/admin/users'),
   getStations: () => api.get('/admin/stations'),
   getProducts: () => api.get('/admin/products'),
   getContactSubmissions: () => api.get('/admin/leads'),
-  getNewsletterSubscribers: () => api.get('/admin/newsletter'),
   getSettings: () => api.get('/admin/settings'),
   getSEOConfigs: () => api.get('/admin/seo'),
   getMediaFiles: () => api.get('/admin/media'),
@@ -77,6 +79,21 @@ export const adminService = {
   updateLead: (id, data) => api.put(`/admin/leads/${id}`, data),
   updateLeadStatus: (id, status) => api.patch(`/admin/leads/${id}/status`, { status }),
   deleteLead: (id) => api.delete(`/admin/leads/${id}`),
+
+  // Dealer Partner Applications CRUD
+  getDealerApplications: (params) => api.get('/admin/dealer-applications', { params }),
+  getDealerById: (id) => api.get(`/admin/dealer-applications/${id}`),
+  createDealer: (data) => api.post('/dealer-applications', data),
+  updateDealer: (id, data) => api.put(`/admin/dealer-applications/${id}`, data),
+  updateDealerStatus: (id, status) => api.patch(`/admin/dealer-applications/${id}/status`, { status }),
+  deleteDealer: (id) => api.delete(`/admin/dealer-applications/${id}`),
+  bulkDeleteDealers: (ids) => api.post('/admin/dealer-applications/bulk-delete', { ids }),
+
+  // Newsletter Subscribers CRUD
+  getNewsletters: (params) => api.get('/admin/newsletter', { params }),
+  subscribeNewsletter: (data) => api.post('/newsletters', data),
+  deleteNewsletter: (id) => api.delete(`/admin/newsletter/${id}`),
+  bulkDeleteNewsletters: (ids) => api.post('/admin/newsletter/bulk-delete', { ids }),
 
   // Cloudinary Media Upload
   uploadMedia: (formData) => api.post('/media/upload', formData, {

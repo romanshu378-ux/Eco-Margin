@@ -16,20 +16,16 @@ const projectRoutes = require('./projectRoutes')
 const galleryRoutes = require('./galleryRoutes')
 const blogRoutes = require('./blogRoutes')
 const leadRoutes = require('./leadRoutes')
+const dashboardRoutes = require('./dashboardRoutes')
+const dealerRoutes = require('./dealerRoutes')
+const newsletterRoutes = require('./newsletterRoutes')
 
 // Protect all admin routes
 router.use(protect)
-router.use(restrictTo('superadmin', 'admin'))
+router.use(restrictTo('superadmin', 'admin', 'sales_rep'))
 
-// ── Metrics & Dashboard ─────────────────────────────────────────────
-router.get('/dashboard', (req, res) => {
-  return successResponse(res, 'Admin dashboard metrics retrieved successfully', {
-    totalRevenue: 45231,
-    activeDrivers: 2350,
-    activeChargers: 1204,
-    energyDelivered: '45 MWh'
-  })
-})
+// ── Dashboard Analytics & Real-Time Stats ───────────────────────────
+router.use('/dashboard', dashboardRoutes)
 
 // ── Media & Cloudinary Upload Endpoints ─────────────────────────────
 router.post('/media/upload', upload.single('image'), (req, res) => {
@@ -58,7 +54,7 @@ router.delete('/media/:public_id', async (req, res, next) => {
   }
 })
 
-// ── Domain Admin CMS Routes ─────────────────────────────────────────
+// ── Domain Admin CMS & Enquiries Routes ──────────────────────────────
 router.use('/downloads', downloadsRoutes)
 router.use('/categories', categoryRoutes)
 router.use('/industries', industryRoutes)
@@ -67,11 +63,13 @@ router.use('/gallery', galleryRoutes)
 router.use('/blogs', blogRoutes)
 router.use('/leads', leadRoutes)
 router.use('/contact', leadRoutes)
+router.use('/dealer-applications', dealerRoutes)
+router.use('/newsletter', newsletterRoutes)
+router.use('/newsletters', newsletterRoutes)
 
-// ── Placeholder Resource Routes ──────────────────────────────────────
+// ── Resource Endpoints ───────────────────────────────────────────────
 router.get('/users', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
 router.get('/stations', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
 router.get('/products', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
-router.get('/newsletter', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
 
 module.exports = router

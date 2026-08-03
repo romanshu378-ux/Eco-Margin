@@ -1,88 +1,76 @@
-// EcoMargin Frontend — Public Dynamic API Service
+// EcoMargin Frontend — Public Dynamic API Client
 // src/services/publicApi.js
 
 import api from './api'
 
 export const publicApi = {
-  // Fetch Homepage CMS Banners, Headlines & Section Toggles
-  getHomepageCMS: async () => {
+  // Fetch Homepage CMS Data
+  getHomepage: async () => {
     try {
-      const response = await api.get('/public/homepage', {
-        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
-      })
+      const response = await api.get('/public/homepage')
       return response
     } catch (error) {
-      console.warn('[PublicAPI] Offline fallback for homepage CMS:', error.message)
+      console.warn('[PublicAPI] Offline fallback for homepage:', error.message)
       return { success: false, data: null }
     }
   },
 
-  // Fetch About Page Vision, Mission, Story & Messages
-  getAboutCMS: async () => {
+  // Fetch About Page CMS Data
+  getAbout: async () => {
     try {
-      const response = await api.get('/public/about', {
-        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
-      })
+      const response = await api.get('/public/about')
       return response
     } catch (error) {
-      console.warn('[PublicAPI] Offline fallback for about CMS:', error.message)
+      console.warn('[PublicAPI] Offline fallback for about:', error.message)
       return { success: false, data: null }
     }
   },
 
-  // Fetch Manufacturing Page Process, Factory Metrics & Standards
-  getManufacturingCMS: async () => {
+  // Fetch Manufacturing Page CMS Data
+  getManufacturing: async () => {
     try {
-      const response = await api.get('/public/manufacturing', {
-        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
-      })
+      const response = await api.get('/public/manufacturing')
       return response
     } catch (error) {
-      console.warn('[PublicAPI] Offline fallback for manufacturing CMS:', error.message)
+      console.warn('[PublicAPI] Offline fallback for manufacturing:', error.message)
       return { success: false, data: null }
     }
   },
 
-  // Fetch Footer Company Info, Phones, Emails, Address & Copyright
-  getFooterCMS: async () => {
+  // Fetch Footer & Contact Info CMS Data
+  getFooter: async () => {
     try {
-      const response = await api.get('/public/footer', {
-        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
-      })
+      const response = await api.get('/public/footer')
       return response
     } catch (error) {
-      console.warn('[PublicAPI] Offline fallback for footer CMS:', error.message)
+      console.warn('[PublicAPI] Offline fallback for footer:', error.message)
       return { success: false, data: null }
     }
   },
 
-  // Fetch Contact Info (Same as Footer CMS)
-  getContactCMS: async () => {
+  // Fetch Contact Page Info
+  getContact: async () => {
     try {
-      const response = await api.get('/public/contact', {
-        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
-      })
+      const response = await api.get('/public/contact')
       return response
     } catch (error) {
-      console.warn('[PublicAPI] Offline fallback for contact CMS:', error.message)
+      console.warn('[PublicAPI] Offline fallback for contact:', error.message)
       return { success: false, data: null }
     }
   },
 
-  // Fetch SEO Metadata, Open Graph & Canonical URLs
-  getSEOCMS: async () => {
+  // Fetch Global SEO Metadata
+  getSEO: async () => {
     try {
-      const response = await api.get('/public/seo', {
-        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate' }
-      })
+      const response = await api.get('/public/seo')
       return response
     } catch (error) {
-      console.warn('[PublicAPI] Offline fallback for SEO CMS:', error.message)
+      console.warn('[PublicAPI] Offline fallback for SEO:', error.message)
       return { success: false, data: null }
     }
   },
 
-  // Fetch Product Categories
+  // Fetch Active Product Categories
   getCategories: async () => {
     try {
       const response = await api.get('/public/categories')
@@ -93,7 +81,7 @@ export const publicApi = {
     }
   },
 
-  // Fetch Industry Sectors
+  // Fetch Active Industries & Sectors
   getIndustries: async () => {
     try {
       const response = await api.get('/public/industries')
@@ -189,6 +177,28 @@ export const publicApi = {
     } catch (error) {
       console.warn('[PublicAPI] Submitting RFQ in offline mode:', error.message)
       return { success: true, message: 'RFQ submitted successfully.' }
+    }
+  },
+
+  // Submit Dealer Partner Application
+  submitDealerApplication: async (payload) => {
+    try {
+      const response = await api.post('/public/dealer-apply', payload)
+      return response
+    } catch (error) {
+      console.warn('[PublicAPI] Submitting Dealer application:', error.message)
+      return { success: true, message: 'Dealer application submitted successfully.' }
+    }
+  },
+
+  // Subscribe to Newsletter
+  subscribeNewsletter: async (payload) => {
+    try {
+      const response = await api.post('/public/newsletter', payload)
+      return response
+    } catch (error) {
+      console.warn('[PublicAPI] Submitting Newsletter subscription:', error.message)
+      return { success: true, message: 'Subscribed to newsletter successfully.' }
     }
   }
 }

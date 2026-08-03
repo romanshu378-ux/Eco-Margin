@@ -2,7 +2,11 @@
 // src/utils/initCMS.js
 'use strict'
 
-const { Homepage, About, Manufacturing, Footer, SEO, Download, Category, Industry, Project, Gallery, Blog, Lead } = require('../models')
+const { 
+  Homepage, About, Manufacturing, Footer, SEO, Download, 
+  Category, Industry, Project, Gallery, Blog, Lead, 
+  DealerApplication, Newsletter, ActivityLog 
+} = require('../models')
 const logger = require('../config/logger')
 
 const defaultHomepage = {
@@ -40,30 +44,12 @@ const defaultManufacturing = {
   burnInTestingHours: "48 Hours",
   defectRate: "0.01%",
   manufacturingSteps: [
-    {
-      title: '1. In-House SMT & PCB Assembly',
-      description: 'Automated surface mount lines assemble main controller boards, power metering units, and safety protection circuits under Class 100,000 cleanroom standards.'
-    },
-    {
-      title: '2. Enclosure Fabrication & IP Rating',
-      description: 'Heavy-duty Galvanized Steel and Stainless Steel outer cabinets coated with anti-corrosive outdoor UV powder coating (IP55/IP65 Outdoor Rated).'
-    },
-    {
-      title: '3. Full Power Burn-in Testing',
-      description: '100% of manufactured chargers undergo a 48-hour continuous full-load endurance test in environmental thermal chambers.'
-    },
-    {
-      title: '4. ARAI & CE Safety Inspection',
-      description: 'Rigorous insulation resistance, earth continuity, high-voltage withstand, surge suppression, and ground fault circuit breaker verification.'
-    },
-    {
-      title: '5. Firmware & OCPP Protocol Validation',
-      description: 'Automated software simulation testing compatibility across 50+ EV models and OCPP 1.6J/2.0.1 central management systems.'
-    },
-    {
-      title: '6. Quality Dispatch & Logistics',
-      description: 'Sealed shockproof packaging with complete test calibration reports, installation manuals, and warranty documentation.'
-    }
+    { title: '1. In-House SMT & PCB Assembly', description: 'Automated surface mount lines assemble main controller boards, power metering units, and safety protection circuits under Class 100,000 cleanroom standards.' },
+    { title: '2. Enclosure Fabrication & IP Rating', description: 'Heavy-duty Galvanized Steel and Stainless Steel outer cabinets coated with anti-corrosive outdoor UV powder coating (IP55/IP65 Outdoor Rated).' },
+    { title: '3. Full Power Burn-in Testing', description: '100% of manufactured chargers undergo a 48-hour continuous full-load endurance test in environmental thermal chambers.' },
+    { title: '4. ARAI & CE Safety Inspection', description: 'Rigorous insulation resistance, earth continuity, high-voltage withstand, surge suppression, and ground fault circuit breaker verification.' },
+    { title: '5. Firmware & OCPP Protocol Validation', description: 'Automated software simulation testing compatibility across 50+ EV models and OCPP 1.6J/2.0.1 central management systems.' },
+    { title: '6. Quality Dispatch & Logistics', description: 'Sealed shockproof packaging with complete test calibration reports, installation manuals, and warranty documentation.' }
   ]
 }
 
@@ -149,6 +135,25 @@ const defaultLeads = [
   { fullName: 'Deepika Rao', email: 'deepika@smartcity.gov.in', phone: '+91 91122 33445', company: 'Smart City Mission', subject: 'Turnkey EPC Installation Project', message: 'Government tender enquiry for municipal EV charging plinths.', status: 'Closed', notes: 'Tender submitted successfully.' }
 ]
 
+const defaultDealers = [
+  { fullName: 'Vikram Mehta', companyName: 'Mehta Electricals & Power Ltd', email: 'vikram@mehtaelectricals.com', phone: '+91 98200 11223', city: 'Pune', state: 'Maharashtra', experience: '12 Years in Electrical Equipment Distribution', investmentCapacity: '₹50 Lakhs - ₹1 Crore', message: 'Interested in becoming master distributor for EcoMargin DC Fast Chargers in Maharashtra.', status: 'New', notes: 'Reviewing company profile & GST verification.' },
+  { fullName: 'Suresh Menon', companyName: 'GreenMobility Solutions', email: 'suresh@greenmobility.in', phone: '+91 94470 55667', city: 'Kochi', state: 'Kerala', experience: '5 Years in EV Charging Station Setup', investmentCapacity: '₹25 Lakhs - ₹50 Lakhs', message: 'We want to set up authorized service & dealership center in Ernakulam.', status: 'In Review', notes: 'Initial phone conversation completed.' }
+]
+
+const defaultNewsletters = [
+  { email: 'fleet.manager@delhifreight.com', status: 'Subscribed' },
+  { email: 'energy.director@infra-build.co.in', status: 'Subscribed' },
+  { email: 'procurement@green-logistics.org', status: 'Subscribed' }
+]
+
+const defaultActivities = [
+  { action: 'New Contact Form Submitted', type: 'Enquiry', description: 'Lead received from Alice Johnson (Nexus Logistics Pvt Ltd)', ipAddress: '127.0.0.1' },
+  { action: 'New RFQ Quotation Submitted', type: 'RFQ', description: '60kW Dual Gun DC Charger Quote Request from Bob Williams', ipAddress: '127.0.0.1' },
+  { action: 'Dealer Application Received', type: 'Dealer', description: 'Application from Vikram Mehta (Mehta Electricals & Power Ltd)', ipAddress: '127.0.0.1' },
+  { action: 'Gallery Image Uploaded', type: 'CMS', description: 'Added "Automated SMT PCB Controller Assembly Line" to Factory Gallery', ipAddress: '127.0.0.1' },
+  { action: 'Blog Article Published', type: 'Blog', description: 'Published whitepaper "Understanding ARAI AIS-138 Certification"', ipAddress: '127.0.0.1' }
+]
+
 /**
  * Initializes default CMS content ONLY IF tables are completely empty.
  * If any record already exists, it is left untouched.
@@ -225,6 +230,24 @@ async function initCMSDefaults() {
     if (leadCount === 0) {
       await Lead.bulkCreate(defaultLeads)
       logger.info('🌱 Created default Lead records (table was empty)')
+    }
+
+    const dealerCount = await DealerApplication.count()
+    if (dealerCount === 0) {
+      await DealerApplication.bulkCreate(defaultDealers)
+      logger.info('🌱 Created default Dealer Application records (table was empty)')
+    }
+
+    const newsletterCount = await Newsletter.count()
+    if (newsletterCount === 0) {
+      await Newsletter.bulkCreate(defaultNewsletters)
+      logger.info('🌱 Created default Newsletter subscriber records (table was empty)')
+    }
+
+    const activityCount = await ActivityLog.count()
+    if (activityCount === 0) {
+      await ActivityLog.bulkCreate(defaultActivities)
+      logger.info('🌱 Created initial Activity Log records (table was empty)')
     }
   } catch (error) {
     logger.error('❌ Error initializing CMS defaults:', error)
