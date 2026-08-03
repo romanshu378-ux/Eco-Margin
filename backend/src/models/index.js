@@ -13,6 +13,11 @@ const Manufacturing = require('./Manufacturing')
 const Footer = require('./Footer')
 const SEO = require('./SEO')
 const Download = require('./Download')
+const Category = require('./Category')
+const Industry = require('./Industry')
+const Project = require('./Project')
+const Gallery = require('./Gallery')
+const Blog = require('./Blog')
 
 module.exports = {
   User,
@@ -26,4 +31,9 @@ module.exports = {
   Footer,
   SEO,
   Download,
+  Category,
+  Industry,
+  Project,
+  Gallery,
+  Blog,
 }

@@ -2,7 +2,7 @@
 // src/utils/initCMS.js
 'use strict'
 
-const { Homepage, About, Manufacturing, Footer, SEO, Download } = require('../models')
+const { Homepage, About, Manufacturing, Footer, SEO, Download, Category, Industry, Project, Gallery, Blog } = require('../models')
 const logger = require('../config/logger')
 
 const defaultHomepage = {
@@ -108,6 +108,40 @@ const defaultDownloads = [
   { name: 'CE Mark Electrical Safety Test Declaration', category: 'Certificates', fileSize: '1.1 MB', fileUrl: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/certs/ce-mark.pdf', displayOrder: 7, status: 'Active' }
 ]
 
+const defaultCategories = [
+  { name: 'AC EV Chargers', slug: 'ac-ev-chargers', description: 'Wallbox and pedestal AC chargers from 3.3kW to 22kW for home, workplace, and commercial parking.', displayOrder: 1, status: 'Active' },
+  { name: 'LVDC Chargers', slug: 'lvdc-chargers', description: 'Low Voltage DC chargers (48V–96V DC) engineered for electric 2W/3W fleets and light commercial vehicles.', displayOrder: 2, status: 'Active' },
+  { name: 'DC Fast Chargers', slug: 'dc-fast-chargers', description: 'High-power commercial DC fast chargers (30kW to 240kW) with dual CCS2 guns for express highways and bus depots.', displayOrder: 3, status: 'Active' },
+  { name: 'OCPP Software & CSMS', slug: 'ocpp-software', description: 'Central Management System software supporting OCPP 1.6J / 2.0.1, automated billing, RFID access, and NOC monitoring.', displayOrder: 4, status: 'Active' }
+]
+
+const defaultIndustries = [
+  { name: 'Express Highways & Fuel Pumps', icon: '🛣️', description: 'Ultra-fast DC charging hubs for long-distance EV travel and high-throughput highway plazas.', displayOrder: 1, status: 'Active' },
+  { name: 'Commercial Fleets & Logistics', icon: '🚚', description: 'Dedicated fast charging infrastructure for 2W, 3W, and 4W e-commerce and delivery fleets.', displayOrder: 2, status: 'Active' },
+  { name: 'E-Bus & Transport Depots', icon: '🚌', description: 'Heavy-duty 240kW pantograph & dual CCS2 DC chargers for public transit and municipal bus fleets.', displayOrder: 3, status: 'Active' },
+  { name: 'Hotels & Hospitality', icon: '🏨', description: 'Premium destination AC charging wallboxes for luxury guest amenities and hotel fleets.', displayOrder: 4, status: 'Active' },
+  { name: 'Residential & Gated Communities', icon: '🏢', description: 'Shared AC chargers with individual RFID access and automated mobile billing.', displayOrder: 5, status: 'Active' },
+  { name: 'Government & Smart Cities', icon: '🏛️', description: 'Turnkey EPC charging station deployment for public smart city initiatives.', displayOrder: 6, status: 'Active' }
+]
+
+const defaultProjects = [
+  { title: 'Delhi-Jaipur EV Superhighway Corridor', clientName: 'National Highway Logistics Management', location: 'NH-48 Corridor', capacity: '120kW Dual CCS2', timeline: 'Completed 2025', description: 'Turnkey EPC installation of 12 ultra-fast DC charging stations spanning 270 km along NH-48.', imageUrl: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=800&q=80', displayOrder: 1, status: 'Completed' },
+  { title: 'Noida Metro Feeder E-Bus Depot', clientName: 'Delhi Metro Rail Corporation (DMRC)', location: 'Sector 51, Noida', capacity: '240kW High Power DC', timeline: 'Completed 2025', description: 'Heavy-duty DC charging infrastructure powering 50+ electric feeder buses with 99.8% uptime SLA.', imageUrl: 'https://images.unsplash.com/photo-1558441719-aa34455441bd?auto=format&fit=crop&w=800&q=80', displayOrder: 2, status: 'Completed' },
+  { title: 'Gurugram Commercial Logistics Hub', clientName: 'Bluedart Logistics', location: 'Cyber City, Gurugram', capacity: '30kW LVDC & 60kW DC', timeline: 'Completed 2026', description: 'Overnight & fast charging facility for 100+ electric delivery vans operating 24/7.', imageUrl: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80', displayOrder: 3, status: 'Completed' }
+]
+
+const defaultGallery = [
+  { title: 'Automated SMT PCB Controller Assembly Line', category: 'Factory & Manufacturing', imageUrl: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80', displayOrder: 1, status: 'Active' },
+  { title: 'Heavy-Duty IP55 Galvanized Steel Enclosure Fabrication', category: 'Factory & Manufacturing', imageUrl: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80', displayOrder: 2, status: 'Active' },
+  { title: '48-Hour Full-Load Burn-in Thermal Test Chamber', category: 'Testing & Quality', imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80', displayOrder: 3, status: 'Active' },
+  { title: '60kW & 120kW Dual CCS2 DC Fast Charger Quality Assembly', category: 'Factory & Manufacturing', imageUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80', displayOrder: 4, status: 'Active' }
+]
+
+const defaultBlogs = [
+  { title: 'Understanding ARAI AIS-138 Certification for Indian EV Chargers', slug: 'arai-ais-138-certification-ev-chargers', author: 'Dr. R. K. Sharma (CTO)', summary: 'A comprehensive technical overview of grid safety, surge suppression, and insulation testing mandated under AIS-138 Part 1 & 2 standards.', content: '<p>Grid stability and environmental weatherproofing are critical engineering challenges for EV charger manufacturers in India. Under the AIS-138 Part 1 & 2 standard guidelines...</p>', coverImage: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=800&q=80', displayOrder: 1, status: 'Published' },
+  { title: 'Why Thermal Management & IP55 Enclosures Matter in 50°C Summers', slug: 'thermal-management-ip55-enclosures-ev-chargers', author: 'EcoMargin R&D Team', summary: 'How active liquid cooling and wide voltage tolerance prevent thermal throttling during peak Indian summer ambient temperatures.', content: '<p>High ambient heat combined with dust ingress significantly reduces the efficiency and lifespan of power electronic converters if proper thermal dissipation systems are absent...</p>', coverImage: 'https://images.unsplash.com/photo-1558441719-aa34455441bd?auto=format&fit=crop&w=800&q=80', displayOrder: 2, status: 'Published' }
+]
+
 /**
  * Initializes default CMS content ONLY IF tables are completely empty.
  * If any record already exists, it is left untouched.
@@ -118,48 +152,66 @@ async function initCMSDefaults() {
     if (homepageCount === 0) {
       await Homepage.create(defaultHomepage)
       logger.info('🌱 Created default Homepage CMS record (table was empty)')
-    } else {
-      logger.info('🔒 Homepage CMS data exists in database. Skipped default seeding.')
     }
 
     const aboutCount = await About.count()
     if (aboutCount === 0) {
       await About.create(defaultAbout)
       logger.info('🌱 Created default About CMS record (table was empty)')
-    } else {
-      logger.info('🔒 About CMS data exists in database. Skipped default seeding.')
     }
 
     const mfgCount = await Manufacturing.count()
     if (mfgCount === 0) {
       await Manufacturing.create(defaultManufacturing)
       logger.info('🌱 Created default Manufacturing CMS record (table was empty)')
-    } else {
-      logger.info('🔒 Manufacturing CMS data exists in database. Skipped default seeding.')
     }
 
     const footerCount = await Footer.count()
     if (footerCount === 0) {
       await Footer.create(defaultFooter)
       logger.info('🌱 Created default Footer CMS record (table was empty)')
-    } else {
-      logger.info('🔒 Footer CMS data exists in database. Skipped default seeding.')
     }
 
     const seoCount = await SEO.count()
     if (seoCount === 0) {
       await SEO.create(defaultSEO)
       logger.info('🌱 Created default SEO CMS record (table was empty)')
-    } else {
-      logger.info('🔒 SEO CMS data exists in database. Skipped default seeding.')
     }
 
     const downloadCount = await Download.count()
     if (downloadCount === 0) {
       await Download.bulkCreate(defaultDownloads)
       logger.info('🌱 Created default Downloads CMS records (table was empty)')
-    } else {
-      logger.info('🔒 Downloads CMS data exists in database. Skipped default seeding.')
+    }
+
+    const categoryCount = await Category.count()
+    if (categoryCount === 0) {
+      await Category.bulkCreate(defaultCategories)
+      logger.info('🌱 Created default Category CMS records (table was empty)')
+    }
+
+    const industryCount = await Industry.count()
+    if (industryCount === 0) {
+      await Industry.bulkCreate(defaultIndustries)
+      logger.info('🌱 Created default Industry CMS records (table was empty)')
+    }
+
+    const projectCount = await Project.count()
+    if (projectCount === 0) {
+      await Project.bulkCreate(defaultProjects)
+      logger.info('🌱 Created default Project CMS records (table was empty)')
+    }
+
+    const galleryCount = await Gallery.count()
+    if (galleryCount === 0) {
+      await Gallery.bulkCreate(defaultGallery)
+      logger.info('🌱 Created default Gallery CMS records (table was empty)')
+    }
+
+    const blogCount = await Blog.count()
+    if (blogCount === 0) {
+      await Blog.bulkCreate(defaultBlogs)
+      logger.info('🌱 Created default Blog CMS records (table was empty)')
     }
   } catch (error) {
     logger.error('❌ Error initializing CMS defaults:', error)

@@ -5,6 +5,13 @@
 
 const { db } = require('../config/db.config')
 const cmsController = require('./cmsController')
+const { Category, Industry, Project, Gallery, Blog, Download } = require('../models')
+
+const setNoCache = (res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+  res.setHeader('Pragma', 'no-cache')
+  res.setHeader('Expires', '0')
+}
 
 // Public GET Homepage CMS
 exports.getPublicHomepage = async (req, res) => {
@@ -36,8 +43,98 @@ exports.getPublicSEO = async (req, res) => {
   return cmsController.getSEOCMS(req, res)
 }
 
+// Public GET Active Categories
+exports.getPublicCategories = async (req, res) => {
+  setNoCache(res)
+  try {
+    const rows = await Category.findAll({
+      where: { status: 'Active' },
+      order: [['displayOrder', 'ASC'], ['id', 'DESC']]
+    })
+    return res.status(200).json({ success: true, data: rows })
+  } catch (err) {
+    console.error('❌ [Public Categories Fetch Error]:', err.message)
+    return res.status(500).json({ success: false, message: err.message })
+  }
+}
+
+// Public GET Active Industries
+exports.getPublicIndustries = async (req, res) => {
+  setNoCache(res)
+  try {
+    const rows = await Industry.findAll({
+      where: { status: 'Active' },
+      order: [['displayOrder', 'ASC'], ['id', 'DESC']]
+    })
+    return res.status(200).json({ success: true, data: rows })
+  } catch (err) {
+    console.error('❌ [Public Industries Fetch Error]:', err.message)
+    return res.status(500).json({ success: false, message: err.message })
+  }
+}
+
+// Public GET Active Projects
+exports.getPublicProjects = async (req, res) => {
+  setNoCache(res)
+  try {
+    const rows = await Project.findAll({
+      order: [['displayOrder', 'ASC'], ['id', 'DESC']]
+    })
+    return res.status(200).json({ success: true, data: rows })
+  } catch (err) {
+    console.error('❌ [Public Projects Fetch Error]:', err.message)
+    return res.status(500).json({ success: false, message: err.message })
+  }
+}
+
+// Public GET Active Gallery Images
+exports.getPublicGallery = async (req, res) => {
+  setNoCache(res)
+  try {
+    const rows = await Gallery.findAll({
+      where: { status: 'Active' },
+      order: [['displayOrder', 'ASC'], ['id', 'DESC']]
+    })
+    return res.status(200).json({ success: true, data: rows })
+  } catch (err) {
+    console.error('❌ [Public Gallery Fetch Error]:', err.message)
+    return res.status(500).json({ success: false, message: err.message })
+  }
+}
+
+// Public GET Published Blogs
+exports.getPublicBlogs = async (req, res) => {
+  setNoCache(res)
+  try {
+    const rows = await Blog.findAll({
+      where: { status: 'Published' },
+      order: [['displayOrder', 'ASC'], ['id', 'DESC']]
+    })
+    return res.status(200).json({ success: true, data: rows })
+  } catch (err) {
+    console.error('❌ [Public Blogs Fetch Error]:', err.message)
+    return res.status(500).json({ success: false, message: err.message })
+  }
+}
+
+// Public GET Published Blog by Slug
+exports.getPublicBlogBySlug = async (req, res) => {
+  setNoCache(res)
+  try {
+    const blog = await Blog.findOne({
+      where: { slug: req.params.slug, status: 'Published' }
+    })
+    if (!blog) return res.status(404).json({ success: false, message: 'Blog article not found' })
+    return res.status(200).json({ success: true, data: blog })
+  } catch (err) {
+    console.error('❌ [Public Blog Slug Fetch Error]:', err.message)
+    return res.status(500).json({ success: false, message: err.message })
+  }
+}
+
 // Public GET Active Products Catalog
 exports.getPublicProducts = async (req, res) => {
+  setNoCache(res)
   try {
     if (db && typeof db.query === 'function') {
       const [rows] = await db.query('SELECT * FROM products WHERE status = "Active" ORDER BY display_order ASC, id DESC')
@@ -52,60 +149,17 @@ exports.getPublicProducts = async (req, res) => {
   res.status(200).json({
     success: true,
     data: [
-      {
-        id: 1,
-        name: 'EcoWall 7.4kW AC Single Phase Charger',
-        category: 'AC EV Chargers',
-        power: '7.4kW',
-        voltage: '230V AC',
-        connector: 'Type 2 Gun',
-        protection: 'IP55',
-        efficiency: '>98%',
-        warranty: '3 Years Warranty',
-        datasheetPdf: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/7.4kW-AC.pdf'
-      },
-      {
-        id: 2,
-        name: 'EcoPower 3.3kW LVDC Fleet Charger',
-        category: 'LVDC Chargers',
-        power: '3.3kW LVDC',
-        voltage: '48V – 96V DC',
-        connector: 'Anderson Heavy-Duty',
-        protection: 'IP65',
-        efficiency: '≥94%',
-        warranty: '2 Years Warranty',
-        datasheetPdf: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/3.3kW-LVDC.pdf'
-      },
-      {
-        id: 3,
-        name: 'EcoCharge 60kW Dual Gun DC Fast Charger',
-        category: 'DC Fast Chargers',
-        power: '60kW DC',
-        voltage: '200V – 1000V DC',
-        connector: 'Dual CCS2 Guns',
-        protection: 'IP55 Outdoor Cabinet',
-        efficiency: '≥95.5%',
-        warranty: '3 Years AMC Included',
-        datasheetPdf: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/60kW-DC.pdf'
-      },
-      {
-        id: 4,
-        name: 'EcoCharge 120kW Ultra-Fast DC Station',
-        category: 'DC Fast Chargers',
-        power: '120kW DC',
-        voltage: '200V – 1000V DC',
-        connector: 'Dual CCS2 Guns',
-        protection: 'IP55 Weatherproof',
-        efficiency: '≥96%',
-        warranty: '3 Years Warranty',
-        datasheetPdf: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/120kW-DC.pdf'
-      }
+      { id: 1, name: 'EcoWall 7.4kW AC Single Phase Charger', category: 'AC EV Chargers', power: '7.4kW', voltage: '230V AC', connector: 'Type 2 Gun', protection: 'IP55', efficiency: '>98%', warranty: '3 Years Warranty', datasheetPdf: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/7.4kW-AC.pdf' },
+      { id: 2, name: 'EcoPower 3.3kW LVDC Fleet Charger', category: 'LVDC Chargers', power: '3.3kW LVDC', voltage: '48V – 96V DC', connector: 'Anderson Heavy-Duty', protection: 'IP65', efficiency: '≥94%', warranty: '2 Years Warranty', datasheetPdf: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/3.3kW-LVDC.pdf' },
+      { id: 3, name: 'EcoCharge 60kW Dual Gun DC Fast Charger', category: 'DC Fast Chargers', power: '60kW DC', voltage: '200V – 1000V DC', connector: 'Dual CCS2 Guns', protection: 'IP55 Outdoor Cabinet', efficiency: '≥95.5%', warranty: '3 Years AMC Included', datasheetPdf: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/60kW-DC.pdf' },
+      { id: 4, name: 'EcoCharge 120kW Ultra-Fast DC Station', category: 'DC Fast Chargers', power: '120kW DC', voltage: '200V – 1000V DC', connector: 'Dual CCS2 Guns', protection: 'IP55 Weatherproof', efficiency: '≥96%', warranty: '3 Years Warranty', datasheetPdf: 'https://res.cloudinary.com/ecomargin/raw/upload/v1/specs/120kW-DC.pdf' }
     ]
   })
 }
 
 // Public GET Active Services
 exports.getPublicServices = async (req, res) => {
+  setNoCache(res)
   try {
     if (db && typeof db.query === 'function') {
       const [rows] = await db.query('SELECT * FROM services WHERE status = "Active" ORDER BY display_order ASC, id DESC')
@@ -129,9 +183,8 @@ exports.getPublicServices = async (req, res) => {
 
 // Public GET Technical Downloads
 exports.getPublicDownloads = async (req, res) => {
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+  setNoCache(res)
   try {
-    const { Download } = require('../models')
     const rows = await Download.findAll({
       where: { status: 'Active' },
       order: [['displayOrder', 'ASC'], ['id', 'DESC']]
@@ -142,7 +195,6 @@ exports.getPublicDownloads = async (req, res) => {
     return res.status(500).json({ success: false, message: err.message })
   }
 }
-
 
 // Public POST RFQ Enquiry Submission
 exports.submitRFQEnquiry = async (req, res) => {

@@ -9,10 +9,6 @@ export const adminService = {
   getUsers: () => api.get('/admin/users'),
   getStations: () => api.get('/admin/stations'),
   getProducts: () => api.get('/admin/products'),
-  getCategories: () => api.get('/admin/categories'),
-  getBlogs: () => api.get('/admin/blogs'),
-  getGallery: () => api.get('/admin/gallery'),
-  getProjects: () => api.get('/admin/projects'),
   getContactSubmissions: () => api.get('/admin/contact'),
   getNewsletterSubscribers: () => api.get('/admin/newsletter'),
   getSettings: () => api.get('/admin/settings'),
@@ -38,11 +34,46 @@ export const adminService = {
   updateProduct: (id, data) => api.put(`/admin/products/${id}`, data),
   deleteProduct: (id) => api.delete(`/admin/products/${id}`),
 
-  // Downloads Mutations & Reads
+  // Product Categories CRUD
+  getCategories: () => api.get('/admin/categories'),
+  createCategory: (data) => api.post('/admin/categories', data),
+  updateCategory: (id, data) => api.put(`/admin/categories/${id}`, data),
+  deleteCategory: (id) => api.delete(`/admin/categories/${id}`),
+
+  // Industries & Sectors CRUD
+  getIndustries: () => api.get('/admin/industries'),
+  createIndustry: (data) => api.post('/admin/industries', data),
+  updateIndustry: (id, data) => api.put(`/admin/industries/${id}`, data),
+  deleteIndustry: (id) => api.delete(`/admin/industries/${id}`),
+
+  // EPC Projects Portfolio CRUD
+  getProjects: () => api.get('/admin/projects'),
+  createProject: (data) => api.post('/admin/projects', data),
+  updateProject: (id, data) => api.put(`/admin/projects/${id}`, data),
+  deleteProject: (id) => api.delete(`/admin/projects/${id}`),
+
+  // Factory & Plant Gallery CRUD
+  getGallery: () => api.get('/admin/gallery'),
+  createGallery: (data) => api.post('/admin/gallery', data),
+  updateGallery: (id, data) => api.put(`/admin/gallery/${id}`, data),
+  deleteGallery: (id) => api.delete(`/admin/gallery/${id}`),
+
+  // Blogs & Insights CRUD
+  getBlogs: () => api.get('/admin/blogs'),
+  createBlog: (data) => api.post('/admin/blogs', data),
+  updateBlog: (id, data) => api.put(`/admin/blogs/${id}`, data),
+  deleteBlog: (id) => api.delete(`/admin/blogs/${id}`),
+
+  // Downloads CRUD
   getDownloads: () => api.get('/admin/downloads'),
   createDownload: (data) => api.post('/admin/downloads', data),
   updateDownload: (id, data) => api.put(`/admin/downloads/${id}`, data),
   deleteDownload: (id) => api.delete(`/admin/downloads/${id}`),
+
+  // Cloudinary Media Upload
+  uploadMedia: (formData) => api.post('/media/upload', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  }),
   uploadPdf: (formData) => api.post('/media/upload', formData, {
     headers: { 'Content-Type': 'multipart/form-data' }
   }),

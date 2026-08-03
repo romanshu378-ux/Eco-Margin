@@ -1,71 +1,96 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import SEO from '@seo/SEO'
 import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer } from '@animations/variants'
 import PageHeader from '@components/common/PageHeader/PageHeader'
+import publicApi from '@services/publicApi'
+
+const fallbackGallery = [
+  { title: 'Automated SMT PCB Controller Assembly Line', category: 'Factory & Manufacturing', imageUrl: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=800&q=80' },
+  { title: 'Heavy-Duty IP55 Galvanized Steel Enclosure Fabrication', category: 'Factory & Manufacturing', imageUrl: 'https://images.unsplash.com/photo-1581092335397-9583fe92d232?auto=format&fit=crop&w=800&q=80' },
+  { title: '48-Hour Full-Load Burn-in Thermal Test Chamber', category: 'Testing & Quality', imageUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80' },
+  { title: '60kW & 120kW Dual CCS2 DC Fast Charger Assembly', category: 'Factory & Manufacturing', imageUrl: 'https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80' }
+]
 
 export default function GalleryPage() {
-  // Simulating a masonry layout grid with different sizes
-  const items = [
-    { height: '400px', label: 'CSMS Map View' },
-    { height: '250px', label: 'Driver App Wallet' },
-    { height: '250px', label: 'Station Hardware' },
-    { height: '300px', label: 'Fleet Analytics' },
-    { height: '350px', label: 'NOC Command Center' },
-    { height: '200px', label: 'RFID Card Tap' },
-    { height: '250px', label: 'Tariff Configuration' },
-    { height: '300px', label: 'Load Balancing Graph' }
-  ]
+  const [items, setItems] = useState(fallbackGallery)
+
+  useEffect(() => {
+    const fetchLiveGallery = async () => {
+      try {
+        const res = await publicApi.getGallery()
+        if (res && res.data && res.data.length > 0) {
+          setItems(res.data)
+        }
+      } catch (err) {
+        console.warn('Live gallery fetch notice:', err.message)
+      }
+    }
+    fetchLiveGallery()
+  }, [])
 
   return (
     <>
-      <SEO title="Gallery" description="Visual showcase of the EcoMargin platform and hardware." />
+      <SEO title="Factory & Plant Gallery" description="Visual showcase of EcoMargin ISO 9001 certified manufacturing plant and labs." />
       
       <PageHeader 
-        title="Gallery" 
-        description="A visual journey through our software interfaces and global hardware deployments."
+        title="Factory & Manufacturing Gallery" 
+        description="A visual tour through our 50,000 sq.ft. certified manufacturing facility, cleanroom SMT lines, and endurance testing labs."
       />
 
       <div className="container" style={{ padding: '6rem 0' }}>
         <motion.div 
           variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} 
           style={{ 
-            columnCount: window.innerWidth > 1024 ? 3 : window.innerWidth > 768 ? 2 : 1, 
-            columnGap: '1.5rem' 
+            display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem'
           }}
         >
-          {items.map((item, i) => (
-            <motion.div 
-              key={i} 
-              variants={fadeUp}
-              whileHover={{ scale: 1.02 }}
-              style={{ 
-                height: item.height, 
-                background: 'var(--color-bg-card)', 
-                borderRadius: 'var(--radius-xl)', 
-                border: '1px solid var(--color-border)',
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                marginBottom: '1.5rem',
-                breakInside: 'avoid',
-                transition: 'transform var(--transition-fast)',
-                cursor: 'zoom-in',
-                position: 'relative',
-                overflow: 'hidden'
-              }}
-            >
-              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)', zIndex: 1, opacity: 0, transition: 'opacity 0.2s', display: 'flex', alignItems: 'flex-end', padding: '1.5rem' }} className="gallery-overlay">
-                <span style={{ color: '#fff', fontWeight: '600' }}>{item.label}</span>
-              </div>
-              <span style={{ color: 'var(--color-text-muted)', position: 'relative', zIndex: 0 }}>[{item.label}]</span>
-            </motion.div>
-          ))}
-        </motion.div>
+          {items.map((item, i) => {
+            const img = item.imageUrl || item.image_url;
+            return (
+              <motion.div 
+                key={item.id || i} 
+                variants={fadeUp}
+                whileHover={{ scale: 1.02 }}
+                style={{ 
+                  height: '320px', 
+                  background: 'var(--color-bg-card)', 
+                  borderRadius: 'var(--radius-xl)', 
+                  border: '1px solid var(--color-border)',
+                  overflow: 'hidden',
+                  position: 'relative',
+                  cursor: 'pointer'
+                }}
+              >
+                {img ? (
+                  <img src={img} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : (
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--color-text-muted)' }}>
+                    [{item.title}]
+                  </div>
+                )}
 
-        <style>{`
-          .gallery-overlay:hover { opacity: 1 !important; }
-        `}</style>
+                <div 
+                  style={{ 
+                    position: 'absolute', 
+                    inset: 0, 
+                    background: 'linear-gradient(to top, rgba(0,0,0,0.85), transparent)', 
+                    zIndex: 1, 
+                    display: 'flex', 
+                    flexDirection: 'column',
+                    justifyContent: 'flex-end', 
+                    padding: '1.5rem' 
+                  }}
+                >
+                  <span style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#10b981', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: '600', width: 'fit-content', marginBottom: '0.5rem' }}>
+                    {item.category || 'Factory & Plant'}
+                  </span>
+                  <span style={{ color: '#fff', fontWeight: '600', fontSize: '1rem' }}>{item.title}</span>
+                </div>
+              </motion.div>
+            )
+          })}
+        </motion.div>
       </div>
     </>
   )

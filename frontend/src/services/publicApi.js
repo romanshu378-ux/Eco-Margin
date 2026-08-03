@@ -82,6 +82,72 @@ export const publicApi = {
     }
   },
 
+  // Fetch Product Categories
+  getCategories: async () => {
+    try {
+      const response = await api.get('/public/categories')
+      return response
+    } catch (error) {
+      console.warn('[PublicAPI] Offline fallback for categories:', error.message)
+      return { success: false, data: [] }
+    }
+  },
+
+  // Fetch Industry Sectors
+  getIndustries: async () => {
+    try {
+      const response = await api.get('/public/industries')
+      return response
+    } catch (error) {
+      console.warn('[PublicAPI] Offline fallback for industries:', error.message)
+      return { success: false, data: [] }
+    }
+  },
+
+  // Fetch EPC Projects Portfolio
+  getProjects: async () => {
+    try {
+      const response = await api.get('/public/projects')
+      return response
+    } catch (error) {
+      console.warn('[PublicAPI] Offline fallback for projects:', error.message)
+      return { success: false, data: [] }
+    }
+  },
+
+  // Fetch Factory & Plant Gallery Photos
+  getGallery: async () => {
+    try {
+      const response = await api.get('/public/gallery')
+      return response
+    } catch (error) {
+      console.warn('[PublicAPI] Offline fallback for gallery:', error.message)
+      return { success: false, data: [] }
+    }
+  },
+
+  // Fetch Blog Articles
+  getBlogs: async () => {
+    try {
+      const response = await api.get('/public/blogs')
+      return response
+    } catch (error) {
+      console.warn('[PublicAPI] Offline fallback for blogs:', error.message)
+      return { success: false, data: [] }
+    }
+  },
+
+  // Fetch Blog Article by Slug
+  getBlogBySlug: async (slug) => {
+    try {
+      const response = await api.get(`/public/blogs/${slug}`)
+      return response
+    } catch (error) {
+      console.warn('[PublicAPI] Offline fallback for blog slug:', error.message)
+      return { success: false, data: null }
+    }
+  },
+
   // Fetch live products catalog (AC, LVDC, DC Fast Chargers)
   getProducts: async () => {
     try {

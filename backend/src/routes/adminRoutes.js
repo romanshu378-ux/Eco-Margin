@@ -9,6 +9,13 @@ const upload = require('../middlewares/upload')
 const { deleteImage, optimizeImageUrl } = require('../config/cloudinary')
 const { successResponse, paginateResponse } = require('../utils/apiResponse')
 
+const downloadsRoutes = require('./downloadsRoutes')
+const categoryRoutes = require('./categoryRoutes')
+const industryRoutes = require('./industryRoutes')
+const projectRoutes = require('./projectRoutes')
+const galleryRoutes = require('./galleryRoutes')
+const blogRoutes = require('./blogRoutes')
+
 // Protect all admin routes
 router.use(protect)
 router.use(restrictTo('superadmin', 'admin'))
@@ -50,18 +57,19 @@ router.delete('/media/:public_id', async (req, res, next) => {
   }
 })
 
-// ── Resource Routes (Paginated API format) ──────────────────────────
+// ── Domain Admin CMS Routes ─────────────────────────────────────────
+router.use('/downloads', downloadsRoutes)
+router.use('/categories', categoryRoutes)
+router.use('/industries', industryRoutes)
+router.use('/projects', projectRoutes)
+router.use('/gallery', galleryRoutes)
+router.use('/blogs', blogRoutes)
+
+// ── Placeholder Resource Routes ──────────────────────────────────────
 router.get('/users', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
 router.get('/stations', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
 router.get('/products', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
-router.get('/categories', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
-router.get('/blogs', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
-router.get('/gallery', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
-router.get('/projects', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
 router.get('/contact', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
 router.get('/newsletter', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
-const downloadsRoutes = require('./downloadsRoutes')
-
-router.use('/downloads', downloadsRoutes)
 
 module.exports = router
