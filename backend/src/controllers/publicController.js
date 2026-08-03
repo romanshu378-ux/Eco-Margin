@@ -5,6 +5,7 @@
 
 const { db } = require('../config/db.config')
 const cmsController = require('./cmsController')
+const leadController = require('./leadController')
 const { Category, Industry, Project, Gallery, Blog, Download } = require('../models')
 
 const setNoCache = (res) => {
@@ -196,30 +197,7 @@ exports.getPublicDownloads = async (req, res) => {
   }
 }
 
-// Public POST RFQ Enquiry Submission
+// Public POST RFQ Enquiry Submission (Delegates to leadController.createLead)
 exports.submitRFQEnquiry = async (req, res) => {
-  const { name, email, phone, company, product, quantity, requirements } = req.body
-  console.log('📝 [POST /api/v1/public/rfq] Lead Received:', { name, email, phone, company, product, quantity })
-
-  if (!name || !email || !phone) {
-    return res.status(400).json({ success: false, message: 'Name, email, and phone are required.' })
-  }
-
-  try {
-    if (db && typeof db.query === 'function') {
-      await db.query(
-        'INSERT INTO enquiries (name, company, email, phone, product_requirement, quantity, message) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [name, company || '', email, phone, product || '', quantity || 1, requirements || '']
-      )
-      console.log('✅ [Database Commit] RFQ enquiry stored in enquiries table')
-    }
-  } catch (err) {
-    console.warn('⚠️ [DB Notice] Lead stored in memory:', err.message)
-  }
-
-  return res.status(200).json({
-    success: true,
-    message: 'RFQ submitted successfully. An engineering manager will contact you shortly.',
-    enquiryId: Date.now()
-  })
+  return leadController.createLead(req, res)
 }

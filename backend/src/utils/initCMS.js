@@ -2,7 +2,7 @@
 // src/utils/initCMS.js
 'use strict'
 
-const { Homepage, About, Manufacturing, Footer, SEO, Download, Category, Industry, Project, Gallery, Blog } = require('../models')
+const { Homepage, About, Manufacturing, Footer, SEO, Download, Category, Industry, Project, Gallery, Blog, Lead } = require('../models')
 const logger = require('../config/logger')
 
 const defaultHomepage = {
@@ -142,6 +142,13 @@ const defaultBlogs = [
   { title: 'Why Thermal Management & IP55 Enclosures Matter in 50°C Summers', slug: 'thermal-management-ip55-enclosures-ev-chargers', author: 'EcoMargin R&D Team', summary: 'How active liquid cooling and wide voltage tolerance prevent thermal throttling during peak Indian summer ambient temperatures.', content: '<p>High ambient heat combined with dust ingress significantly reduces the efficiency and lifespan of power electronic converters if proper thermal dissipation systems are absent...</p>', coverImage: 'https://images.unsplash.com/photo-1558441719-aa34455441bd?auto=format&fit=crop&w=800&q=80', displayOrder: 2, status: 'Published' }
 ]
 
+const defaultLeads = [
+  { fullName: 'Alice Johnson', email: 'alice@corp.com', phone: '+91 98765 43210', company: 'Nexus Logistics Pvt Ltd', subject: '60kW DC Fast Charger Inquiry', message: 'We are looking to set up 5 fast charging hubs across Mumbai.', status: 'New', notes: 'Initial RFQ submission from web modal.' },
+  { fullName: 'Bob Williams', email: 'bob@tech.io', phone: '+91 98123 45678', company: 'Apex Real Estate', subject: '22kW Dual Gun AC Chargers for Hotel', message: 'Requirement for 10 dual gun AC chargers in Gurgaon.', status: 'In Progress', notes: 'Sales manager contacted client on phone.' },
+  { fullName: 'Chiraag Patel', email: 'chiraag@fleet.in', phone: '+91 97766 55443', company: 'Patel Transports', subject: '240kW Heavy Duty Depot Charger', message: 'E-bus fleet charging setup inquiry for 20 buses.', status: 'Replied', notes: 'Sent technical proposal and quotation via email.' },
+  { fullName: 'Deepika Rao', email: 'deepika@smartcity.gov.in', phone: '+91 91122 33445', company: 'Smart City Mission', subject: 'Turnkey EPC Installation Project', message: 'Government tender enquiry for municipal EV charging plinths.', status: 'Closed', notes: 'Tender submitted successfully.' }
+]
+
 /**
  * Initializes default CMS content ONLY IF tables are completely empty.
  * If any record already exists, it is left untouched.
@@ -212,6 +219,12 @@ async function initCMSDefaults() {
     if (blogCount === 0) {
       await Blog.bulkCreate(defaultBlogs)
       logger.info('🌱 Created default Blog CMS records (table was empty)')
+    }
+
+    const leadCount = await Lead.count()
+    if (leadCount === 0) {
+      await Lead.bulkCreate(defaultLeads)
+      logger.info('🌱 Created default Lead records (table was empty)')
     }
   } catch (error) {
     logger.error('❌ Error initializing CMS defaults:', error)

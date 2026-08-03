@@ -18,6 +18,7 @@ const Industry = require('./Industry')
 const Project = require('./Project')
 const Gallery = require('./Gallery')
 const Blog = require('./Blog')
+const Lead = require('./Lead')
 
 // Define Non-Circular Model Associations
 User.hasMany(Station, { foreignKey: 'operator_id', as: 'operatedStations', onDelete: 'SET NULL', onUpdate: 'CASCADE' })
@@ -58,4 +59,5 @@ module.exports = {
   Project,
   Gallery,
   Blog,
+  Lead,
 }

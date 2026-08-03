@@ -15,6 +15,7 @@ const industryRoutes = require('./industryRoutes')
 const projectRoutes = require('./projectRoutes')
 const galleryRoutes = require('./galleryRoutes')
 const blogRoutes = require('./blogRoutes')
+const leadRoutes = require('./leadRoutes')
 
 // Protect all admin routes
 router.use(protect)
@@ -64,12 +65,13 @@ router.use('/industries', industryRoutes)
 router.use('/projects', projectRoutes)
 router.use('/gallery', galleryRoutes)
 router.use('/blogs', blogRoutes)
+router.use('/leads', leadRoutes)
+router.use('/contact', leadRoutes)
 
 // ── Placeholder Resource Routes ──────────────────────────────────────
 router.get('/users', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
 router.get('/stations', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
 router.get('/products', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
-router.get('/contact', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
 router.get('/newsletter', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))
 
 module.exports = router

@@ -9,7 +9,7 @@ export const adminService = {
   getUsers: () => api.get('/admin/users'),
   getStations: () => api.get('/admin/stations'),
   getProducts: () => api.get('/admin/products'),
-  getContactSubmissions: () => api.get('/admin/contact'),
+  getContactSubmissions: () => api.get('/admin/leads'),
   getNewsletterSubscribers: () => api.get('/admin/newsletter'),
   getSettings: () => api.get('/admin/settings'),
   getSEOConfigs: () => api.get('/admin/seo'),
@@ -69,6 +69,14 @@ export const adminService = {
   createDownload: (data) => api.post('/admin/downloads', data),
   updateDownload: (id, data) => api.put(`/admin/downloads/${id}`, data),
   deleteDownload: (id) => api.delete(`/admin/downloads/${id}`),
+
+  // RFQ Enquiries & Lead Management CRUD
+  getLeads: (params) => api.get('/admin/leads', { params }),
+  getLeadById: (id) => api.get(`/admin/leads/${id}`),
+  createLead: (data) => api.post('/leads', data),
+  updateLead: (id, data) => api.put(`/admin/leads/${id}`, data),
+  updateLeadStatus: (id, status) => api.patch(`/admin/leads/${id}/status`, { status }),
+  deleteLead: (id) => api.delete(`/admin/leads/${id}`),
 
   // Cloudinary Media Upload
   uploadMedia: (formData) => api.post('/media/upload', formData, {
