@@ -13,7 +13,6 @@ export const adminService = {
   getStations: () => api.get('/admin/stations'),
   getProducts: () => api.get('/admin/products'),
   getContactSubmissions: () => api.get('/admin/leads'),
-  getSettings: () => api.get('/admin/settings'),
   getSEOConfigs: () => api.get('/admin/seo'),
   getMediaFiles: () => api.get('/admin/media'),
 
@@ -94,6 +93,13 @@ export const adminService = {
   subscribeNewsletter: (data) => api.post('/newsletters', data),
   deleteNewsletter: (id) => api.delete(`/admin/newsletter/${id}`),
   bulkDeleteNewsletters: (ids) => api.post('/admin/newsletter/bulk-delete', { ids }),
+
+  // Website Global Settings CRUD
+  getSettings: (params) => api.get('/admin/settings', { params }),
+  getSettingById: (id) => api.get(`/admin/settings/${id}`),
+  createSetting: (data) => api.post('/admin/settings', data),
+  updateSetting: (id, data) => api.put(`/admin/settings/${id}`, data),
+  deleteSetting: (id) => api.delete(`/admin/settings/${id}`),
 
   // Cloudinary Media Upload
   uploadMedia: (formData) => api.post('/media/upload', formData, {

@@ -22,6 +22,7 @@ const Lead = require('./Lead')
 const DealerApplication = require('./DealerApplication')
 const Newsletter = require('./Newsletter')
 const ActivityLog = require('./ActivityLog')
+const Setting = require('./Setting')
 
 // Define Non-Circular Model Associations
 User.hasMany(Station, { foreignKey: 'operator_id', as: 'operatedStations', onDelete: 'SET NULL', onUpdate: 'CASCADE' })
@@ -66,4 +67,5 @@ module.exports = {
   DealerApplication,
   Newsletter,
   ActivityLog,
+  Setting,
 }

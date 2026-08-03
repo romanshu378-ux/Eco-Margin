@@ -12,6 +12,7 @@ const publicRoutes = require('./public.routes');
 const leadRoutes = require('./leadRoutes');
 const dealerRoutes = require('./dealerRoutes');
 const newsletterRoutes = require('./newsletterRoutes');
+const settingRoutes = require('./settingRoutes');
 const mediaController = require('../controllers/mediaController');
 
 // Mount domain routes
@@ -27,6 +28,7 @@ router.use('/public', publicRoutes);
 router.use('/leads', leadRoutes);
 router.use('/dealer-applications', dealerRoutes);
 router.use('/newsletters', newsletterRoutes);
+router.use('/settings', settingRoutes);
 
 // Media Upload & Delete Endpoints
 router.post('/media/upload', mediaController.uploadMedia);

@@ -19,6 +19,7 @@ const leadRoutes = require('./leadRoutes')
 const dashboardRoutes = require('./dashboardRoutes')
 const dealerRoutes = require('./dealerRoutes')
 const newsletterRoutes = require('./newsletterRoutes')
+const settingRoutes = require('./settingRoutes')
 
 // Protect all admin routes
 router.use(protect)
@@ -54,7 +55,7 @@ router.delete('/media/:public_id', async (req, res, next) => {
   }
 })
 
-// ── Domain Admin CMS & Enquiries Routes ──────────────────────────────
+// ── Domain Admin CMS, Enquiries & Settings Routes ────────────────────
 router.use('/downloads', downloadsRoutes)
 router.use('/categories', categoryRoutes)
 router.use('/industries', industryRoutes)
@@ -66,6 +67,7 @@ router.use('/contact', leadRoutes)
 router.use('/dealer-applications', dealerRoutes)
 router.use('/newsletter', newsletterRoutes)
 router.use('/newsletters', newsletterRoutes)
+router.use('/settings', settingRoutes)
 
 // ── Resource Endpoints ───────────────────────────────────────────────
 router.get('/users', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))

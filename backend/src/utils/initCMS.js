@@ -5,7 +5,7 @@
 const { 
   Homepage, About, Manufacturing, Footer, SEO, Download, 
   Category, Industry, Project, Gallery, Blog, Lead, 
-  DealerApplication, Newsletter, ActivityLog 
+  DealerApplication, Newsletter, ActivityLog, Setting 
 } = require('../models')
 const logger = require('../config/logger')
 
@@ -154,6 +154,16 @@ const defaultActivities = [
   { action: 'Blog Article Published', type: 'Blog', description: 'Published whitepaper "Understanding ARAI AIS-138 Certification"', ipAddress: '127.0.0.1' }
 ]
 
+const defaultSettings = [
+  { key: 'site_name', value: 'EcoMargin Infrastructure Pvt. Ltd.', category: 'General', description: 'Official corporate entity & brand name' },
+  { key: 'contact_email', value: 'sales@ecomargin.com', category: 'Contact & Sales', description: 'Primary email address for sales enquiries' },
+  { key: 'support_phone', value: '+91-8302313065', category: 'Contact & Sales', description: '24/7 NOC & Support hotline number' },
+  { key: 'ocpp_server_url', value: 'wss://csms.ecomargin.com/ocpp/1.6J', category: 'Hardware & Grid', description: 'Central OCPP WebSocket endpoint' },
+  { key: 'max_dc_power_kw', value: '240', category: 'Hardware & Grid', description: 'Maximum supported DC fast charger output capacity (kW)' },
+  { key: 'meta_title_default', value: 'EcoMargin | EV Charger Manufacturer & EPC Infrastructure Company', category: 'SEO & Analytics', description: 'Default global HTML title tag fallback' },
+  { key: 'google_analytics_id', value: 'G-ECOMARGIN2026', category: 'SEO & Analytics', description: 'Google Analytics 4 Measurement Tracking ID' }
+]
+
 /**
  * Initializes default CMS content ONLY IF tables are completely empty.
  * If any record already exists, it is left untouched.
@@ -248,6 +258,12 @@ async function initCMSDefaults() {
     if (activityCount === 0) {
       await ActivityLog.bulkCreate(defaultActivities)
       logger.info('🌱 Created initial Activity Log records (table was empty)')
+    }
+
+    const settingCount = await Setting.count()
+    if (settingCount === 0) {
+      await Setting.bulkCreate(defaultSettings)
+      logger.info('🌱 Created default Website Settings records (table was empty)')
     }
   } catch (error) {
     logger.error('❌ Error initializing CMS defaults:', error)
