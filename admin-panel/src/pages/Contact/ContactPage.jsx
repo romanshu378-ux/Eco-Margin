@@ -5,7 +5,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { 
   FiMail, FiPhone, FiUser, FiBriefcase, FiCalendar, FiSearch, 
   FiFilter, FiRefreshCw, FiEdit2, FiTrash2, FiCheck, FiAlertCircle, 
-  FiX, FiSave, FiInbox, FiClock, FiCheckCircle2
+  FiX, FiSave, FiInbox, FiClock, FiCheckCircle
 } from 'react-icons/fi';
 import adminService from '../../services/adminService';
 
@@ -252,7 +252,7 @@ export default function ContactPage() {
 
         <div className="card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(107, 114, 128, 0.15)', color: '#6b7280', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
-            <FiCheckCircle2 />
+            <FiCheckCircle />
           </div>
           <div>
             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Closed Leads</div>
