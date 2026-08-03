@@ -1,35 +1,41 @@
 // EcoMargin Frontend — Dynamic Contact Page Component
 // src/pages/Contact/ContactPage.jsx
+
 import React, { useState } from 'react'
 import SEO from '@seo/SEO'
 import Button from '@components/ui/Button/Button'
 import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer, slideInRight } from '@animations/variants'
 import PageHeader from '@components/common/PageHeader/PageHeader'
-import { FiPhoneCall, FiMail, FiMapPin, FiClock, FiMessageCircle, FiSend, FiCheckCircle } from 'react-icons/fi'
+import { 
+  FiPhoneCall, FiMail, FiMapPin, FiClock, FiMessageCircle, 
+  FiSend, FiCheckCircle, FiAlertCircle, FiGlobe
+} from 'react-icons/fi'
 import { useFooterCMS } from '../../hooks/useCMS'
 import publicApi from '../../services/publicApi'
 
 export default function ContactPage() {
-  const { data: footerData } = useFooterCMS()
+  const { data: footerData, loading, error } = useFooterCMS()
 
-  const companyName = footerData?.companyName || ''
-  const address = footerData?.address || ''
-  const phone = footerData?.phone || ''
-  const altPhone = footerData?.altPhone || ''
-  const email = footerData?.email || ''
-  const supportEmail = footerData?.supportEmail || ''
+  // Match all exact fields returned by Footer CMS API
+  const companyName = footerData?.companyName || 'Not Available'
+  const address = footerData?.address || 'Not Available'
+  const phone = footerData?.phone || 'Not Available'
+  const altPhone = footerData?.altPhone || 'Not Available'
+  const email = footerData?.email || 'Not Available'
+  const supportEmail = footerData?.supportEmail || 'Not Available'
   const rawWhatsapp = footerData?.whatsapp || ''
-  const businessHours = footerData?.businessHours || ''
-  const mapsEmbedUrl = footerData?.googleMapsEmbedUrl || ''
+  const businessHours = footerData?.businessHours || 'Not Available'
+  const googleMapsEmbedUrl = footerData?.googleMapsEmbedUrl || ''
 
   // Sanitize WhatsApp number to digits-only format (e.g. 918302313065)
   let cleanWhatsapp = rawWhatsapp.replace(/[^0-9]/g, '')
-  if (cleanWhatsapp.length === 10) {
+  if (cleanWhatsapp && cleanWhatsapp.length === 10) {
     cleanWhatsapp = '91' + cleanWhatsapp
   }
 
   const [isSent, setIsSent] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -41,6 +47,7 @@ export default function ContactPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setSubmitting(true)
     try {
       await publicApi.submitRFQ({
         name: formData.name,
@@ -51,9 +58,11 @@ export default function ContactPage() {
         requirements: formData.message
       })
     } catch (err) {
-      console.warn('Form submit offline fallback:', err.message)
+      console.warn('⚠️ [Contact RFQ Form Submission]:', err.message)
+    } finally {
+      setSubmitting(false)
+      setIsSent(true)
     }
-    setIsSent(true)
   }
 
   return (
@@ -67,36 +76,54 @@ export default function ContactPage() {
 
       <div className="container" style={{ padding: '5rem 0' }}>
 
-        {/* Quick Action Badges */}
-        <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '4rem' }}>
-          {cleanWhatsapp && (
-            <a
-              href={`https://wa.me/${cleanWhatsapp}?text=Hello%20EcoMargin%20Sales,%20I%20want%20a%20quote%20for%20EV%20Chargers`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.65rem', background: '#25D366', color: '#ffffff', padding: '0.85rem 1.75rem', borderRadius: '9999px', fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem' }}
-            >
-              <FiMessageCircle style={{ fontSize: '1.3rem' }} /> Chat on WhatsApp Sales
-            </a>
-          )}
+        {/* Loading Indicator */}
+        {loading && (
+          <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--color-primary)' }}>
+            <div style={{ width: '40px', height: '40px', borderRadius: '50%', border: '3px solid var(--color-border)', borderTopColor: 'var(--color-primary)', animation: 'spin 1s linear infinite', margin: '0 auto 1rem auto' }}></div>
+            <span>Loading factory contact details from database...</span>
+            <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
+          </div>
+        )}
 
-          {phone && (
-            <a
-              href={`tel:${phone}`}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.65rem', background: 'var(--color-primary)', color: '#0f0f1a', padding: '0.85rem 1.75rem', borderRadius: '9999px', fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem' }}
-            >
-              <FiPhoneCall style={{ fontSize: '1.2rem' }} /> Call Sales Desk {phone}
-            </a>
-          )}
-        </div>
+        {/* Error Alert */}
+        {error && (
+          <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid #ef4444', padding: '1rem 1.5rem', borderRadius: 'var(--radius-md)', marginBottom: '2.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <FiAlertCircle style={{ fontSize: '1.25rem' }} /> Notice: {error}
+          </div>
+        )}
+
+        {/* Quick Action Badges */}
+        {!loading && (
+          <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center', marginBottom: '4rem' }}>
+            {cleanWhatsapp && (
+              <a
+                href={`https://wa.me/${cleanWhatsapp}?text=Hello%20EcoMargin%20Sales,%20I%20want%20a%20quote%20for%20EV%20Chargers`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.65rem', background: '#25D366', color: '#ffffff', padding: '0.85rem 1.75rem', borderRadius: '9999px', fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem' }}
+              >
+                <FiMessageCircle style={{ fontSize: '1.3rem' }} /> Chat on WhatsApp Sales
+              </a>
+            )}
+
+            {phone !== 'Not Available' && (
+              <a
+                href={`tel:${phone}`}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.65rem', background: 'var(--color-primary)', color: '#0f0f1a', padding: '0.85rem 1.75rem', borderRadius: '9999px', fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem' }}
+              >
+                <FiPhoneCall style={{ fontSize: '1.2rem' }} /> Call Sales Desk ({phone})
+              </a>
+            )}
+          </div>
+        )}
 
         <motion.div variants={staggerContainer} initial="hidden" animate="visible" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '4rem', alignItems: 'flex-start' }}>
 
-          {/* Left Info */}
+          {/* Left Info: Factory & Contact CMS Data */}
           <motion.div variants={fadeUp}>
             <h2 style={{ fontSize: '2rem', marginBottom: '1rem', fontFamily: 'Outfit, sans-serif' }}>Factory Headquarters</h2>
             <p style={{ color: 'var(--color-text-muted)', fontSize: '1.05rem', marginBottom: '2.5rem', lineHeight: 1.6 }}>
-              Visit our state-of-the-art manufacturing plant or send your technical specification document to our engineering sales team.
+              Visit our state-of-the-art manufacturing facility or send your technical specifications to our engineering sales team.
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem', marginBottom: '3rem' }}>
@@ -115,9 +142,9 @@ export default function ContactPage() {
                 <div style={{ fontSize: '1.5rem', color: 'var(--color-primary)' }}><FiMail /></div>
                 <div>
                   <h4 style={{ marginBottom: '0.25rem' }}>Email & Phone Inquiries</h4>
-                  <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-                    Sales & RFQs: <strong>{email}</strong> {phone ? `• ${phone}` : ''}<br />
-                    Technical Support: <strong>{supportEmail}</strong> {altPhone ? `• ${altPhone}` : ''}
+                  <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', lineHeight: 1.6 }}>
+                    Sales & RFQs: <strong>{email}</strong> {phone !== 'Not Available' ? `• ${phone}` : ''}<br />
+                    Technical Support: <strong>{supportEmail}</strong> {altPhone !== 'Not Available' ? `• ${altPhone}` : ''}
                   </p>
                 </div>
               </div>
@@ -126,7 +153,7 @@ export default function ContactPage() {
                 <div style={{ fontSize: '1.5rem', color: 'var(--color-primary)' }}><FiClock /></div>
                 <div>
                   <h4 style={{ marginBottom: '0.25rem' }}>Business Hours</h4>
-                  <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
+                  <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', lineHeight: 1.6 }}>
                     {businessHours}<br />
                     24/7 Remote NOC Desk Active
                   </p>
@@ -134,14 +161,18 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Google Map */}
-            {mapsEmbedUrl && (
-              <div style={{ width: '100%', height: '220px', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--color-border)', background: 'var(--color-bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {/* Google Map iFrame */}
+            {googleMapsEmbedUrl ? (
+              <div style={{ width: '100%', height: '230px', borderRadius: 'var(--radius-lg)', overflow: 'hidden', border: '1px solid var(--color-border)', background: 'var(--color-bg-card)' }}>
                 <iframe
                   title="EcoMargin Factory Location"
-                  src={mapsEmbedUrl}
+                  src={googleMapsEmbedUrl}
                   width="100%" height="100%" style={{ border: 0 }} allowFullScreen="" loading="lazy"
                 ></iframe>
+              </div>
+            ) : (
+              <div style={{ width: '100%', height: '140px', borderRadius: 'var(--radius-lg)', border: '1px dashed var(--color-border)', background: 'var(--color-bg-card)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-text-muted)', fontSize: '0.9rem', gap: '0.5rem' }}>
+                <FiGlobe /> Map Location Not Available
               </div>
             )}
           </motion.div>
@@ -201,44 +232,44 @@ export default function ContactPage() {
                   <input
                     type="text" required value={formData.company}
                     onChange={e => setFormData({ ...formData, company: e.target.value })}
-                    placeholder="e.g. GreenTrans Logistics Ltd"
+                    placeholder="e.g. National Logistics Ltd."
                     style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none' }}
                   />
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Requirement Type</label>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Equipment Requirement</label>
                   <select
                     value={formData.requirement}
                     onChange={e => setFormData({ ...formData, requirement: e.target.value })}
                     style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none' }}
                   >
-                    <option value="AC / DC Charger Purchase">AC / DC Charger Bulk Purchase</option>
-                    <option value="Turnkey EPC Installation">Turnkey EPC Station Installation</option>
-                    <option value="OCPP CSMS Software Setup">OCPP CSMS Cloud Software</option>
-                    <option value="Dealer / Distributor Inquiry">Dealer / Distributor Partnership</option>
-                    <option value="AMC & Service Contract">AMC & Maintenance Contract</option>
+                    <option value="AC / DC Charger Purchase">AC / DC Fast Charger Hardware Purchase</option>
+                    <option value="Turnkey EPC Installation">Turnkey Substation & Charging Plinth EPC</option>
+                    <option value="White Label CPO CSMS Software">White Label OCPP CSMS Software & App</option>
+                    <option value="AMC & Operation Services">AMC Maintenance & NOC Field Support</option>
                   </select>
                 </div>
 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Project Message / Requirements</label>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Message / RFQ Specs</label>
                   <textarea
                     rows="3" value={formData.message}
                     onChange={e => setFormData({ ...formData, message: e.target.value })}
-                    placeholder="Mention charger quantity, target location, or technical requirements..."
-                    style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none', resize: 'vertical' }}
-                  />
+                    placeholder="Provide charger quantities, desired kW output (e.g. 60kW Dual CCS2), location..."
+                    style={{ width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)', background: 'var(--color-bg)', border: '1px solid var(--color-border)', color: 'var(--color-text)', outline: 'none' }}
+                  ></textarea>
                 </div>
 
-                <Button type="submit" variant="primary" fullWidth style={{ marginTop: '0.5rem' }}>
-                  Submit Inquiry <FiSend style={{ marginLeft: '0.5rem' }} />
+                <Button type="submit" variant="primary" fullWidth disabled={submitting} style={{ marginTop: '0.5rem' }}>
+                  {submitting ? 'Submitting Quotation...' : <>Submit RFQ Quotation <FiSend style={{ marginLeft: '0.5rem' }} /></>}
                 </Button>
               </form>
             )}
           </motion.div>
 
         </motion.div>
+
       </div>
     </>
   )

@@ -14,6 +14,9 @@ export const publicApi = {
       return { success: false, data: null }
     }
   },
+  getHomepageCMS: async () => {
+    return publicApi.getHomepage()
+  },
 
   // Fetch About Page CMS Data
   getAbout: async () => {
@@ -24,6 +27,9 @@ export const publicApi = {
       console.warn('[PublicAPI] Offline fallback for about:', error.message)
       return { success: false, data: null }
     }
+  },
+  getAboutCMS: async () => {
+    return publicApi.getAbout()
   },
 
   // Fetch Manufacturing Page CMS Data
@@ -36,6 +42,9 @@ export const publicApi = {
       return { success: false, data: null }
     }
   },
+  getManufacturingCMS: async () => {
+    return publicApi.getManufacturing()
+  },
 
   // Fetch Footer & Contact Info CMS Data
   getFooter: async () => {
@@ -46,6 +55,9 @@ export const publicApi = {
       console.warn('[PublicAPI] Offline fallback for footer:', error.message)
       return { success: false, data: null }
     }
+  },
+  getFooterCMS: async () => {
+    return publicApi.getFooter()
   },
 
   // Fetch Contact Page Info
@@ -58,6 +70,9 @@ export const publicApi = {
       return { success: false, data: null }
     }
   },
+  getContactCMS: async () => {
+    return publicApi.getFooter()
+  },
 
   // Fetch Global SEO Metadata
   getSEO: async () => {
@@ -68,6 +83,9 @@ export const publicApi = {
       console.warn('[PublicAPI] Offline fallback for SEO:', error.message)
       return { success: false, data: null }
     }
+  },
+  getSEOCMS: async () => {
+    return publicApi.getSEO()
   },
 
   // Fetch Active Product Categories
