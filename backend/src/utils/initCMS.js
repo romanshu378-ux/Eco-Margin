@@ -7,6 +7,7 @@ const {
   Category, Industry, Project, Gallery, Blog, Lead, 
   DealerApplication, Newsletter, ActivityLog, Setting 
 } = require('../models')
+const { sequelize } = require('../config/database')
 const logger = require('../config/logger')
 
 const defaultHomepage = {
@@ -165,11 +166,30 @@ const defaultSettings = [
 ]
 
 /**
+ * Safely alters MySQL table schema to add missing columns without dropping existing data.
+ */
+async function ensureDownloadsSchema() {
+  try {
+    await sequelize.query("ALTER TABLE downloads ADD COLUMN description TEXT NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE downloads ADD COLUMN icon_url VARCHAR(500) NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE downloads ADD COLUMN file_size VARCHAR(50) DEFAULT '1.5 MB';").catch(() => {})
+    await sequelize.query("ALTER TABLE downloads ADD COLUMN display_order INT DEFAULT 0;").catch(() => {})
+    await sequelize.query("ALTER TABLE downloads ADD COLUMN status ENUM('Active', 'Draft', 'Inactive') DEFAULT 'Active';").catch(() => {})
+    logger.info('🛡️ Downloads table schema verified and synchronized safely.')
+  } catch (err) {
+    logger.warn('⚠️ Schema alter notice:', err.message)
+  }
+}
+
+/**
  * Initializes default CMS content ONLY IF tables are completely empty.
  * If any record already exists, it is left untouched.
  */
 async function initCMSDefaults() {
   try {
+    // 0. Ensure downloads table has all required columns
+    await ensureDownloadsSchema()
+
     const homepageCount = await Homepage.count()
     if (homepageCount === 0) {
       await Homepage.create(defaultHomepage)

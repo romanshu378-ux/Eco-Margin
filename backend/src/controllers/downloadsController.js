@@ -4,12 +4,26 @@
 'use strict'
 
 const { Download, ActivityLog } = require('../models')
+const { sequelize } = require('../config/database')
 
 // Helper for cache headers
 const setNoCache = (res) => {
   res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
   res.setHeader('Pragma', 'no-cache')
   res.setHeader('Expires', '0')
+}
+
+// Safely ensure downloads table has all required columns
+async function autoMigrateDownloadsSchema() {
+  try {
+    await sequelize.query("ALTER TABLE downloads ADD COLUMN description TEXT NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE downloads ADD COLUMN icon_url VARCHAR(500) NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE downloads ADD COLUMN file_size VARCHAR(50) DEFAULT '1.5 MB';").catch(() => {})
+    await sequelize.query("ALTER TABLE downloads ADD COLUMN display_order INT DEFAULT 0;").catch(() => {})
+    await sequelize.query("ALTER TABLE downloads ADD COLUMN status ENUM('Active', 'Draft', 'Inactive') DEFAULT 'Active';").catch(() => {})
+  } catch (err) {
+    // Ignore duplicate column errors
+  }
 }
 
 // GET /api/v1/admin/downloads or /api/downloads (Fetch all documents for admin)
@@ -25,6 +39,22 @@ exports.getAllDownloads = async (req, res) => {
       data: downloads
     })
   } catch (error) {
+    if (error.message && (error.message.includes('Unknown column') || error.message.includes('ER_BAD_FIELD_ERROR'))) {
+      console.warn('⚠️ [Downloads Schema Warning] Missing columns detected. Executing auto-migration...')
+      try {
+        await autoMigrateDownloadsSchema()
+        const retriedDownloads = await Download.findAll({
+          order: [['displayOrder', 'ASC'], ['id', 'DESC']]
+        })
+        return res.status(200).json({
+          success: true,
+          message: 'Downloads retrieved successfully after schema sync',
+          data: retriedDownloads
+        })
+      } catch (retryError) {
+        console.error('❌ [Auto Migration Failed]:', retryError)
+      }
+    }
     console.error('❌ [Downloads Fetch Error]:', error)
     return res.status(500).json({
       success: false,
@@ -47,6 +77,23 @@ exports.getPublicDownloads = async (req, res) => {
       data: downloads
     })
   } catch (error) {
+    if (error.message && (error.message.includes('Unknown column') || error.message.includes('ER_BAD_FIELD_ERROR'))) {
+      console.warn('⚠️ [Public Downloads Schema Warning] Missing columns detected. Executing auto-migration...')
+      try {
+        await autoMigrateDownloadsSchema()
+        const retriedDownloads = await Download.findAll({
+          where: { status: 'Active' },
+          order: [['displayOrder', 'ASC'], ['id', 'DESC']]
+        })
+        return res.status(200).json({
+          success: true,
+          message: 'Active public downloads retrieved successfully after schema sync',
+          data: retriedDownloads
+        })
+      } catch (retryError) {
+        console.error('❌ [Auto Migration Failed]:', retryError)
+      }
+    }
     console.error('❌ [Public Downloads Fetch Error]:', error)
     return res.status(500).json({
       success: false,
@@ -94,6 +141,8 @@ exports.createDownload = async (req, res) => {
   }
 
   try {
+    await autoMigrateDownloadsSchema()
+
     const newDownload = await Download.create({
       name: docTitle,
       category: category ? category.trim() : 'Technical Datasheet',
@@ -134,6 +183,8 @@ exports.updateDownload = async (req, res) => {
   const { name, title, category, description, fileSize, fileUrl, pdfUrl, iconUrl, displayOrder, status } = req.body
 
   try {
+    await autoMigrateDownloadsSchema()
+
     const download = await Download.findByPk(id)
     if (!download) {
       return res.status(404).json({
