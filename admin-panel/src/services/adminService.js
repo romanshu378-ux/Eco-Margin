@@ -59,55 +59,42 @@ export const adminService = {
   updateGallery: (id, data) => api.put(`/admin/gallery/${id}`, data),
   deleteGallery: (id) => api.delete(`/admin/gallery/${id}`),
 
-  // Blogs & Insights CRUD
+  // Whitepapers & Blogs CRUD
   getBlogs: () => api.get('/admin/blogs'),
   createBlog: (data) => api.post('/admin/blogs', data),
   updateBlog: (id, data) => api.put(`/admin/blogs/${id}`, data),
   deleteBlog: (id) => api.delete(`/admin/blogs/${id}`),
 
-  // Downloads CRUD
-  getDownloads: () => api.get('/admin/downloads'),
-  createDownload: (data) => api.post('/admin/downloads', data),
-  updateDownload: (id, data) => api.put(`/admin/downloads/${id}`, data),
-  deleteDownload: (id) => api.delete(`/admin/downloads/${id}`),
-
-  // RFQ Enquiries & Lead Management CRUD
-  getLeads: (params) => api.get('/admin/leads', { params }),
-  getLeadById: (id) => api.get(`/admin/leads/${id}`),
-  createLead: (data) => api.post('/leads', data),
+  // Enquiries & Leads Management CRUD
+  getLeads: () => api.get('/admin/leads'),
+  createLead: (data) => api.post('/admin/leads', data),
   updateLead: (id, data) => api.put(`/admin/leads/${id}`, data),
-  updateLeadStatus: (id, status) => api.patch(`/admin/leads/${id}/status`, { status }),
   deleteLead: (id) => api.delete(`/admin/leads/${id}`),
 
-  // Dealer Partner Applications CRUD
-  getDealerApplications: (params) => api.get('/admin/dealer-applications', { params }),
-  getDealerById: (id) => api.get(`/admin/dealer-applications/${id}`),
-  createDealer: (data) => api.post('/dealer-applications', data),
-  updateDealer: (id, data) => api.put(`/admin/dealer-applications/${id}`, data),
-  updateDealerStatus: (id, status) => api.patch(`/admin/dealer-applications/${id}/status`, { status }),
+  // Dealer Applications Management CRUD
+  getDealers: () => api.get('/admin/dealer-applications'),
+  updateDealerStatus: (id, data) => api.put(`/admin/dealer-applications/${id}`, data),
   deleteDealer: (id) => api.delete(`/admin/dealer-applications/${id}`),
-  bulkDeleteDealers: (ids) => api.post('/admin/dealer-applications/bulk-delete', { ids }),
 
-  // Newsletter Subscribers CRUD
-  getNewsletters: (params) => api.get('/admin/newsletter', { params }),
-  subscribeNewsletter: (data) => api.post('/newsletters', data),
-  deleteNewsletter: (id) => api.delete(`/admin/newsletter/${id}`),
-  bulkDeleteNewsletters: (ids) => api.post('/admin/newsletter/bulk-delete', { ids }),
+  // Newsletter Subscribers Management CRUD
+  getNewsletters: () => api.get('/admin/newsletters'),
+  deleteNewsletter: (id) => api.delete(`/admin/newsletters/${id}`),
 
-  // Website Global Settings CRUD
-  getSettings: (params) => api.get('/admin/settings', { params }),
-  getSettingById: (id) => api.get(`/admin/settings/${id}`),
+  // Website Global System Settings CRUD
+  getSettings: () => api.get('/admin/settings'),
   createSetting: (data) => api.post('/admin/settings', data),
   updateSetting: (id, data) => api.put(`/admin/settings/${id}`, data),
   deleteSetting: (id) => api.delete(`/admin/settings/${id}`),
 
-  // Cloudinary Media Upload
-  uploadMedia: (formData) => api.post('/media/upload', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  }),
-  uploadPdf: (formData) => api.post('/media/upload', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
-  }),
+  // Website Logo Manager CRUD
+  getLogos: () => api.get('/admin/logo'),
+  uploadLogo: (formData) => api.post('/admin/logo/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  updateLogo: (id, data) => api.put(`/admin/logo/${id}`, data),
+  deleteLogo: (id) => api.delete(`/admin/logo/${id}`),
+
+  // Media File Upload / Cloudinary Integration
+  uploadMedia: (formData) => api.post('/admin/media/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  deleteMedia: (publicId) => api.delete(`/admin/media/${publicId}`)
 };
 
 export default adminService;

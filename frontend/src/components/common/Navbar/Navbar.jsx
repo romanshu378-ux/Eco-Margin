@@ -5,12 +5,17 @@ import LogoIcon from '@assets/icons/LogoIcon'
 import ThemeToggle from '../ThemeToggle/ThemeToggle'
 import Button from '../../ui/Button/Button'
 import QuoteModal from '../QuoteModal/QuoteModal'
+import { useLogos } from '../../../hooks/useCMS'
 
 export default function Navbar() {
+  const { logos } = useLogos()
   const [isScrolled, setIsScrolled] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
   const location = useLocation()
+
+  const headerLogoUrl = logos?.header?.imageUrl || logos?.white_logo?.imageUrl
+  const headerLogoAlt = logos?.header?.altText || 'EcoMargin Corporate Logo'
 
   useEffect(() => {
     const handleScroll = () => {
@@ -28,10 +33,9 @@ export default function Navbar() {
     { name: 'Products', path: '/products' },
     { name: 'Manufacturing', path: '/manufacturing' },
     { name: 'Services', path: '/services' },
-    { name: 'Solutions', path: '/solutions' },
     { name: 'Projects', path: '/projects' },
-    { name: 'Dealer Partner', path: '/dealer-partner' },
-    { name: 'Downloads', path: '/downloads' },
+    { name: 'Certificates', path: '/downloads' },
+    { name: 'About Us', path: '/about' },
     { name: 'Contact', path: '/contact' }
   ]
 
@@ -55,17 +59,27 @@ export default function Navbar() {
           
           {/* Corporate Logo */}
           <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-            <div style={{ color: 'var(--color-primary)' }}>
-              <LogoIcon size={34} />
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontFamily: 'Outfit', fontSize: '1.4rem', fontWeight: '800', letterSpacing: '0.5px', color: '#ffffff', lineHeight: 1.1 }}>
-                EcoMargin
-              </span>
-              <span style={{ fontSize: '0.65rem', fontWeight: 600, color: 'var(--color-primary)', letterSpacing: '1px', textTransform: 'uppercase' }}>
-                EV Infrastructure
-              </span>
-            </div>
+            {headerLogoUrl ? (
+              <img 
+                src={headerLogoUrl} 
+                alt={headerLogoAlt} 
+                style={{ height: '36px', width: 'auto', objectFit: 'contain' }} 
+              />
+            ) : (
+              <>
+                <div style={{ color: 'var(--color-primary)' }}>
+                  <LogoIcon size={34} />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <span style={{ fontFamily: 'Outfit', fontSize: '1.4rem', fontWeight: '800', letterSpacing: '0.5px', color: '#ffffff', lineHeight: 1.1 }}>
+                    EcoMargin
+                  </span>
+                  <span style={{ fontSize: '0.65rem', fontWeight: 600, color: 'var(--color-primary)', letterSpacing: '1px', textTransform: 'uppercase' }}>
+                    EV Infrastructure
+                  </span>
+                </div>
+              </>
+            )}
           </Link>
 
           {/* Desktop Nav */}
@@ -73,119 +87,94 @@ export default function Navbar() {
             <ul style={{ display: 'flex', gap: '1.5rem', listStyle: 'none', alignItems: 'center' }}>
               {navLinks.map((link) => (
                 <li key={link.name}>
-                  <Link 
+                  <Link
                     to={link.path}
-                    style={{ 
-                      fontSize: '0.875rem',
-                      fontWeight: '500', 
-                      color: location.pathname === link.path ? 'var(--color-primary)' : 'var(--color-text-muted)',
-                      transition: 'color 0.2s',
-                      position: 'relative'
+                    style={{
+                      color: location.pathname === link.path ? 'var(--color-primary)' : 'var(--color-text)',
+                      fontWeight: location.pathname === link.path ? '600' : '400',
+                      fontSize: '0.9rem',
+                      transition: 'color var(--transition-fast)'
                     }}
                   >
                     {link.name}
-                    {location.pathname === link.path && (
-                      <motion.div
-                        layoutId="nav-indicator"
-                        style={{
-                          position: 'absolute',
-                          bottom: '-4px',
-                          left: 0,
-                          right: 0,
-                          height: '2px',
-                          background: 'var(--color-primary)',
-                          borderRadius: '2px'
-                        }}
-                      />
-                    )}
                   </Link>
                 </li>
               ))}
             </ul>
           </nav>
 
-          {/* Desktop Actions */}
-          <div style={{ display: 'none', alignItems: 'center', gap: '1rem' }} className="desktop-actions">
+          {/* Actions */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <ThemeToggle />
-            <Button variant="primary" onClick={() => setQuoteModalOpen(true)}>
-              Request Quote
-            </Button>
-          </div>
-
-          {/* Mobile Toggle */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }} className="mobile-toggle">
-            <ThemeToggle />
-            <button 
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              style={{ color: 'var(--color-text)', background: 'none', border: 'none', cursor: 'pointer' }}
-            >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d={mobileMenuOpen ? "M18 6L6 18M6 6l12 12" : "M3 12h18M3 6h18M3 18h18"} strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-          </div>
-
-        </div>
-      </header>
-
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-            style={{
-              position: 'fixed',
-              top: '72px',
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'var(--color-bg)',
-              zIndex: 99,
-              padding: '2rem 1.5rem',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '2rem'
-            }}
-          >
-            <ul style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', listStyle: 'none' }}>
-              {navLinks.map((link) => (
-                <li key={link.name}>
-                  <Link 
-                    to={link.path}
-                    style={{ 
-                      fontSize: '1.25rem',
-                      fontFamily: 'Outfit',
-                      fontWeight: '600',
-                      color: location.pathname === link.path ? 'var(--color-primary)' : 'var(--color-text)'
-                    }}
-                  >
-                    {link.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: 'auto' }}>
-              <Button variant="primary" fullWidth onClick={() => { setMobileMenuOpen(false); setQuoteModalOpen(true); }}>
-                Request Commercial Quote
+            <div style={{ display: 'none' }} className="desktop-actions">
+              <Button variant="primary" size="sm" onClick={() => setQuoteModalOpen(true)}>
+                Request Quote
               </Button>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
+            {/* Mobile Hamburger */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="mobile-hamburger"
+              aria-label="Toggle menu"
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'var(--color-text)',
+                fontSize: '1.5rem',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center'
+              }}
+            >
+              {mobileMenuOpen ? '✕' : '☰'}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Navigation Drawer */}
+        <AnimatePresence>
+          {mobileMenuOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              style={{
+                background: 'var(--color-bg)',
+                borderBottom: '1px solid var(--color-border)',
+                overflow: 'hidden'
+              }}
+            >
+              <div className="container" style={{ padding: '1.5rem 1rem' }}>
+                <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {navLinks.map((link) => (
+                    <li key={link.name}>
+                      <Link
+                        to={link.path}
+                        style={{
+                          fontSize: '1.1rem',
+                          color: location.pathname === link.path ? 'var(--color-primary)' : 'var(--color-text)',
+                          fontWeight: location.pathname === link.path ? '600' : '400'
+                        }}
+                      >
+                        {link.name}
+                      </Link>
+                    </li>
+                  ))}
+                  <li style={{ paddingTop: '0.5rem' }}>
+                    <Button variant="primary" fullWidth onClick={() => { setMobileMenuOpen(false); setQuoteModalOpen(true); }}>
+                      Request Quote
+                    </Button>
+                  </li>
+                </ul>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </header>
+
+      {/* Global RFQ Quote Modal */}
       <QuoteModal isOpen={quoteModalOpen} onClose={() => setQuoteModalOpen(false)} />
-
-      <style>{`
-        @media (min-width: 992px) {
-          .desktop-nav { display: block !important; }
-          .desktop-actions { display: flex !important; }
-          .mobile-toggle { display: none !important; }
-        }
-      `}</style>
     </>
   )
 }

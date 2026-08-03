@@ -88,6 +88,20 @@ export const publicApi = {
     return publicApi.getSEO()
   },
 
+  // Fetch Website Branding Logos (Header, Footer, White Logo, Favicon)
+  getLogos: async () => {
+    try {
+      const response = await api.get('/public/logo')
+      return response
+    } catch (error) {
+      console.warn('[PublicAPI] Offline fallback for logos:', error.message)
+      return { success: false, data: [], map: {} }
+    }
+  },
+  getLogoCMS: async () => {
+    return publicApi.getLogos()
+  },
+
   // Fetch Active Product Categories
   getCategories: async () => {
     try {
@@ -99,7 +113,7 @@ export const publicApi = {
     }
   },
 
-  // Fetch Active Industries & Sectors
+  // Fetch Active Industry Sectors
   getIndustries: async () => {
     try {
       const response = await api.get('/public/industries')
@@ -110,7 +124,7 @@ export const publicApi = {
     }
   },
 
-  // Fetch EPC Projects Portfolio
+  // Fetch Active Completed Projects
   getProjects: async () => {
     try {
       const response = await api.get('/public/projects')
@@ -121,7 +135,7 @@ export const publicApi = {
     }
   },
 
-  // Fetch Factory & Plant Gallery Photos
+  // Fetch Active Gallery Items
   getGallery: async () => {
     try {
       const response = await api.get('/public/gallery')
@@ -132,7 +146,7 @@ export const publicApi = {
     }
   },
 
-  // Fetch Blog Articles
+  // Fetch Published Blogs
   getBlogs: async () => {
     try {
       const response = await api.get('/public/blogs')
@@ -143,18 +157,18 @@ export const publicApi = {
     }
   },
 
-  // Fetch Blog Article by Slug
+  // Fetch Blog by Slug
   getBlogBySlug: async (slug) => {
     try {
       const response = await api.get(`/public/blogs/${slug}`)
       return response
     } catch (error) {
-      console.warn('[PublicAPI] Offline fallback for blog slug:', error.message)
+      console.warn(`[PublicAPI] Offline fallback for blog slug "${slug}":`, error.message)
       return { success: false, data: null }
     }
   },
 
-  // Fetch live products catalog (AC, LVDC, DC Fast Chargers)
+  // Fetch Active Products Catalog
   getProducts: async () => {
     try {
       const response = await api.get('/public/products')
@@ -165,7 +179,7 @@ export const publicApi = {
     }
   },
 
-  // Fetch live EPC & AMC services
+  // Fetch Active Services Catalog
   getServices: async () => {
     try {
       const response = await api.get('/public/services')
@@ -176,7 +190,7 @@ export const publicApi = {
     }
   },
 
-  // Fetch datasheets & certificates downloads
+  // Fetch Active Technical Downloads
   getDownloads: async () => {
     try {
       const response = await api.get('/public/downloads')

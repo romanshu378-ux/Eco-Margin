@@ -162,3 +162,40 @@ export function useSEO() {
 
   return { data, loading, error }
 }
+
+// 6. Hook for Branding Logos (Header, Footer, White Logo, Favicon)
+export function useLogos() {
+  const [logos, setLogos] = useState({ header: null, footer: null, favicon: null, white_logo: null })
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  useEffect(() => {
+    let isMounted = true
+    const fetchLogos = async () => {
+      try {
+        const res = await publicApi.getLogos()
+        let logoMap = { header: null, footer: null, favicon: null, white_logo: null }
+        if (res && res.map) {
+          logoMap = res.map
+        } else if (res && res.data && Array.isArray(res.data)) {
+          res.data.forEach(item => {
+            if (item.logoType) logoMap[item.logoType] = item
+          })
+        }
+        if (isMounted) {
+          setLogos(logoMap)
+        }
+      } catch (err) {
+        if (isMounted) setError(err.message)
+      } finally {
+        if (isMounted) setLoading(false)
+      }
+    }
+    fetchLogos()
+    return () => { isMounted = false }
+  }, [])
+
+  return { logos, loading, error }
+}
+
+export const useLogosCMS = useLogos

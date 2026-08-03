@@ -8,6 +8,7 @@ const router = express.Router()
 const publicController = require('../controllers/publicController')
 const dealerController = require('../controllers/dealerController')
 const newsletterController = require('../controllers/newsletterController')
+const logoController = require('../controllers/logoController')
 
 // Public Unauthenticated CMS GET Endpoints
 router.get('/homepage', publicController.getPublicHomepage)
@@ -16,6 +17,7 @@ router.get('/manufacturing', publicController.getPublicManufacturing)
 router.get('/footer', publicController.getPublicFooter)
 router.get('/contact', publicController.getPublicContact)
 router.get('/seo', publicController.getPublicSEO)
+router.get('/logo', logoController.getLogos)
 
 // Catalog & Portfolio Endpoints
 router.get('/categories', publicController.getPublicCategories)

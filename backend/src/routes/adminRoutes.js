@@ -20,6 +20,7 @@ const dashboardRoutes = require('./dashboardRoutes')
 const dealerRoutes = require('./dealerRoutes')
 const newsletterRoutes = require('./newsletterRoutes')
 const settingRoutes = require('./settingRoutes')
+const logoRoutes = require('./logoRoutes')
 
 // Protect all admin routes
 router.use(protect)
@@ -68,6 +69,7 @@ router.use('/dealer-applications', dealerRoutes)
 router.use('/newsletter', newsletterRoutes)
 router.use('/newsletters', newsletterRoutes)
 router.use('/settings', settingRoutes)
+router.use('/logo', logoRoutes)
 
 // ── Resource Endpoints ───────────────────────────────────────────────
 router.get('/users', (req, res) => paginateResponse(res, [], req.query.page, req.query.limit, 0, req.query))

@@ -4,11 +4,15 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import LogoIcon from '@assets/icons/LogoIcon'
 import { FiShield, FiCheckCircle, FiPhoneCall, FiMail, FiMapPin } from 'react-icons/fi'
-import { useFooterCMS } from '../../../hooks/useCMS'
+import { useFooterCMS, useLogos } from '../../../hooks/useCMS'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
   const { data: footerCMS } = useFooterCMS()
+  const { logos } = useLogos()
+
+  const footerLogoUrl = logos?.footer?.imageUrl || logos?.white_logo?.imageUrl
+  const footerLogoAlt = logos?.footer?.altText || 'EcoMargin Corporate Logo'
 
   const companyName = footerCMS?.companyName || ''
   const address = footerCMS?.address || ''

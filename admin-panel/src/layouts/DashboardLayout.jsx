@@ -60,6 +60,7 @@ export default function DashboardLayout() {
         { name: 'About Page CMS', path: '/cms/about', icon: <FiLayers /> },
         { name: 'Manufacturing CMS', path: '/cms/manufacturing', icon: <FiCpu /> },
         { name: 'Footer & Contact CMS', path: '/cms/footer', icon: <FiGlobe /> },
+        { name: 'Logo Manager', path: '/cms/logo', icon: <FiImage /> },
         { name: 'SEO & Schema Manager', path: '/seo', icon: <FiSearch /> },
         { name: 'Media Manager (Cloudinary)', path: '/media', icon: <FiFolder /> }
       ]
@@ -98,75 +99,88 @@ export default function DashboardLayout() {
         <nav style={{ flex: 1, padding: '1rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {navSections.map((section, sIdx) => (
             <div key={sIdx}>
-              <div style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--primary)', letterSpacing: '1px', marginBottom: '0.5rem', paddingLeft: '0.5rem' }}>
+              <div style={{ fontSize: '0.65rem', fontWeight: 700, color: 'var(--text-muted)', letterSpacing: '1px', marginBottom: '0.5rem', paddingLeft: '0.5rem' }}>
                 {section.title}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                {section.items.map((item, iIdx) => (
+                {section.items.map((item) => (
                   <NavLink
-                    key={`${item.path}-${iIdx}`}
+                    key={item.path}
                     to={item.path}
                     end={item.path === '/'}
-                    className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                    style={({ isActive }) => ({
-                      display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.6rem 0.85rem', 
-                      borderRadius: 'var(--radius-md)', color: isActive ? '#fff' : 'var(--text-muted)',
-                      backgroundColor: isActive ? 'var(--primary)' : 'transparent',
-                      textDecoration: 'none', transition: 'all 0.2s', fontSize: '0.825rem', fontWeight: 500
-                    })}
+                    className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.75rem',
+                      padding: '0.6rem 0.8rem',
+                      borderRadius: 'var(--radius-md)',
+                      color: 'var(--text-muted)',
+                      textDecoration: 'none',
+                      fontSize: '0.875rem',
+                      transition: 'all 0.2s'
+                    }}
                   >
-                    <span style={{ fontSize: '1.1rem' }}>{item.icon}</span>
-                    {item.name}
+                    <span style={{ fontSize: '1.1rem', display: 'flex' }}>{item.icon}</span>
+                    <span>{item.name}</span>
                   </NavLink>
                 ))}
               </div>
             </div>
           ))}
         </nav>
+
+        {/* User Info / Logout Footer */}
+        <div style={{ padding: '1rem', borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'var(--primary)', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>
+              {user?.name ? user.name.charAt(0).toUpperCase() : 'A'}
+            </div>
+            <div>
+              <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)' }}>{user?.name || 'Admin User'}</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>{user?.role || 'Super Admin'}</div>
+            </div>
+          </div>
+          <button onClick={handleLogout} className="btn btn-outline" style={{ border: 'none', padding: '0.4rem', color: 'var(--danger)' }} title="Logout">
+            <FiLogOut size={18} />
+          </button>
+        </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="main-content" style={{ flex: 1, overflowY: 'auto' }}>
-        <header className="header" style={{ padding: '1rem 2rem', background: 'var(--bg-card)', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ fontSize: '1.1rem', fontWeight: 700 }}>EcoMargin Enterprise Control Center</div>
+      {/* Main Content Area */}
+      <div className="main-wrapper" style={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100vh', overflow: 'hidden' }}>
+        {/* Top Navbar Header */}
+        <header style={{ height: '64px', borderBottom: '1px solid var(--border)', background: 'var(--bg-header)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 2rem' }}>
+          <div style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+            Welcome back, <strong style={{ color: 'var(--text-main)' }}>{user?.name || 'Administrator'}</strong>
+          </div>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
-            
-            {/* Notification Badge */}
-            <div 
-              onClick={() => navigate('/contact')} 
-              style={{ position: 'relative', cursor: 'pointer', padding: '0.5rem', borderRadius: '50%', background: 'var(--bg-main)', border: '1px solid var(--border)' }}
-              title={`${unreadCount} New Enquiries`}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            {/* Bell Notification Badge */}
+            <NavLink 
+              to="/contact" 
+              style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '38px', height: '38px', borderRadius: '50%', background: 'rgba(255,255,255,0.05)', color: 'var(--text-main)', border: '1px solid var(--border)', textDecoration: 'none' }}
+              title="View Enquiries"
             >
-              <FiBell style={{ fontSize: '1.2rem', color: unreadCount > 0 ? 'var(--primary)' : 'var(--text-muted)' }} />
+              <FiBell size={18} />
               {unreadCount > 0 && (
-                <span style={{ 
-                  position: 'absolute', top: '-4px', right: '-4px', 
-                  background: 'var(--danger)', color: '#fff', 
-                  fontSize: '0.65rem', fontWeight: 800, 
-                  width: '18px', height: '18px', borderRadius: '50%', 
-                  display: 'flex', alignItems: 'center', justifyContent: 'center' 
-                }}>
-                  {unreadCount > 9 ? '9+' : unreadCount}
+                <span style={{ position: 'absolute', top: '-4px', right: '-4px', background: 'var(--danger)', color: '#fff', fontSize: '0.65rem', fontWeight: 800, borderRadius: '9999px', padding: '2px 6px', lineHeight: 1 }}>
+                  {unreadCount}
                 </span>
               )}
-            </div>
+            </NavLink>
 
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '0.875rem', fontWeight: 600 }}>{user?.name || 'Super Admin'}</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{user?.role || 'Administrator'}</div>
-            </div>
-            
-            <button onClick={handleLogout} className="btn btn-outline" style={{ padding: '0.5rem', borderRadius: '50%' }} title="Logout">
-              <FiLogOut />
-            </button>
+            <a href="https://ecomargin.vercel.app" target="_blank" rel="noreferrer" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem' }}>
+              <FiGlobe /> View Live Website
+            </a>
           </div>
         </header>
 
-        <div className="page-content">
+        {/* Dynamic Page Outlet */}
+        <main style={{ flex: 1, overflowY: 'auto', background: 'var(--bg-main)' }}>
           <Outlet />
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
