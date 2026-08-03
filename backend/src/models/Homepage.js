@@ -29,6 +29,29 @@ Homepage.init(
       field: 'hero_video_url',
       allowNull: true,
     },
+    background_video_url: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getDataValue('heroVideoUrl')
+      },
+      set(val) {
+        if (val !== undefined) this.setDataValue('heroVideoUrl', val)
+      }
+    },
+    heroVideoPublicId: {
+      type: DataTypes.STRING(255),
+      field: 'hero_video_public_id',
+      allowNull: true,
+    },
+    video_public_id: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getDataValue('heroVideoPublicId')
+      },
+      set(val) {
+        if (val !== undefined) this.setDataValue('heroVideoPublicId', val)
+      }
+    },
     primaryButtonText: {
       type: DataTypes.STRING(100),
       field: 'primary_button_text',

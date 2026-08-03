@@ -32,7 +32,13 @@ export default function HomepageCMSPage() {
       try {
         const res = await adminService.getHomepageCMS();
         if (res && res.data) {
-          setCms(prev => ({ ...prev, ...res.data }));
+          const video = res.data.background_video_url || res.data.heroVideoUrl || '';
+          setCms(prev => ({ 
+            ...prev, 
+            ...res.data,
+            heroVideoUrl: video,
+            background_video_url: video
+          }));
         }
       } catch (err) {
         console.warn('Initial CMS load notice:', err.message);
@@ -42,15 +48,31 @@ export default function HomepageCMSPage() {
   }, []);
 
   const handleSave = async (e) => {
-    e.preventDefault();
+    if (e && e.preventDefault) e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      const res = await adminService.updateHomepageCMS(cms);
+      const video = cms.heroVideoUrl || cms.background_video_url || '';
+      const payload = {
+        ...cms,
+        heroVideoUrl: video,
+        background_video_url: video
+      };
+
+      const res = await adminService.updateHomepageCMS(payload);
       if (res && (res.success === true || res.data)) {
+        if (res.data) {
+          const updatedVideo = res.data.background_video_url || res.data.heroVideoUrl || video;
+          setCms(prev => ({
+            ...prev,
+            ...res.data,
+            heroVideoUrl: updatedVideo,
+            background_video_url: updatedVideo
+          }));
+        }
         setSaved(true);
-        setTimeout(() => setSaved(false), 3000);
+        setTimeout(() => setSaved(false), 3500);
       } else {
         throw new Error(res?.message || 'Failed to save Homepage CMS');
       }

@@ -1,6 +1,6 @@
 // EcoMargin Frontend — Dynamic Hero Section Component
 // src/pages/Home/sections/HeroSection.jsx
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Button from '@components/ui/Button/Button'
@@ -10,11 +10,13 @@ import { FiDownload, FiArrowRight } from 'react-icons/fi'
 import publicApi from '../../../services/publicApi'
 
 export default function HeroSection() {
+  const videoRef = useRef(null)
   const [quoteOpen, setQuoteOpen] = useState(false)
   const [heroCMS, setHeroCMS] = useState({
     heroTitle: "Powering India's EV Infrastructure",
     heroSubtitle: "Design • Manufacturing • EPC Installation • OCPP Software • AMC Services",
-    heroVideoUrl: "https://res.cloudinary.com/dcumpbswm/video/upload/v1785698504/123456_mwb4qr.mp4",
+    heroVideoUrl: "",
+    background_video_url: "",
     primaryButtonText: "Request Quote",
     secondaryButtonText: "Contact Sales",
     brochureButtonText: "Download Brochure",
@@ -26,10 +28,11 @@ export default function HeroSection() {
   })
 
   useEffect(() => {
+    let isMounted = true
     const fetchHeroCMS = async () => {
       try {
         const res = await publicApi.getHomepageCMS()
-        if (res && res.data) {
+        if (isMounted && res && res.data) {
           setHeroCMS(prev => ({ ...prev, ...res.data }))
         }
       } catch (err) {
@@ -37,9 +40,20 @@ export default function HeroSection() {
       }
     }
     fetchHeroCMS()
+    return () => { isMounted = false }
   }, [])
 
-  const videoSrc = heroCMS.heroVideoUrl || "https://res.cloudinary.com/dcumpbswm/video/upload/v1785698504/123456_mwb4qr.mp4"
+  const rawVideoUrl = heroCMS.background_video_url || heroCMS.heroVideoUrl || ''
+  const timestamp = heroCMS.updatedAt || heroCMS.updated_at || Date.now()
+  const cacheBustedVideoUrl = rawVideoUrl
+    ? `${rawVideoUrl}${rawVideoUrl.includes('?') ? '&' : '?'}v=${new Date(timestamp).getTime() || Date.now()}`
+    : ''
+
+  useEffect(() => {
+    if (videoRef.current && cacheBustedVideoUrl) {
+      videoRef.current.load()
+    }
+  }, [cacheBustedVideoUrl])
 
   return (
     <>
@@ -54,25 +68,29 @@ export default function HeroSection() {
         color: '#ffffff'
       }}>
 
-        {/* 1. Responsive Full-Screen Cloudinary Background Video */}
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
-          onError={(e) => { e.currentTarget.style.display = 'none' }}
-          style={{
-            position: 'absolute',
-            inset: 0,
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            zIndex: 0
-          }}
-        >
-          <source src={videoSrc} type="video/mp4" />
-        </video>
+        {/* 1. Responsive Full-Screen Background Video */}
+        {cacheBustedVideoUrl && (
+          <video
+            ref={videoRef}
+            key={rawVideoUrl}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            onError={(e) => { e.currentTarget.style.display = 'none' }}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              zIndex: 0
+            }}
+          >
+            <source src={cacheBustedVideoUrl} type="video/mp4" />
+          </video>
+        )}
 
         {/* 2. Dark Overlay for Contrast & Text Readability (60% Opacity) */}
         <div 
@@ -98,114 +116,101 @@ export default function HeroSection() {
               <motion.div variants={fadeUp} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.6rem', padding: '0.5rem 1.25rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '9999px', border: '1px solid rgba(16, 185, 129, 0.3)', marginBottom: '1.75rem' }}>
                 <span style={{ display: 'block', width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 10px #10B981' }}></span>
                 <span style={{ fontSize: '0.85rem', fontWeight: '700', letterSpacing: '1px', textTransform: 'uppercase', color: '#10B981' }}>
-                  OEM EV Charger Manufacturer
+                  Leading Indian OEM Charger Manufacturer
                 </span>
               </motion.div>
-              
-              <motion.h1 variants={fadeUp} style={{ fontSize: 'clamp(2.5rem, 5.5vw, 4.25rem)', marginBottom: '1.25rem', lineHeight: '1.1', fontWeight: '800', fontFamily: 'Outfit, sans-serif' }}>
-                {heroCMS.heroTitle.includes('Infrastructure') ? (
-                  <>
-                    Powering India's <br />
-                    <span style={{ background: 'linear-gradient(135deg, #10B981 0%, #34D399 50%, #3B82F6 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                      EV Infrastructure.
-                    </span>
-                  </>
-                ) : (
-                  heroCMS.heroTitle
-                )}
+
+              <motion.h1 variants={fadeUp} style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: '800', lineHeight: 1.1, marginBottom: '1.25rem', fontFamily: 'Outfit, sans-serif', letterSpacing: '-1px' }}>
+                {heroCMS.heroTitle}
               </motion.h1>
 
-              {/* Core Pillars */}
-              <motion.div variants={fadeUp} style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '1.75rem', fontSize: '0.9rem', fontWeight: 600, color: 'var(--color-primary)' }}>
+              <motion.p variants={fadeUp} style={{ fontSize: '1.15rem', color: '#9CA3AF', marginBottom: '2.5rem', lineHeight: 1.6, maxWidth: '580px' }}>
                 {heroCMS.heroSubtitle}
-              </motion.div>
-              
-              <motion.p variants={fadeUp} style={{ color: '#9CA3AF', fontSize: '1.15rem', marginBottom: '2.5rem', maxWidth: '540px', lineHeight: '1.6' }}>
-                Engineering heavy-duty commercial AC chargers (3.3kW–22kW) and ultra-fast DC charging stations (20kW–240kW) for highways, fleets, CPOs, bus depots, and commercial real estate.
               </motion.p>
-              
-              <motion.div variants={fadeUp} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-                <Button size="lg" variant="primary" onClick={() => setQuoteOpen(true)}>
-                  {heroCMS.primaryButtonText} <FiArrowRight style={{ marginLeft: '0.5rem' }} />
+
+              {/* Action Buttons */}
+              <motion.div variants={fadeUp} style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '3.5rem' }}>
+                <Button variant="primary" size="lg" onClick={() => setQuoteOpen(true)}>
+                  {heroCMS.primaryButtonText || "Request Quote"} <FiArrowRight style={{ marginLeft: '0.5rem' }} />
                 </Button>
+
                 <Link to="/contact">
-                  <Button size="lg" variant="outline">{heroCMS.secondaryButtonText}</Button>
+                  <Button variant="outline" size="lg">
+                    {heroCMS.secondaryButtonText || "Contact Sales"}
+                  </Button>
                 </Link>
+
                 <Link to="/downloads">
-                  <Button size="lg" variant="ghost" style={{ color: '#9CA3AF' }}>
-                    <FiDownload style={{ marginRight: '0.5rem' }} /> {heroCMS.brochureButtonText}
+                  <Button variant="outline" size="lg" style={{ borderColor: 'rgba(255,255,255,0.2)' }}>
+                    <FiDownload style={{ marginRight: '0.5rem' }} /> {heroCMS.brochureButtonText || "Brochures"}
                   </Button>
                 </Link>
               </motion.div>
 
-              {/* Trust Badges */}
-              <motion.div variants={fadeUp} style={{ display: 'flex', gap: '2rem', marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                {heroCMS.stats.map((st, i) => (
-                  <div key={i}>
-                    <div style={{ fontSize: '1.75rem', fontWeight: 800, color: '#ffffff' }}>{st.value}</div>
-                    <div style={{ fontSize: '0.8rem', color: '#9CA3AF' }}>{st.label}</div>
+              {/* Real-time Hardware Spec Badges */}
+              <motion.div variants={fadeUp} style={{ display: 'flex', gap: '2rem', borderTop: '1px solid rgba(255, 255, 255, 0.1)', paddingTop: '2rem', flexWrap: 'wrap' }}>
+                {heroCMS.stats && heroCMS.stats.map((stat, idx) => (
+                  <div key={idx}>
+                    <div style={{ fontSize: '1.5rem', fontWeight: '800', color: '#10B981', fontFamily: 'Outfit' }}>{stat.value}</div>
+                    <div style={{ fontSize: '0.8rem', color: '#9CA3AF', textTransform: 'uppercase', letterSpacing: '0.5px', marginTop: '0.2rem' }}>{stat.label}</div>
                   </div>
                 ))}
               </motion.div>
 
             </motion.div>
 
-            {/* Right Product Industrial Showcase */}
-            <motion.div variants={slideInRight} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ position: 'relative' }}>
-              <div style={{ 
-                background: 'rgba(21, 26, 45, 0.85)', 
-                border: '1px solid rgba(255, 255, 255, 0.15)', 
-                borderRadius: '24px', 
-                padding: '2.5rem', 
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.7)',
-                position: 'relative',
-                backdropFilter: 'blur(12px)'
+            {/* Right Interactive Visual Card */}
+            <motion.div variants={slideInRight} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+              <div style={{
+                background: 'rgba(17, 24, 39, 0.75)',
+                backdropFilter: 'blur(20px)',
+                borderRadius: 'var(--radius-xl)',
+                padding: '2.5rem',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)'
               }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-primary)', letterSpacing: '1px' }}>
-                    FLAGSHIP MODEL
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
+                  <div>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#10B981', textTransform: 'uppercase', letterSpacing: '1px' }}>Flagship Fast Charger</span>
+                    <h3 style={{ fontSize: '1.5rem', margin: '0.25rem 0 0 0', fontFamily: 'Outfit' }}>EcoCharge 120kW DC</h3>
+                  </div>
+                  <span style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#10B981', padding: '0.35rem 0.85rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700, border: '1px solid rgba(16, 185, 129, 0.3)' }}>
+                    Dual CCS2
                   </span>
-                  <span style={{ padding: '0.25rem 0.75rem', borderRadius: '9999px', background: 'rgba(16, 185, 129, 0.15)', color: '#10B981', fontSize: '0.75rem', fontWeight: 700 }}>
-                    Dual CCS2 Gun
-                  </span>
                 </div>
 
-                <h3 style={{ fontSize: '1.75rem', marginBottom: '0.5rem', color: '#ffffff' }}>EcoCharge 120kW Dual DC Fast Station</h3>
-                <p style={{ color: '#9CA3AF', fontSize: '0.875rem', marginBottom: '2rem' }}>Heavy Duty Ultra-Fast Highway & Bus Depot Charging System</p>
-
-                {/* Industrial Specifications Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '2rem' }}>
-                  <div style={{ background: 'rgba(11, 15, 25, 0.8)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>Output Power</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>120kW (Scalable to 160kW)</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginBottom: '2rem' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.85rem', background: 'rgba(255, 255, 255, 0.03)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <span style={{ color: '#9CA3AF', fontSize: '0.9rem' }}>Output Voltage</span>
+                    <strong style={{ fontSize: '0.9rem' }}>200V – 1000V DC</strong>
                   </div>
-                  <div style={{ background: 'rgba(11, 15, 25, 0.8)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>Connector Type</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>Dual CCS2 (GB/T Option)</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.85rem', background: 'rgba(255, 255, 255, 0.03)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <span style={{ color: '#9CA3AF', fontSize: '0.9rem' }}>Peak Efficiency</span>
+                    <strong style={{ fontSize: '0.9rem', color: '#10B981' }}>≥ 96.5%</strong>
                   </div>
-                  <div style={{ background: 'rgba(11, 15, 25, 0.8)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>Protection Rating</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>IP55 Outdoor Rated</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.85rem', background: 'rgba(255, 255, 255, 0.03)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <span style={{ color: '#9CA3AF', fontSize: '0.9rem' }}>Weather Protection</span>
+                    <strong style={{ fontSize: '0.9rem' }}>IP55 / IK10 Heavy Duty</strong>
                   </div>
-                  <div style={{ background: 'rgba(11, 15, 25, 0.8)', padding: '1rem', borderRadius: '12px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#9CA3AF' }}>Communication</div>
-                    <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#ffffff' }}>OCPP 2.0.1 / 4G / Ethernet</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', padding: '0.85rem', background: 'rgba(255, 255, 255, 0.03)', borderRadius: 'var(--radius-md)', border: '1px solid rgba(255,255,255,0.05)' }}>
+                    <span style={{ color: '#9CA3AF', fontSize: '0.9rem' }}>OCPP Compliance</span>
+                    <strong style={{ fontSize: '0.9rem' }}>OCPP 1.6J / 2.0.1 Ready</strong>
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '1rem' }}>
-                  <Button variant="primary" fullWidth onClick={() => setQuoteOpen(true)}>
-                    Request Technical Datasheet
-                  </Button>
-                </div>
+                <Button variant="primary" fullWidth onClick={() => setQuoteOpen(true)}>
+                  Request 120kW Spec & Pricing
+                </Button>
               </div>
             </motion.div>
 
           </div>
         </div>
+
       </section>
 
-      <QuoteModal isOpen={quoteOpen} onClose={() => setQuoteOpen(false)} defaultProduct="120kW Ultra Fast DC Station" />
+      {/* Global RFQ Quote Modal */}
+      <QuoteModal isOpen={quoteOpen} onClose={() => setQuoteOpen(false)} />
     </>
   )
 }

@@ -19,10 +19,23 @@ exports.getHomepageCMS = async (req, res) => {
   setNoCache(res)
   try {
     const record = await Homepage.findOne()
+    const raw = record ? record.toJSON() : {}
+    
+    // Ensure both heroVideoUrl and background_video_url are formatted in payload
+    const formattedData = {
+      ...raw,
+      heroVideoUrl: raw.heroVideoUrl || raw.hero_video_url || '',
+      background_video_url: raw.heroVideoUrl || raw.hero_video_url || '',
+      heroVideoPublicId: raw.heroVideoPublicId || raw.hero_video_public_id || '',
+      video_public_id: raw.heroVideoPublicId || raw.hero_video_public_id || '',
+      updated_at: raw.updatedAt || raw.updated_at || new Date().toISOString(),
+      updatedAt: raw.updatedAt || raw.updated_at || new Date().toISOString()
+    }
+
     return res.status(200).json({
       success: true,
       message: "Fetched Successfully",
-      data: record ? record.toJSON() : {}
+      data: formattedData
     })
   } catch (err) {
     console.error('❌ [Homepage CMS Fetch Error]:', err.message)
@@ -33,22 +46,72 @@ exports.getHomepageCMS = async (req, res) => {
   }
 }
 
-// PUT Homepage CMS to database only
+// PUT Homepage CMS to database (Updates existing MySQL record)
 exports.updateHomepageCMS = async (req, res) => {
-  console.log('📝 [PUT /api/v1/cms/homepage] Request Payload:', JSON.stringify(req.body, null, 2))
+  console.log('📝 [PUT /api/cms/homepage] Request Payload:', JSON.stringify(req.body, null, 2))
   setNoCache(res)
   try {
+    const newVideoUrl = (req.body.background_video_url || req.body.heroVideoUrl || req.body.hero_video_url || '').trim()
+    const newPublicId = (req.body.video_public_id || req.body.heroVideoPublicId || req.body.hero_video_public_id || '').trim()
+
     let record = await Homepage.findOne()
+
     if (record) {
-      await record.update(req.body)
+      // If old Cloudinary public_id exists and new public_id / videoUrl is different, destroy old video asset
+      if (record.heroVideoPublicId && newPublicId && record.heroVideoPublicId !== newPublicId) {
+        try {
+          const { cloudinary, isCloudinaryConfigured } = require('../config/cloudinary')
+          if (isCloudinaryConfigured()) {
+            await cloudinary.uploader.destroy(record.heroVideoPublicId, { resource_type: 'video' })
+            console.log(`🗑️ Destroyed old Cloudinary video asset: ${record.heroVideoPublicId}`)
+          }
+        } catch (destroyErr) {
+          console.warn('⚠️ Cloudinary video cleanup notice:', destroyErr.message)
+        }
+      }
+
+      // Overwrite database fields
+      if (newVideoUrl) record.heroVideoUrl = newVideoUrl
+      if (newPublicId) record.heroVideoPublicId = newPublicId
+      if (req.body.heroTitle !== undefined) record.heroTitle = req.body.heroTitle
+      if (req.body.heroSubtitle !== undefined) record.heroSubtitle = req.body.heroSubtitle
+      if (req.body.primaryButtonText !== undefined) record.primaryButtonText = req.body.primaryButtonText
+      if (req.body.secondaryButtonText !== undefined) record.secondaryButtonText = req.body.secondaryButtonText
+      if (req.body.brochureButtonText !== undefined) record.brochureButtonText = req.body.brochureButtonText
+      if (req.body.stats !== undefined) record.stats = req.body.stats
+      if (req.body.sectionVisibility !== undefined) record.sectionVisibility = req.body.sectionVisibility
+
+      await record.save()
     } else {
-      record = await Homepage.create(req.body)
+      record = await Homepage.create({
+        heroTitle: req.body.heroTitle || "Powering India's EV Infrastructure",
+        heroSubtitle: req.body.heroSubtitle || "Design • Manufacturing • EPC Installation • OCPP Software • AMC Services",
+        heroVideoUrl: newVideoUrl || "https://res.cloudinary.com/ecomargin/video/upload/v1/hero-ev.mp4",
+        heroVideoPublicId: newPublicId || null,
+        primaryButtonText: req.body.primaryButtonText || "Request Quote",
+        secondaryButtonText: req.body.secondaryButtonText || "Contact Sales",
+        brochureButtonText: req.body.brochureButtonText || "Download Brochure",
+        stats: req.body.stats || [],
+        sectionVisibility: req.body.sectionVisibility || {}
+      })
     }
-    console.log('✅ [Database Commit] Homepage CMS updated successfully in database')
+
+    const raw = record.toJSON()
+    const responsePayload = {
+      ...raw,
+      heroVideoUrl: record.heroVideoUrl,
+      background_video_url: record.heroVideoUrl,
+      heroVideoPublicId: record.heroVideoPublicId,
+      video_public_id: record.heroVideoPublicId,
+      updated_at: record.updatedAt,
+      updatedAt: record.updatedAt
+    }
+
+    console.log('✅ [Database Commit] Homepage CMS updated successfully in MySQL table')
     return res.status(200).json({
       success: true,
-      message: "Data saved successfully",
-      data: record.toJSON()
+      message: "Homepage CMS updated successfully",
+      data: responsePayload
     })
   } catch (err) {
     console.error('❌ [Homepage CMS Save Error]:', err.message)

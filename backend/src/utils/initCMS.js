@@ -168,14 +168,17 @@ const defaultSettings = [
 /**
  * Safely alters MySQL table schema to add missing columns without dropping existing data.
  */
-async function ensureDownloadsSchema() {
+async function ensureSchemaSynchronizations() {
   try {
     await sequelize.query("ALTER TABLE downloads ADD COLUMN description TEXT NULL;").catch(() => {})
     await sequelize.query("ALTER TABLE downloads ADD COLUMN icon_url VARCHAR(500) NULL;").catch(() => {})
     await sequelize.query("ALTER TABLE downloads ADD COLUMN file_size VARCHAR(50) DEFAULT '1.5 MB';").catch(() => {})
     await sequelize.query("ALTER TABLE downloads ADD COLUMN display_order INT DEFAULT 0;").catch(() => {})
     await sequelize.query("ALTER TABLE downloads ADD COLUMN status ENUM('Active', 'Draft', 'Inactive') DEFAULT 'Active';").catch(() => {})
-    logger.info('🛡️ Downloads table schema verified and synchronized safely.')
+
+    await sequelize.query("ALTER TABLE homepage ADD COLUMN hero_video_url VARCHAR(500) NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE homepage ADD COLUMN hero_video_public_id VARCHAR(255) NULL;").catch(() => {})
+    logger.info('🛡️ CMS table schemas verified and synchronized safely.')
   } catch (err) {
     logger.warn('⚠️ Schema alter notice:', err.message)
   }
@@ -187,8 +190,8 @@ async function ensureDownloadsSchema() {
  */
 async function initCMSDefaults() {
   try {
-    // 0. Ensure downloads table has all required columns
-    await ensureDownloadsSchema()
+    // 0. Ensure tables have all required columns
+    await ensureSchemaSynchronizations()
 
     const homepageCount = await Homepage.count()
     if (homepageCount === 0) {

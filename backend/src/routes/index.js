@@ -17,8 +17,11 @@ const downloadsRoutes = require('./downloadsRoutes');
 const logoRoutes = require('./logoRoutes');
 const mediaController = require('../controllers/mediaController');
 
+const publicController = require('../controllers/publicController');
+
 // Mount domain routes
 router.get('/health', healthController.checkHealth);
+router.get('/homepage', publicController.getPublicHomepage);
 router.use('/auth', authRoutes);
 router.use('/admin', adminRoutes);
 router.use('/stations', stationRoutes);
