@@ -8,7 +8,7 @@ const router = express.Router()
 const logoController = require('../controllers/logoController')
 const multer = require('multer')
 
-// Configure memory/disk multer for logo uploads (supports image/file field)
+// Configure memory storage multer for logo uploads (supports image/file field)
 const storage = multer.memoryStorage()
 const upload = multer({
   storage: storage,
@@ -23,6 +23,7 @@ const uploadMiddleware = upload.fields([
 
 // REST API Endpoints
 router.get('/', logoController.getLogos)
+router.post('/url', logoController.saveLogoUrl)
 router.post('/upload', uploadMiddleware, (req, res, next) => {
   if (req.files) {
     if (req.files.file && req.files.file[0]) req.file = req.files.file[0]

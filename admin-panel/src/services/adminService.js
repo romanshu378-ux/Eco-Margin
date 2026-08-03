@@ -89,6 +89,7 @@ export const adminService = {
   // Website Logo Manager CRUD
   getLogos: () => api.get('/admin/logo'),
   uploadLogo: (formData) => api.post('/admin/logo/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  saveLogoUrl: (data) => api.post('/admin/logo/url', data),
   updateLogo: (id, data) => api.put(`/admin/logo/${id}`, data),
   deleteLogo: (id) => api.delete(`/admin/logo/${id}`),
 

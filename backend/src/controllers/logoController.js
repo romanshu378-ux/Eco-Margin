@@ -4,7 +4,7 @@
 'use strict'
 
 const { Logo, ActivityLog } = require('../models')
-const cloudinary = require('../config/cloudinary')
+const { cloudinary, isCloudinaryConfigured } = require('../config/cloudinary')
 const { sequelize } = require('../config/database')
 
 // Helper for cache headers
@@ -14,12 +14,36 @@ const setNoCache = (res) => {
   res.setHeader('Expires', '0')
 }
 
-// Ensure website_logo table exists safely
+// Safely ensure website_logo table exists
 async function autoMigrateLogosSchema() {
   try {
     await Logo.sync({ alter: false })
   } catch (err) {
     // Table already exists or initialized
+  }
+}
+
+/**
+ * Extracts Cloudinary Public ID automatically from a Cloudinary Image URL.
+ * Example: https://res.cloudinary.com/demo/image/upload/v175425/ecomargin_logos/header_logo.png
+ * Returns: ecomargin_logos/header_logo
+ */
+function extractCloudinaryPublicId(url) {
+  if (!url || typeof url !== 'string') return ''
+  try {
+    const uploadIndex = url.indexOf('/upload/')
+    if (uploadIndex === -1) return ''
+    let path = url.substring(uploadIndex + 8) // After /upload/
+    // Strip version number like v175425123/ if present
+    path = path.replace(/^v\d+\//, '')
+    // Strip file extension (.png, .jpg, .svg, .webp)
+    const dotIndex = path.lastIndexOf('.')
+    if (dotIndex !== -1) {
+      path = path.substring(0, dotIndex)
+    }
+    return path
+  } catch (err) {
+    return ''
   }
 }
 
@@ -32,7 +56,6 @@ exports.getLogos = async (req, res) => {
       order: [['id', 'ASC']]
     })
 
-    // Transform array into convenient logoType map object
     const logoMap = {
       header: null,
       footer: null,
@@ -50,7 +73,11 @@ exports.getLogos = async (req, res) => {
       success: true,
       message: 'Logos retrieved successfully',
       data: logos,
-      map: logoMap
+      map: logoMap,
+      headerLogo: logoMap.header,
+      footerLogo: logoMap.footer,
+      whiteLogo: logoMap.white_logo,
+      favicon: logoMap.favicon
     })
   } catch (error) {
     console.error('❌ [Logos Fetch Error]:', error)
@@ -61,8 +88,8 @@ exports.getLogos = async (req, res) => {
   }
 }
 
-// POST /api/logo/upload or /api/v1/admin/logo/upload
-exports.uploadLogo = async (req, res) => {
+// POST /api/logo/url or /api/v1/admin/logo/url (Save Existing Cloudinary Image URL)
+exports.saveLogoUrl = async (req, res) => {
   setNoCache(res)
   try {
     await autoMigrateLogosSchema()
@@ -70,72 +97,165 @@ exports.uploadLogo = async (req, res) => {
     const { logoType, logo_type, imageUrl, image_url, publicId, public_id, altText, alt_text } = req.body
 
     const targetType = logoType || logo_type
-    let targetUrl = imageUrl || image_url
-    let targetPublicId = publicId || public_id
-    let targetAlt = altText || alt_text || 'EcoMargin Logo'
+    const targetUrl = (imageUrl || image_url || '').trim()
+    let targetPublicId = (publicId || public_id || '').trim()
+    const targetAlt = (altText || alt_text || `EcoMargin ${targetType} Logo`).trim()
 
     const validTypes = ['header', 'footer', 'favicon', 'white_logo']
     if (!targetType || !validTypes.includes(targetType)) {
       return res.status(400).json({
         success: false,
-        message: 'Valid logo_type is required (header, footer, favicon, white_logo).'
+        message: 'Valid logoType is required (header, footer, favicon, white_logo).'
       })
-    }
-
-    // If file buffer uploaded directly via multer
-    if (req.file || (req.files && req.files[0])) {
-      const file = req.file || req.files[0]
-
-      // Format validation (PNG, SVG, JPG, WEBP)
-      const allowedMimes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'image/webp']
-      if (!allowedMimes.includes(file.mimetype) && !file.originalname.match(/\.(png|jpg|jpeg|svg|webp)$/i)) {
-        return res.status(400).json({
-          success: false,
-          message: 'Unsupported image format. Allowed formats: PNG, SVG, JPG, WEBP.'
-        })
-      }
-
-      // Size validation (Max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        return res.status(400).json({
-          success: false,
-          message: 'File size exceeds maximum limit of 5MB.'
-        })
-      }
-
-      // Stream upload to Cloudinary
-      const uploadResult = await new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-          {
-            folder: 'ecomargin_logos',
-            resource_type: 'image',
-            use_filename: true,
-            unique_filename: true
-          },
-          (err, result) => {
-            if (err) reject(err)
-            else resolve(result)
-          }
-        )
-        stream.end(file.buffer)
-      })
-
-      targetUrl = uploadResult.secure_url
-      targetPublicId = uploadResult.public_id
     }
 
     if (!targetUrl) {
       return res.status(400).json({
         success: false,
-        message: 'Image file upload or imageUrl is required.'
+        message: 'Cloudinary Image URL is required.'
       })
     }
 
-    // Check if a logo record for this logoType already exists
+    // Validate that URL is an official Cloudinary URL
+    if (!targetUrl.includes('cloudinary.com')) {
+      return res.status(400).json({
+        success: false,
+        message: 'Invalid URL. Only official Cloudinary Image URLs (e.g. https://res.cloudinary.com/...) are allowed.'
+      })
+    }
+
+    // Auto-extract Public ID if empty
+    if (!targetPublicId) {
+      targetPublicId = extractCloudinaryPublicId(targetUrl)
+    }
+
     let existingLogo = await Logo.findOne({ where: { logoType: targetType } })
 
     if (existingLogo) {
-      // Destroy previous Cloudinary image if replacing with a new public_id
+      existingLogo.imageUrl = targetUrl
+      existingLogo.publicId = targetPublicId || existingLogo.publicId
+      existingLogo.altText = targetAlt
+      await existingLogo.save()
+
+      ActivityLog.log({
+        action: 'Website Logo URL Saved',
+        type: 'CMS',
+        description: `Saved ${targetType} Cloudinary image URL`,
+        ipAddress: req.ip
+      })
+
+      return res.status(200).json({
+        success: true,
+        message: `${targetType.toUpperCase()} logo URL saved successfully`,
+        data: existingLogo
+      })
+    } else {
+      const newLogo = await Logo.create({
+        logoType: targetType,
+        imageUrl: targetUrl,
+        publicId: targetPublicId || null,
+        altText: targetAlt
+      })
+
+      ActivityLog.log({
+        action: 'Website Logo URL Saved',
+        type: 'CMS',
+        description: `Saved new ${targetType} Cloudinary image URL`,
+        ipAddress: req.ip
+      })
+
+      return res.status(201).json({
+        success: true,
+        message: `${targetType.toUpperCase()} logo URL saved successfully`,
+        data: newLogo
+      })
+    }
+  } catch (error) {
+    console.error('❌ [Logo URL Save Error]:', error)
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'Failed to save logo URL'
+    })
+  }
+}
+
+// POST /api/logo/upload or /api/v1/admin/logo/upload (Upload Image File to Cloudinary)
+exports.uploadLogo = async (req, res) => {
+  setNoCache(res)
+  try {
+    await autoMigrateLogosSchema()
+
+    // Gracefully handle missing or uninitialized Cloudinary SDK credentials
+    if (!isCloudinaryConfigured()) {
+      console.error('❌ Cloudinary Error: SDK is missing configuration or environment variables.')
+      return res.status(500).json({
+        success: false,
+        message: 'Cloudinary SDK is not properly configured. Please verify CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET environment variables.'
+      })
+    }
+
+    const { logoType, logo_type, altText, alt_text } = req.body
+    const targetType = logoType || logo_type
+    const targetAlt = (altText || alt_text || `EcoMargin ${targetType} Logo`).trim()
+
+    const validTypes = ['header', 'footer', 'favicon', 'white_logo']
+    if (!targetType || !validTypes.includes(targetType)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Valid logoType is required (header, footer, favicon, white_logo).'
+      })
+    }
+
+    if (!req.file && (!req.files || !req.files[0])) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please select an image file to upload.'
+      })
+    }
+
+    const file = req.file || req.files[0]
+
+    // Format validation (PNG, SVG, JPG, WEBP)
+    const allowedMimes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'image/webp']
+    if (!allowedMimes.includes(file.mimetype) && !file.originalname.match(/\.(png|jpg|jpeg|svg|webp)$/i)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Unsupported image format. Allowed formats: PNG, SVG, JPG, WEBP.'
+      })
+    }
+
+    // Size validation (Max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      return res.status(400).json({
+        success: false,
+        message: 'File size exceeds maximum limit of 5MB.'
+      })
+    }
+
+    // Stream upload to Cloudinary
+    const uploadResult = await new Promise((resolve, reject) => {
+      const stream = cloudinary.uploader.upload_stream(
+        {
+          folder: 'ecomargin_logos',
+          resource_type: 'image',
+          use_filename: true,
+          unique_filename: true
+        },
+        (err, result) => {
+          if (err) reject(err)
+          else resolve(result)
+        }
+      )
+      stream.end(file.buffer)
+    })
+
+    const targetUrl = uploadResult.secure_url
+    const targetPublicId = uploadResult.public_id
+
+    let existingLogo = await Logo.findOne({ where: { logoType: targetType } })
+
+    if (existingLogo) {
+      // Destroy previous Cloudinary asset if replacing
       if (existingLogo.publicId && existingLogo.publicId !== targetPublicId) {
         try {
           await cloudinary.uploader.destroy(existingLogo.publicId)
@@ -144,43 +264,42 @@ exports.uploadLogo = async (req, res) => {
         }
       }
 
-      existingLogo.imageUrl = targetUrl.trim()
-      if (targetPublicId) existingLogo.publicId = targetPublicId
-      if (targetAlt) existingLogo.altText = targetAlt.trim()
+      existingLogo.imageUrl = targetUrl
+      existingLogo.publicId = targetPublicId
+      existingLogo.altText = targetAlt
 
       await existingLogo.save()
 
       ActivityLog.log({
-        action: 'Website Logo Updated',
+        action: 'Website Logo File Uploaded',
         type: 'CMS',
-        description: `Updated ${targetType} logo URL`,
+        description: `Uploaded and replaced ${targetType} logo file on Cloudinary`,
         ipAddress: req.ip
       })
 
       return res.status(200).json({
         success: true,
-        message: `${targetType.toUpperCase()} logo updated successfully`,
+        message: `${targetType.toUpperCase()} logo uploaded successfully to Cloudinary`,
         data: existingLogo
       })
     } else {
-      // Create new logo record
       const newLogo = await Logo.create({
         logoType: targetType,
-        imageUrl: targetUrl.trim(),
-        publicId: targetPublicId || null,
-        altText: targetAlt.trim()
+        imageUrl: targetUrl,
+        publicId: targetPublicId,
+        altText: targetAlt
       })
 
       ActivityLog.log({
-        action: 'Website Logo Uploaded',
+        action: 'Website Logo File Uploaded',
         type: 'CMS',
-        description: `Uploaded new ${targetType} logo`,
+        description: `Uploaded new ${targetType} logo file on Cloudinary`,
         ipAddress: req.ip
       })
 
       return res.status(201).json({
         success: true,
-        message: `${targetType.toUpperCase()} logo uploaded successfully`,
+        message: `${targetType.toUpperCase()} logo uploaded successfully to Cloudinary`,
         data: newLogo
       })
     }
@@ -188,7 +307,7 @@ exports.uploadLogo = async (req, res) => {
     console.error('❌ [Logo Upload Error]:', error)
     return res.status(500).json({
       success: false,
-      message: error.message || 'Failed to upload logo'
+      message: error.message || 'Failed to upload logo to Cloudinary'
     })
   }
 }
@@ -197,7 +316,7 @@ exports.uploadLogo = async (req, res) => {
 exports.updateLogo = async (req, res) => {
   setNoCache(res)
   const { id } = req.params
-  const { altText, alt_text, imageUrl, image_url } = req.body
+  const { altText, alt_text, imageUrl, image_url, publicId, public_id } = req.body
 
   try {
     const logo = await Logo.findByPk(id)
@@ -207,9 +326,11 @@ exports.updateLogo = async (req, res) => {
 
     const newAlt = altText || alt_text
     const newUrl = imageUrl || image_url
+    const newPublicId = publicId || public_id
 
     if (newAlt !== undefined) logo.altText = newAlt.trim()
     if (newUrl !== undefined) logo.imageUrl = newUrl.trim()
+    if (newPublicId !== undefined) logo.publicId = newPublicId.trim()
 
     await logo.save()
 
@@ -246,13 +367,13 @@ exports.deleteLogo = async (req, res) => {
 
     const logoTypeStr = logo.logoType
 
-    // Destroy image from Cloudinary if public_id exists
-    if (logo.publicId) {
+    // Destroy image from Cloudinary if public_id exists and Cloudinary is configured
+    if (logo.publicId && isCloudinaryConfigured()) {
       try {
         await cloudinary.uploader.destroy(logo.publicId)
         console.log(`🗑️ Destroyed Cloudinary logo asset: ${logo.publicId}`)
       } catch (cloudinaryErr) {
-        console.warn('⚠️ Cloudinary deletion error:', cloudinaryErr.message)
+        console.warn('⚠️ Cloudinary deletion notice:', cloudinaryErr.message)
       }
     }
 
@@ -267,7 +388,7 @@ exports.deleteLogo = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: `${logoTypeStr.toUpperCase()} logo deleted successfully. Frontend will use default fallback.`
+      message: `${logoTypeStr.toUpperCase()} logo deleted successfully. Frontend reset to default asset logo.`
     })
   } catch (error) {
     console.error('❌ [Delete Logo Error]:', error)

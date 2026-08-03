@@ -15,6 +15,20 @@ cloudinary.config({
 })
 
 /**
+ * Helper to check if Cloudinary SDK is initialized with valid credentials
+ */
+const isCloudinaryConfigured = () => {
+  return Boolean(
+    process.env.CLOUDINARY_CLOUD_NAME &&
+    process.env.CLOUDINARY_API_KEY &&
+    process.env.CLOUDINARY_API_SECRET &&
+    cloudinary &&
+    cloudinary.uploader &&
+    typeof cloudinary.uploader.upload_stream === 'function'
+  )
+}
+
+/**
  * Direct Base64 or Buffer Image Upload Helper
  * @param {string} fileStream - File path, base64 string, or remote URL
  * @param {string} folder - Destination folder on Cloudinary
@@ -22,6 +36,9 @@ cloudinary.config({
  */
 const uploadImage = async (fileStream, folder = 'ecomargin/uploads') => {
   try {
+    if (!isCloudinaryConfigured()) {
+      throw new Error('Cloudinary SDK is uninitialized. Please set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET.')
+    }
     const result = await cloudinary.uploader.upload(fileStream, {
       folder,
       resource_type: 'image',
@@ -49,7 +66,7 @@ const uploadImage = async (fileStream, folder = 'ecomargin/uploads') => {
  */
 const deleteImage = async (publicId) => {
   try {
-    if (!publicId) return null
+    if (!publicId || !isCloudinaryConfigured()) return null
     const result = await cloudinary.uploader.destroy(publicId)
     console.log(`🗑️ [Cloudinary] Image deleted: ${publicId}`)
     return result
@@ -92,6 +109,7 @@ const optimizeImageUrl = (publicId, options = { width: 800, height: 600, crop: '
 
 module.exports = {
   cloudinary,
+  isCloudinaryConfigured,
   uploadImage,
   deleteImage,
   updateImage,
