@@ -33,7 +33,7 @@ export default function WhyChooseUsSection() {
               <p style={{ fontStyle: 'italic', color: 'var(--color-text)' }}>
                 "Switching to EcoMargin reduced our charger downtime by 85% in the first quarter alone."
               </p>
-              <div style={{ marginTop: '1rem', fontWeight: '600', fontSize: '0.875rem' }}>— Sarah J., Fleet Director</div>
+              <div style={{ marginTop: '1rem', fontWeight: '600', fontSize: '0.875rem' }}>— R.Sharma,  Director</div>
             </div>
           </motion.div>
 
