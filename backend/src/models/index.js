@@ -21,6 +21,9 @@ const Blog = require('./Blog')
 const Lead = require('./Lead')
 const DealerApplication = require('./DealerApplication')
 const Newsletter = require('./Newsletter')
+const ActivityLog = require('./ActivityLog')
+const Setting = require('./Setting')
+const Logo = require('./Logo')
 const EmailLog = require('./EmailLog')
 const Quotation = require('./Quotation')
 const LeadNote = require('./LeadNote')
@@ -55,7 +58,7 @@ EmailLog.belongsTo(Lead, { foreignKey: 'lead_id', as: 'lead', onDelete: 'CASCADE
 Lead.hasMany(Quotation, { foreignKey: 'lead_id', as: 'quotations', onDelete: 'CASCADE' })
 Quotation.belongsTo(Lead, { foreignKey: 'lead_id', as: 'lead', onDelete: 'CASCADE' })
 
-Lead.hasMany(LeadNote, { foreignKey: 'lead_id', as: 'notes', onDelete: 'CASCADE' })
+Lead.hasMany(LeadNote, { foreignKey: 'lead_id', as: 'leadNotes', onDelete: 'CASCADE' })
 LeadNote.belongsTo(Lead, { foreignKey: 'lead_id', as: 'lead', onDelete: 'CASCADE' })
 
 Lead.hasMany(ActivityLog, { foreignKey: 'lead_id', as: 'activities', onDelete: 'CASCADE' })

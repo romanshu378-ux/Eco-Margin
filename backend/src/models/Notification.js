@@ -3,7 +3,7 @@
 'use strict'
 
 const { Model, DataTypes } = require('sequelize')
-const sequelize = require('../config/database')
+const { sequelize } = require('../config/database')
 
 class Notification extends Model {}
 
