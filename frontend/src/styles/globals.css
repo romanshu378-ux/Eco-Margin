@@ -126,12 +126,30 @@ body.mobile-menu-open .pwa-install-popup {
   .lg\:flex {
     display: flex !important;
   }
+  .hidden.lg\:flex {
+    display: flex !important;
+  }
   .lg\:hidden {
     display: none !important;
   }
   .lg\:block {
     display: block !important;
   }
+  .hidden.lg\:block {
+    display: block !important;
+  }
 }
+
+/* Custom Tailwind Compatibility Helper classes */
+.text-white {
+  color: #ffffff !important;
+}
+.hover\:text-primary:hover {
+  color: var(--color-primary) !important;
+}
+.transition {
+  transition: all var(--transition-fast) !important;
+}
+
 
 

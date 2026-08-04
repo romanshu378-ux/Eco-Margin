@@ -43,7 +43,7 @@ export default function Navbar() {
   const navLinks = [
     { name: 'Home', path: '/' },
     { name: 'Products', path: '/products' },
-    { name: 'Solutions & Services', path: '/services' },
+    { name: 'Services', path: '/services' },
     { name: 'Manufacturing', path: '/manufacturing' },
     { name: 'Projects', path: '/projects' },
     { name: 'Gallery', path: '/gallery' },
@@ -105,11 +105,11 @@ export default function Navbar() {
                 <li key={link.name}>
                   <Link
                     to={link.path}
+                    className="text-white hover:text-primary transition"
                     style={{
-                      color: location.pathname === link.path ? 'var(--color-primary)' : 'var(--color-text)',
+                      color: location.pathname === link.path ? 'var(--color-primary)' : undefined,
                       fontWeight: location.pathname === link.path ? '600' : '400',
-                      fontSize: '0.95rem',
-                      transition: 'color var(--transition-fast)'
+                      fontSize: '0.95rem'
                     }}
                   >
                     {link.name}
