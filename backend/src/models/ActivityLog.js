@@ -33,7 +33,7 @@ ActivityLog.init(
       allowNull: true,
     },
     lead_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     performed_by: {

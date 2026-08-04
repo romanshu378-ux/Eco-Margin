@@ -15,7 +15,7 @@ Quotation.init(
       primaryKey: true,
     },
     lead_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     quotation_no: {

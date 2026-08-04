@@ -15,7 +15,7 @@ EmailLog.init(
       primaryKey: true,
     },
     lead_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       allowNull: true,
     },
     recipient: {

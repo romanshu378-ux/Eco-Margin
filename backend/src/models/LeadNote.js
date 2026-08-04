@@ -15,7 +15,7 @@ LeadNote.init(
       primaryKey: true,
     },
     lead_id: {
-      type: DataTypes.INTEGER.UNSIGNED,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     title: {

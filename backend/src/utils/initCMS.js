@@ -178,6 +178,20 @@ async function ensureSchemaSynchronizations() {
 
     await sequelize.query("ALTER TABLE homepage ADD COLUMN hero_video_url VARCHAR(500) NULL;").catch(() => {})
     await sequelize.query("ALTER TABLE homepage ADD COLUMN hero_video_public_id VARCHAR(255) NULL;").catch(() => {})
+
+    // Lead CRM Tables column synchronization and Foreign Key resolution
+    await sequelize.query("ALTER TABLE email_logs MODIFY COLUMN lead_id INT NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE email_logs ADD CONSTRAINT fk_email_logs_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;").catch(() => {})
+
+    await sequelize.query("ALTER TABLE quotations MODIFY COLUMN lead_id INT NOT NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE quotations ADD CONSTRAINT fk_quotations_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;").catch(() => {})
+
+    await sequelize.query("ALTER TABLE lead_notes MODIFY COLUMN lead_id INT NOT NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE lead_notes ADD CONSTRAINT fk_lead_notes_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;").catch(() => {})
+
+    await sequelize.query("ALTER TABLE activity_logs MODIFY COLUMN lead_id INT NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE activity_logs ADD CONSTRAINT fk_activity_logs_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;").catch(() => {})
+
     logger.info('🛡️ CMS table schemas verified and synchronized safely.')
   } catch (err) {
     logger.warn('⚠️ Schema alter notice:', err.message)
