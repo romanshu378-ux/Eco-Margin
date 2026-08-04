@@ -135,40 +135,143 @@ export default function Navbar() {
         {/* Mobile Navigation Drawer */}
         <AnimatePresence>
           {mobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              style={{
-                background: 'var(--color-bg)',
-                borderBottom: '1px solid var(--color-border)',
-                overflow: 'hidden'
-              }}
-            >
-              <div className="container" style={{ padding: '1.5rem 1rem' }}>
-                <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  {navLinks.map((link) => (
-                    <li key={link.name}>
-                      <Link
-                        to={link.path}
-                        style={{
-                          fontSize: '1.1rem',
-                          color: location.pathname === link.path ? 'var(--color-primary)' : 'var(--color-text)',
-                          fontWeight: location.pathname === link.path ? '600' : '400'
-                        }}
-                      >
-                        {link.name}
-                      </Link>
-                    </li>
-                  ))}
-                  <li style={{ paddingTop: '0.5rem' }}>
-                    <Button variant="primary" fullWidth onClick={() => { setMobileMenuOpen(false); setQuoteModalOpen(true); }}>
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setMobileMenuOpen(false)}
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: 'rgba(0, 0, 0, 0.6)',
+                  backdropFilter: 'blur(8px)',
+                  zIndex: 199
+                }}
+              />
+
+              {/* Drawer Container */}
+              <motion.div
+                initial={{ x: '100%' }}
+                animate={{ x: 0 }}
+                exit={{ x: '100%' }}
+                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                style={{
+                  position: 'fixed',
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  width: 'min(92vw, 420px)',
+                  height: '100dvh',
+                  background: 'var(--color-bg-card)',
+                  boxShadow: '-10px 0 30px rgba(0, 0, 0, 0.25)',
+                  borderLeft: '1px solid var(--color-border)',
+                  zIndex: 200,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  overflowY: 'auto'
+                }}
+              >
+                {/* Drawer Header */}
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.5rem', borderBottom: '1px solid var(--color-border)' }}>
+                  <span style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: '1.2rem', color: 'var(--color-text)' }}>Menu</span>
+                  <button
+                    onClick={() => setMobileMenuOpen(false)}
+                    style={{
+                      background: 'var(--color-bg-alt)',
+                      border: 'none',
+                      color: 'var(--color-text)',
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      fontSize: '1.2rem',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      transition: 'background var(--transition-fast)'
+                    }}
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* Drawer Body Links */}
+                <div style={{ flex: 1, padding: '2rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    {navLinks.map((link) => (
+                      <li key={link.name}>
+                        <Link
+                          to={link.path}
+                          onClick={() => setMobileMenuOpen(false)}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            height: '48px', // Touch target helper
+                            padding: '0 1rem',
+                            fontSize: '1.1rem',
+                            color: location.pathname === link.path ? 'var(--color-primary)' : 'var(--color-text)',
+                            fontWeight: location.pathname === link.path ? '700' : '500',
+                            borderRadius: 'var(--radius-md)',
+                            background: location.pathname === link.path ? 'rgba(16, 185, 129, 0.08)' : 'transparent',
+                            transition: 'all var(--transition-fast)'
+                          }}
+                        >
+                          {link.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--color-border)' }}>
+                    <Button variant="primary" fullWidth onClick={() => { setMobileMenuOpen(false); setQuoteModalOpen(true); }} style={{ height: '48px' }}>
                       Request Quote
                     </Button>
-                  </li>
-                </ul>
-              </div>
-            </motion.div>
+                  </div>
+                </div>
+
+                {/* Drawer Footer / Contact Block */}
+                <div 
+                  style={{ 
+                    padding: '2rem 1.5rem', 
+                    background: 'var(--color-bg-alt)', 
+                    borderTop: '1px solid var(--color-border)',
+                    paddingBottom: 'calc(6rem + env(safe-area-inset-bottom))',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '1rem'
+                  }}
+                >
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-text-muted)' }}>
+                    Contact Information
+                  </span>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--color-text)' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Email</span>
+                      <a href="mailto:support@ecomargin.in" style={{ color: 'var(--color-primary)', textDecoration: 'none', wordBreak: 'break-all' }}>
+                        support@ecomargin.in
+                      </a>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Phone</span>
+                      <a href="tel:+918302313065" style={{ color: 'var(--color-text)', textDecoration: 'none' }}>
+                        +91-8302313065
+                      </a>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Corporate Address</span>
+                      <span style={{ lineHeight: '1.4', wordBreak: 'break-word' }}>
+                        NH-11, iStart Nest, Govt Engineering College, Bharatpur, Rajasthan - 321001
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            </>
           )}
         </AnimatePresence>
       </header>
