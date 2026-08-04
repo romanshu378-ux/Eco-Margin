@@ -31,12 +31,14 @@ export default function Navbar() {
   }, [location.pathname])
 
   const navLinks = [
+    { name: 'Home', path: '/' },
     { name: 'Products', path: '/products' },
+    { name: 'Solutions & Services', path: '/services' },
     { name: 'Manufacturing', path: '/manufacturing' },
-    { name: 'Services', path: '/services' },
     { name: 'Projects', path: '/projects' },
-    { name: 'Certificates', path: '/downloads' },
-    { name: 'About Us', path: '/about' },
+    { name: 'Gallery', path: '/gallery' },
+    { name: 'Blogs', path: '/blogs' },
+    { name: 'About', path: '/about' },
     { name: 'Contact', path: '/contact' }
   ]
 
@@ -53,7 +55,9 @@ export default function Navbar() {
           background: isScrolled ? 'var(--color-bg-glass)' : 'rgba(11, 15, 25, 0.75)',
           backdropFilter: 'blur(16px)',
           borderBottom: isScrolled ? '1px solid var(--color-border)' : '1px solid rgba(255, 255, 255, 0.05)',
-          padding: isScrolled ? '0.75rem 0' : '1.1rem 0'
+          height: '80px',
+          display: 'flex',
+          alignItems: 'center'
         }}
       >
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -84,8 +88,8 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav style={{ display: 'none' }} className="desktop-nav">
-            <ul style={{ display: 'flex', gap: '1.5rem', listStyle: 'none', alignItems: 'center' }}>
+          <nav className="hidden lg:flex desktop-nav">
+            <ul style={{ display: 'flex', gap: '2rem', listStyle: 'none', alignItems: 'center', margin: 0, padding: 0 }}>
               {navLinks.map((link) => (
                 <li key={link.name}>
                   <Link
@@ -93,7 +97,7 @@ export default function Navbar() {
                     style={{
                       color: location.pathname === link.path ? 'var(--color-primary)' : 'var(--color-text)',
                       fontWeight: location.pathname === link.path ? '600' : '400',
-                      fontSize: '0.9rem',
+                      fontSize: '0.95rem',
                       transition: 'color var(--transition-fast)'
                     }}
                   >
@@ -107,7 +111,7 @@ export default function Navbar() {
           {/* Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <ThemeToggle />
-            <div style={{ display: 'none', alignItems: 'center', gap: '0.75rem' }} className="desktop-actions">
+            <div className="hidden lg:flex desktop-actions" style={{ alignItems: 'center', gap: '0.75rem' }}>
               <InstallAppButton placement="nav" />
               <Button variant="primary" size="sm" onClick={() => setQuoteModalOpen(true)}>
                 Request Quote
@@ -117,7 +121,7 @@ export default function Navbar() {
             {/* Mobile Hamburger */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="mobile-hamburger"
+              className="lg:hidden mobile-hamburger"
               aria-label="Toggle menu"
               style={{
                 background: 'transparent',

@@ -84,3 +84,27 @@ input, textarea, select {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-text-muted);
 }
+
+/* Responsive Utilities (Tailwind Breakpoints Compatibility) */
+.hidden {
+  display: none !important;
+}
+.flex {
+  display: flex !important;
+}
+.block {
+  display: block !important;
+}
+
+@media (min-width: 1024px) {
+  .lg\:flex {
+    display: flex !important;
+  }
+  .lg\:hidden {
+    display: none !important;
+  }
+  .lg\:block {
+    display: block !important;
+  }
+}
+
