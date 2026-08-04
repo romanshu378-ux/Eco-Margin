@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fi'
 import { useFooterCMS } from '../../hooks/useCMS'
 import publicApi from '../../services/publicApi'
+import { trackContactFormSubmit } from '../../utils/analytics'
 
 export default function ContactPage() {
   const { data: footerData, loading, error } = useFooterCMS()
@@ -57,6 +58,7 @@ export default function ContactPage() {
         product: formData.requirement,
         requirements: formData.message
       })
+      trackContactFormSubmit(formData)
     } catch (err) {
       console.warn('⚠️ [Contact RFQ Form Submission]:', err.message)
     } finally {

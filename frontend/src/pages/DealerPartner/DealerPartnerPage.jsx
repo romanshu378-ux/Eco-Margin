@@ -6,6 +6,7 @@ import { fadeUp, staggerContainer } from '@animations/variants'
 import Button from '@components/ui/Button/Button'
 import { FiCheckCircle, FiSend } from 'react-icons/fi'
 import publicApi from '../../services/publicApi'
+import { trackDealerAppSubmit } from '../../utils/analytics'
 
 export default function DealerPartnerPage() {
   const [formData, setFormData] = useState({
@@ -37,6 +38,7 @@ export default function DealerPartnerPage() {
         investmentCapacity: formData.investmentCapacity,
         message: `Partnership Type: ${formData.partnerType}`
       })
+      trackDealerAppSubmit(formData)
       setSubmitted(true)
     } catch (err) {
       console.warn('⚠️ [Dealer Partner Form Submission]:', err.message)

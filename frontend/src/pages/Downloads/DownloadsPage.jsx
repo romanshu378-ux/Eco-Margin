@@ -8,6 +8,7 @@ import { motion } from 'framer-motion'
 import { fadeUp, staggerContainer } from '@animations/variants'
 import { FiDownload, FiFileText, FiAlertCircle, FiFolder, FiCheckCircle } from 'react-icons/fi'
 import publicApi from '../../services/publicApi'
+import { trackDownloadClick } from '../../utils/analytics'
 
 export default function DownloadsPage() {
   const [downloads, setDownloads] = useState([])
@@ -167,6 +168,8 @@ export default function DownloadsPage() {
                       href={pdfUrl} 
                       target="_blank" 
                       rel="noopener noreferrer"
+                      onClick={() => trackDownloadClick(docName)}
+                      aria-label={`Download ${docName}`}
                       style={{
                         background: 'var(--color-primary)',
                         color: '#0f0f1a',

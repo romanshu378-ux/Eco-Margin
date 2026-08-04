@@ -249,6 +249,14 @@ export default function ProductsPage() {
                         <FiDownload style={{ marginRight: '0.5rem' }} /> Download Datasheet (PDF)
                       </Button>
                     </Link>
+
+                    {/* Internal Linking Strip for Enterprise SEO */}
+                    <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginTop: '0.5rem', fontSize: '0.75rem', borderTop: '1px solid var(--color-border)', paddingTop: '0.75rem', color: 'var(--color-text-muted)' }}>
+                      <Link to="/services" style={{ color: 'var(--color-primary)', textDecoration: 'none' }}>EPC Services</Link> • 
+                      <Link to="/downloads" style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>Datasheets</Link> • 
+                      <Link to="/projects" style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>Deployed Projects</Link> • 
+                      <Link to="/contact" style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>Factory Inquiry</Link>
+                    </div>
                   </div>
                 </motion.div>
               ))}

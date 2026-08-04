@@ -226,8 +226,27 @@ export default function SEO({
     }))
   }
 
+  // 6. Dynamic Service Schema
+  const serviceSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    'name': metaTitle,
+    'serviceType': 'Turnkey EV Charging Station EPC & Maintenance',
+    'provider': {
+      '@type': 'LocalBusiness',
+      'name': companyName,
+      'telephone': phone,
+      'email': email
+    },
+    'areaServed': {
+      '@type': 'Country',
+      'name': 'India'
+    },
+    'description': metaDesc
+  }
+
   return (
-    <Helmet>
+    <Helmet htmlAttributes={{ lang: 'en-IN' }}>
       {/* ── 1. CORE HEAD TAGS ── */}
       <title>{metaTitle}</title>
       <meta name="description" content={metaDesc} />
@@ -307,6 +326,10 @@ export default function SEO({
 
       <script type="application/ld+json">
         {JSON.stringify(breadcrumbSchema)}
+      </script>
+
+      <script type="application/ld+json">
+        {JSON.stringify(serviceSchema)}
       </script>
 
       {productSchema && (

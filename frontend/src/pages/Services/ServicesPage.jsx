@@ -119,6 +119,12 @@ export default function ServicesPage() {
                 <h3 style={{ fontSize: '1.25rem', marginBottom: '0.75rem' }}>{srv.title}</h3>
                 <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', lineHeight: 1.6 }}>{srv.desc}</p>
               </div>
+
+              {/* Internal Linking Strip for Enterprise SEO */}
+              <div style={{ display: 'flex', gap: '0.75rem', marginTop: '1.25rem', paddingTop: '0.75rem', borderTop: '1px solid var(--color-border)', fontSize: '0.75rem' }}>
+                <Link to="/products" style={{ color: 'var(--color-primary)', fontWeight: 600, textDecoration: 'none' }}>Related Chargers →</Link>
+                <Link to="/solutions" style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>Industry Solutions</Link>
+              </div>
             </motion.div>
           ))}
         </motion.div>
