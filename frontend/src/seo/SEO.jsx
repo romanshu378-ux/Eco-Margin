@@ -52,16 +52,16 @@ export default function SEO({
 
   // Dynamic Head Metadata Resolution
   const metaTitle = title
-    ? `${title} | ${siteName}`
-    : seoData?.metaTitle || 'EcoMargin | EV Charger Manufacturer & EPC Solutions'
+    ? `${title} | EcoMargin | Eco Margin`
+    : seoData?.metaTitle || 'EcoMargin | Eco Margin LLP - EV Charger Manufacturer & EV Charging Solutions'
   const metaDesc =
     description ||
     seoData?.metaDescription ||
-    'EcoMargin is a leading OEM EV Charger Manufacturer (3.3kW to 240kW DC), Turnkey EPC Charging Station Installer, and OCPP Cloud Software Provider.'
+    'EcoMargin (Eco Margin LLP) is an Indian EV Charger Manufacturer providing AC Chargers, DC Fast Chargers, CCS2 Chargers, EV Charging Infrastructure, OCPP Software, EPC Services and Smart EV Charging Solutions.'
   const metaKeywords =
     keywords ||
     seoData?.keywords ||
-    'EV Charger Manufacturer, DC Fast Charger 60kW 120kW 240kW, AC Type 2 Charger, EV Charging Station EPC, OCPP 2.0.1 Software, ARAI Certified EV Charger India'
+    'EcoMargin, Eco Margin, EcoMargin LLP, EV Charger, EV Charging Station, DC Fast Charger, CCS2 Charger, AC Charger, OCPP Charger, EV Infrastructure, EV Software, EV Charger Manufacturer India, EV Charging Solutions'
   const canonical = canonicalUrl || seoData?.canonicalUrl || `${siteUrl}${pageRoute === '/' ? '' : pageRoute}`
   const ogImg = ogImage || seoData?.ogImage || logos?.header?.imageUrl || 'https://res.cloudinary.com/dcumpbswm/image/upload/v1785843387/dark_mfegwj.png'
   const robotsSetting = robots || seoData?.robots || 'index, follow, max-image-preview:large'
@@ -82,7 +82,7 @@ export default function SEO({
     '@type': 'LocalBusiness',
     '@id': `${siteUrl}/#organization`,
     'name': companyName,
-    'legalName': 'EcoMargin Infrastructure Pvt. Ltd.',
+    'legalName': 'EcoMargin LLP',
     'url': siteUrl,
     'logo': logos?.header?.imageUrl || `${siteUrl}/logo.png`,
     'image': ogImg,
