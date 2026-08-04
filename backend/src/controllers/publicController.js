@@ -9,9 +9,7 @@ const leadController = require('./leadController')
 const { Category, Industry, Project, Gallery, Blog, Download } = require('../models')
 
 const setNoCache = (res) => {
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
-  res.setHeader('Pragma', 'no-cache')
-  res.setHeader('Expires', '0')
+  res.setHeader('Cache-Control', 'public, max-age=300')
 }
 
 // Public GET Homepage CMS

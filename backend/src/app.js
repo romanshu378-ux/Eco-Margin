@@ -49,6 +49,30 @@ const globalLimiter = rateLimit({
   message: { success: false, message: 'Too many requests from this IP. Please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
+  handler: (req, res, next, options) => {
+    console.warn(`[Rate Limiter Triggered] 429 Too Many Requests generated for IP: ${req.ip}, Path: ${req.originalUrl || req.url}`);
+    res.status(options.statusCode).send(options.message);
+  },
+  skip: (req) => {
+    // Check if the request is a GET request and matches one of the public endpoints
+    if (req.method === 'GET') {
+      const url = req.originalUrl || req.url || '';
+      if (
+        url.includes('/footer') ||
+        url.includes('/seo') ||
+        url.includes('/contact') ||
+        url.includes('/settings/public') ||
+        url.includes('/public') ||
+        url.includes('/homepage') ||
+        url.includes('/about') ||
+        url.includes('/manufacturing') ||
+        url.includes('/logo')
+      ) {
+        return true; // Skip rate limiting for public endpoints
+      }
+    }
+    return false; // Apply rate limiting
+  }
 })
 app.use('/api', globalLimiter)
 

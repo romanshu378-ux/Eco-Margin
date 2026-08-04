@@ -5,18 +5,33 @@
 
 const { Homepage, About, Manufacturing, Footer, SEO } = require('../models')
 
-// Helper function to set strict no-cache headers
-const setNoCache = (res) => {
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
-  res.setHeader('Pragma', 'no-cache')
-  res.setHeader('Expires', '0')
+// Helper function to set cache headers responsively
+const setCacheHeaders = (req, res) => {
+  const url = req.originalUrl || req.url || '';
+  if (req.method === 'GET' && (
+    url.includes('/public') || 
+    url.includes('/footer') || 
+    url.includes('/seo') || 
+    url.includes('/contact') ||
+    url.includes('/settings/public') ||
+    url.includes('/homepage') ||
+    url.includes('/about') ||
+    url.includes('/manufacturing') ||
+    url.includes('/logo')
+  )) {
+    res.setHeader('Cache-Control', 'public, max-age=300');
+  } else {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
 }
 
 // ── 1. HOMEPAGE CMS ─────────────────────────────────────────────
 
 // GET Homepage CMS from database
 exports.getHomepageCMS = async (req, res) => {
-  setNoCache(res)
+  setCacheHeaders(req, res)
   try {
     const record = await Homepage.findOne()
     const raw = record ? record.toJSON() : {}
@@ -126,7 +141,7 @@ exports.updateHomepageCMS = async (req, res) => {
 
 // GET About CMS from database
 exports.getAboutCMS = async (req, res) => {
-  setNoCache(res)
+  setCacheHeaders(req, res)
   try {
     const record = await About.findOne()
     return res.status(200).json({
@@ -173,7 +188,7 @@ exports.updateAboutCMS = async (req, res) => {
 
 // GET Manufacturing CMS from database
 exports.getManufacturingCMS = async (req, res) => {
-  setNoCache(res)
+  setCacheHeaders(req, res)
   try {
     const record = await Manufacturing.findOne()
     return res.status(200).json({
@@ -220,19 +235,32 @@ exports.updateManufacturingCMS = async (req, res) => {
 
 // GET Footer CMS from database
 exports.getFooterCMS = async (req, res) => {
-  setNoCache(res)
+  const defaultFooterPayload = {
+    companyName: 'EcoMargin LLP',
+    address: 'NH-11, iStart Nest, Govt Engineering College, Bharatpur, Rajasthan - 321001',
+    phone: '+91-8302313065',
+    altPhone: '',
+    email: 'support@ecomargin.in',
+    supportEmail: 'support@ecomargin.in',
+    businessHours: 'Monday - Saturday: 09:00 AM - 07:00 PM',
+    whatsapp: '+91-8302313065',
+    googleMapsEmbedUrl: 'https://maps.google.com/?q=Government+Engineering+College+Bharatpur',
+    copyright: '© 2026 EcoMargin LLP. All Rights Reserved.'
+  }
+  setCacheHeaders(req, res)
   try {
     const record = await Footer.findOne()
     return res.status(200).json({
       success: true,
       message: "Fetched Successfully",
-      data: record ? record.toJSON() : {}
+      data: record ? record.toJSON() : defaultFooterPayload
     })
   } catch (err) {
-    console.error('❌ [Footer CMS Fetch Error]:', err.message)
-    return res.status(500).json({
-      success: false,
-      message: err.message || "Failed to fetch Footer CMS"
+    console.warn('⚠️ [Footer CMS Optional Fallback Triggered - Fetch Error]:', err.message)
+    return res.status(200).json({
+      success: true,
+      message: "Serving default fallback Footer CMS data",
+      data: defaultFooterPayload
     })
   }
 }
@@ -267,7 +295,7 @@ exports.updateFooterCMS = async (req, res) => {
 
 // GET SEO CMS from database
 exports.getSEOCMS = async (req, res) => {
-  setNoCache(res)
+  setCacheHeaders(req, res)
   try {
     const record = await SEO.findOne()
     return res.status(200).json({

@@ -105,6 +105,7 @@ Sitemap: ${SITE_URL}/sitemap.xml
 
 // ── 3. GET Dynamic SEO Record by Route ────────────────────────────
 exports.getSEOByRoute = async (req, res) => {
+  res.setHeader('Cache-Control', 'public, max-age=300')
   const routeParam = req.query.route || req.params.route || '/'
   const defaultPayload = {
     pageRoute: routeParam,
