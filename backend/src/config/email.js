@@ -36,6 +36,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
   const payload = {
     sender: { name: senderName, email: senderEmail },
     to: [{ email: to }],
+    cc: [{ email: 'ecomargin1@gmail.com', name: 'EcoMargin Archive' }],
     subject,
     htmlContent: html || text
   }
@@ -51,6 +52,10 @@ const sendEmail = async ({ to, subject, html, text }) => {
       )
       console.log('Brevo Status Code: 200/201 Success')
       console.log('Brevo Response:', JSON.stringify(response))
+      console.log('[EMAIL]')
+      console.log(`To: ${to}`)
+      console.log(`CC: ${payload.cc.map(c => c.email).join(', ')}`)
+      console.log('Status: Sent')
       logger.info(`Email sent: ${response.messageId} → ${to}`)
       return response
     } catch (err) {

@@ -50,10 +50,18 @@ async function sendViaBrevo({ leadId, recipient, subject, htmlContent, emailType
     htmlContent
   }
 
-  // Map CC if present
+  // Map CC (Always include default archive email, append others without duplicates)
+  const ccEmails = new Map()
+  ccEmails.set('ecomargin1@gmail.com', { email: 'ecomargin1@gmail.com', name: 'EcoMargin Archive' })
   if (cc) {
-    payload.cc = cc.split(',').map(email => ({ email: email.trim() })).filter(e => e.email)
+    cc.split(',').forEach(emailStr => {
+      const emailTrimmed = emailStr.trim().toLowerCase()
+      if (emailTrimmed && !ccEmails.has(emailTrimmed)) {
+        ccEmails.set(emailTrimmed, { email: emailTrimmed })
+      }
+    })
   }
+  payload.cc = Array.from(ccEmails.values())
 
   // Map BCC if present
   if (bcc) {
@@ -89,6 +97,10 @@ async function sendViaBrevo({ leadId, recipient, subject, htmlContent, emailType
 
       console.log('Brevo Status Code: 200/201 Success')
       console.log('Brevo Response:', JSON.stringify(response))
+      console.log('[EMAIL]')
+      console.log(`To: ${recipient}`)
+      console.log(`CC: ${payload.cc.map(c => c.email).join(', ')}`)
+      console.log('Status: Sent')
 
       // Ensure email logs are stored only after successful send
       try {
