@@ -107,7 +107,7 @@ exports.emailQuotation = async (req, res) => {
       <div style="font-family: sans-serif; background-color: #0f172a; color: #f8fafc; padding: 25px; border-radius: 8px;">
         <h2 style="color: #10b981;">Commercial Quotation #${quotation.quotation_no}</h2>
         <p>Dear ${quotation.customer_name},</p>
-        <p>Please find details of your official EV Charging Infrastructure quotation from EcoMargin Infrastructure Pvt. Ltd.</p>
+        <p>Please find details of your official EV Charging Infrastructure quotation from EcoMargin LLP.</p>
         
         <table style="width: 100%; border-collapse: collapse; margin: 15px 0; background: #1e293b; padding: 15px; border-radius: 6px;">
           <tr><td style="padding: 8px; color: #94a3b8;">Product Model:</td><td style="font-weight: 700; color: #ffffff;">${quotation.product_name}</td></tr>
@@ -130,7 +130,7 @@ exports.emailQuotation = async (req, res) => {
     const result = await emailService.sendCustomEmail({
       leadId: quotation.lead_id,
       to: quotation.customer_email,
-      subject: `Official EV Charger Quotation #${quotation.quotation_no} - EcoMargin Infrastructure`,
+      subject: `Official EV Charger Quotation #${quotation.quotation_no} - EcoMargin LLP`,
       body: htmlBody,
       sentBy: req.user?.email || 'Sales Admin'
     })

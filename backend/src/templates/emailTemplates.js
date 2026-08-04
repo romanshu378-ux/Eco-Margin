@@ -29,10 +29,10 @@ function getCustomerConfirmationTemplate({ customerName, leadId, product, date }
 <body>
   <div class="container">
     <div class="header">
-      <h1>⚡ EcoMargin EV Infrastructure</h1>
+      <h1>⚡ EcoMargin LLP</h1>
     </div>
     <div class="content">
-      <h2>Thank You for Reaching Out, ${customerName}!</h2>
+      <h2>Thank You for Reaching Out to EcoMargin LLP, ${customerName}!</h2>
       <p>We have successfully received your enquiry regarding <strong>${product || 'EV Charging Infrastructure'}</strong>. Our technical engineering team is reviewing your requirements and will get back to you within 24 business hours.</p>
       
       <div class="info-card">
@@ -42,15 +42,15 @@ function getCustomerConfirmationTemplate({ customerName, leadId, product, date }
         <div><span class="info-label">Submitted Date:</span> <span class="info-val">${date || new Date().toLocaleDateString('en-IN')}</span></div>
       </div>
 
-      <p>If you have any urgent queries, feel free to reach out to our dedicated support team at <a href="mailto:support@ecomargin.com" style="color: #10b981;">support@ecomargin.com</a> or call our sales line at <strong>+91-8302313065</strong>.</p>
+      <p>If you have any urgent queries, feel free to reach out to our dedicated support team at <a href="mailto:support@ecomargin.in" style="color: #10b981;">support@ecomargin.in</a> or call our sales line at <strong>+91-8302313065</strong>.</p>
       
       <div style="text-align: center; margin-top: 25px;">
         <a href="https://www.ecomargin.in" class="btn">Explore Product Catalog</a>
       </div>
     </div>
     <div class="footer">
-      © ${currentYear} EcoMargin Infrastructure Pvt. Ltd. | Shiv Colony, Tijara Phatak, Alwar, Rajasthan 301001<br>
-      Leading OEM EV Charger Manufacturer & Turnkey EPC Contractor
+      © ${currentYear} EcoMargin LLP | Enterprise EV Charging Solutions<br>
+      Email: support@ecomargin.in | Phone: +91-8302313065 | Website: https://www.ecomargin.in
     </div>
   </div>
 </body>
@@ -79,10 +79,10 @@ function getAdminNotificationTemplate({ name, company, phone, email, product, me
 <body>
   <div class="card">
     <div style="display: flex; justify-content: space-between; align-items: center;">
-      <h2 style="margin: 0; color: #38bdf8;">🔔 New Sales RFQ Enquiry #${leadId || ''}</h2>
+      <h2 style="margin: 0; color: #38bdf8;">🔔 New Sales RFQ Enquiry #${leadId || ''} | EcoMargin LLP</h2>
       <span class="badge">NEW LEAD</span>
     </div>
-    <p style="color: #cbd5e1; font-size: 14px;">A new B2B customer enquiry has been submitted on ecomargin.in.</p>
+    <p style="color: #cbd5e1; font-size: 14px;">A new B2B customer enquiry has been submitted on www.ecomargin.in.</p>
     
     <table>
       <tr><td class="label">Customer Name:</td><td style="font-weight: 700; color: #ffffff;">${name}</td></tr>

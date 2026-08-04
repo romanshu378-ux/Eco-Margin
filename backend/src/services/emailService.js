@@ -10,7 +10,7 @@ const { getCustomerConfirmationTemplate, getAdminNotificationTemplate } = requir
 const createTransporter = () => {
   const host = process.env.EMAIL_HOST || 'smtp.gmail.com'
   const port = parseInt(process.env.EMAIL_PORT || '587', 10)
-  const user = process.env.EMAIL_USER || 'info@ecomargin.in'
+  const user = process.env.EMAIL_USER || 'support@ecomargin.in'
   const pass = process.env.EMAIL_PASS || ''
 
   return nodemailer.createTransport({
@@ -49,14 +49,14 @@ async function logEmail({ leadId, recipient, subject, body, emailType, status, e
   * Sends Customer Confirmation Email
   */
 async function sendCustomerConfirmation({ leadId, customerName, email, product, date }) {
-  const subject = 'Thank You for Contacting EcoMargin'
+  const subject = 'Thank You for Contacting EcoMargin LLP'
   const htmlBody = getCustomerConfirmationTemplate({ customerName, leadId, product, date })
-  const fromEmail = process.env.EMAIL_FROM || 'sales@ecomargin.in'
+  const fromEmail = process.env.EMAIL_FROM || 'support@ecomargin.in'
 
   try {
     const transporter = createTransporter()
     const info = await transporter.sendMail({
-      from: `"EcoMargin Infrastructure" <${fromEmail}>`,
+      from: `"EcoMargin LLP" <${fromEmail}>`,
       to: email,
       subject,
       html: htmlBody
@@ -93,15 +93,15 @@ async function sendCustomerConfirmation({ leadId, customerName, email, product, 
   * Sends Admin Sales Alert Email
   */
 async function sendAdminNotification({ leadId, name, company, phone, email, product, message, time }) {
-  const adminEmail = process.env.EMAIL_USER || process.env.ADMIN_NOTIFY_EMAIL || 'sales@ecomargin.in'
-  const subject = `New RFQ Received - ${name} (${company || 'Individual'})`
+  const adminEmail = process.env.ADMIN_NOTIFY_EMAIL || 'support@ecomargin.in'
+  const subject = `New Enquiry Received | EcoMargin LLP - ${name}`
   const htmlBody = getAdminNotificationTemplate({ name, company, phone, email, product, message, leadId, time })
-  const fromEmail = process.env.EMAIL_FROM || 'system@ecomargin.in'
+  const fromEmail = process.env.EMAIL_FROM || 'support@ecomargin.in'
 
   try {
     const transporter = createTransporter()
     const info = await transporter.sendMail({
-      from: `"EcoMargin Website Bot" <${fromEmail}>`,
+      from: `"EcoMargin LLP" <${fromEmail}>`,
       to: adminEmail,
       subject,
       html: htmlBody
@@ -138,12 +138,12 @@ async function sendAdminNotification({ leadId, name, company, phone, email, prod
   * Sends Custom Email from Admin Panel
   */
 async function sendCustomEmail({ leadId, to, cc, bcc, subject, body, sentBy, attachments }) {
-  const fromEmail = process.env.EMAIL_FROM || 'sales@ecomargin.in'
+  const fromEmail = process.env.EMAIL_FROM || 'support@ecomargin.in'
 
   try {
     const transporter = createTransporter()
     const mailOptions = {
-      from: `"EcoMargin Sales Team" <${fromEmail}>`,
+      from: `"EcoMargin LLP" <${fromEmail}>`,
       to,
       subject,
       html: body,

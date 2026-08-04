@@ -7,11 +7,11 @@ import adminService from '../../services/adminService'
 
 export default function SendEmailModal({ lead, onClose, onEmailSent }) {
   const [formData, setFormData] = useState({
-    from: 'sales@ecomargin.in',
+    from: 'support@ecomargin.in',
     to: lead?.email || '',
     cc: '',
     bcc: '',
-    subject: `RE: EV Charger Requirement - EcoMargin Infrastructure`,
+    subject: `RE: EV Charger Requirement - EcoMargin LLP`,
     body: '',
     template: 'Custom'
   })
@@ -21,24 +21,24 @@ export default function SendEmailModal({ lead, onClose, onEmailSent }) {
 
   const emailTemplates = {
     'Thank You': {
-      subject: `Thank You for Choosing EcoMargin Infrastructure`,
-      body: `Dear ${lead?.fullName || lead?.name || 'Client'},\n\nThank you for getting in touch with EcoMargin. We have received your inquiry for ${lead?.product_requirement || lead?.subject || 'EV Charging Infrastructure'}.\n\nOur technical engineering representative will get in touch with you shortly to discuss site assessment and commercial specifications.\n\nWarm regards,\nSales Team\nEcoMargin Infrastructure Pvt. Ltd.\nhttps://www.ecomargin.in`
+      subject: `Thank You for Choosing EcoMargin LLP`,
+      body: `Dear ${lead?.fullName || lead?.name || 'Client'},\n\nThank you for getting in touch with EcoMargin LLP. We have received your inquiry for ${lead?.product_requirement || lead?.subject || 'EV Charging Infrastructure'}.\n\nOur technical engineering representative will get in touch with you shortly to discuss site assessment and commercial specifications.\n\nWarm regards,\nSales Team\nEcoMargin LLP\nhttps://www.ecomargin.in`
     },
     'Quotation': {
-      subject: `Commercial Offer & Quotation - EcoMargin EV Chargers`,
-      body: `Dear ${lead?.fullName || lead?.name || 'Client'},\n\nWe are pleased to enclose our commercial proposal for your EV charging project requirement.\n\nEcoMargin manufactures high-uptime, ARAI certified AC & DC fast chargers engineered for high reliability in Indian operating conditions.\n\nPlease find the detailed specification and pricing overview attached.\n\nBest regards,\nCommercial Division\nEcoMargin Infrastructure Pvt. Ltd.`
+      subject: `Commercial Offer & Quotation - EcoMargin LLP EV Chargers`,
+      body: `Dear ${lead?.fullName || lead?.name || 'Client'},\n\nWe are pleased to enclose our commercial proposal for your EV charging project requirement.\n\nEcoMargin LLP manufactures high-uptime, ARAI certified AC & DC fast chargers engineered for high reliability in Indian operating conditions.\n\nPlease find the detailed specification and pricing overview attached.\n\nBest regards,\nCommercial Division\nEcoMargin LLP`
     },
     'Meeting Request': {
-      subject: `Technical Site Survey & Discussion Schedule - EcoMargin`,
-      body: `Dear ${lead?.fullName || lead?.name || 'Client'},\n\nWe would like to request a 15-minute technical discovery call or physical site survey regarding your EV charging station installation.\n\nPlease let us know your preferred date and time for the discussion.\n\nSincerely,\nEngineering Operations\nEcoMargin Infrastructure Pvt. Ltd.`
+      subject: `Technical Site Survey & Discussion Schedule - EcoMargin LLP`,
+      body: `Dear ${lead?.fullName || lead?.name || 'Client'},\n\nWe would like to request a 15-minute technical discovery call or physical site survey regarding your EV charging station installation.\n\nPlease let us know your preferred date and time for the discussion.\n\nSincerely,\nEngineering Operations\nEcoMargin LLP`
     },
     'Reminder': {
       subject: `Follow-up: EV Charging Project Inquiry #${lead?.id || ''}`,
-      body: `Dear ${lead?.fullName || lead?.name || 'Client'},\n\nFollowing up on our recent commercial communication regarding your EV charger requirements.\n\nPlease let us know if you need any clarification on grid capacity, DISCOM transformer guidelines, or OCPP software integration.\n\nRegards,\nEcoMargin Sales Team`
+      body: `Dear ${lead?.fullName || lead?.name || 'Client'},\n\nFollowing up on our recent commercial communication regarding your EV charger requirements.\n\nPlease let us know if you need any clarification on grid capacity, DISCOM transformer guidelines, or OCPP software integration.\n\nRegards,\nEcoMargin LLP Sales Team`
     },
     'Order Confirmation': {
-      subject: `Order Confirmation & Dispatch Schedule - EcoMargin`,
-      body: `Dear ${lead?.fullName || lead?.name || 'Client'},\n\nWe are delighted to confirm receipt of your Purchase Order. Your EV charger units have been queued for factory assembly and testing.\n\nDispatch details and warranty certificates will be shared upon final factory inspection.\n\nThank you,\nOperations & Logistics\nEcoMargin Infrastructure Pvt. Ltd.`
+      subject: `Order Confirmation & Dispatch Schedule - EcoMargin LLP`,
+      body: `Dear ${lead?.fullName || lead?.name || 'Client'},\n\nWe are delighted to confirm receipt of your Purchase Order. Your EV charger units have been queued for factory assembly and testing.\n\nDispatch details and warranty certificates will be shared upon final factory inspection.\n\nThank you,\nOperations & Logistics\nEcoMargin LLP`
     }
   }
 
