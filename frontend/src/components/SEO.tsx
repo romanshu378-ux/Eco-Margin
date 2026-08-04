@@ -14,8 +14,11 @@ import {
   getFAQSchema,
   getOrganizationSchema,
   getWebPageSchema,
+  getImageObjectSchema,
+  getArticleSchema,
   ProductDetails,
-  FAQItem
+  FAQItem,
+  ArticleDetails
 } from '../utils/schema';
 
 export interface SEOProps {
@@ -29,6 +32,8 @@ export interface SEOProps {
   schemaType?: 'Organization' | 'LocalBusiness' | 'WebSite' | 'Product' | 'Service' | 'FAQPage';
   schemaData?: any;
   product?: ProductDetails | null;
+  products?: ProductDetails[] | null;
+  article?: ArticleDetails | null;
   faqs?: FAQItem[] | null;
   breadcrumbs?: { name: string; url: string }[] | null;
 }
@@ -44,6 +49,8 @@ export default function SEO({
   schemaType = 'Organization',
   schemaData = null,
   product = null,
+  products = null,
+  article = null,
   faqs = null,
   breadcrumbs = null,
 }: SEOProps) {
@@ -122,7 +129,12 @@ export default function SEO({
   const breadcrumbSchema = getBreadcrumbSchema(breadcrumbItems);
 
   const productSchema = product ? getProductSchema(product, siteUrl, ogImg, companyName) : null;
+  const productSchemasList = products && Array.isArray(products) 
+    ? products.map(p => getProductSchema(p, siteUrl, ogImg, companyName)) 
+    : [];
   const faqSchema = faqs ? getFAQSchema(faqs) : null;
+  const articleSchema = article ? getArticleSchema(article) : null;
+  const imageObjectSchema = ogImg ? getImageObjectSchema(ogImg, metaTitle) : null;
 
   return (
     <Helmet htmlAttributes={{ lang: 'en-IN' }}>
@@ -134,6 +146,8 @@ export default function SEO({
       <meta name="author" content="EcoMargin LLP" />
       <meta name="theme-color" content="#0F9D58" />
       <link rel="canonical" href={canonicalLink} />
+      <link rel="alternate" href={canonicalLink} hrefLang="en-IN" />
+      <link rel="alternate" href={canonicalLink} hrefLang="x-default" />
 
       {/* ── 2. PRELOAD LOGO & BRAND ASSETS ── */}
       <link
@@ -179,8 +193,20 @@ export default function SEO({
         <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
       )}
 
+      {productSchemasList.map((pSchema, idx) => (
+        <script key={`prod-${idx}`} type="application/ld+json">{JSON.stringify(pSchema)}</script>
+      ))}
+
       {faqSchema && (
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>
+      )}
+
+      {articleSchema && (
+        <script type="application/ld+json">{JSON.stringify(articleSchema)}</script>
+      )}
+
+      {imageObjectSchema && (
+        <script type="application/ld+json">{JSON.stringify(imageObjectSchema)}</script>
       )}
 
       {schemaData && (

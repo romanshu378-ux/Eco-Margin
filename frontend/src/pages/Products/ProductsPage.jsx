@@ -151,11 +151,30 @@ export default function ProductsPage() {
     setQuoteModalOpen(true)
   }
 
+  const allProductsList = productCategories.flatMap((cat, catIdx) => 
+    cat.items.map((prod, idx) => ({
+      id: `prod-${catIdx}-${idx}`,
+      name: prod.name,
+      description: `${prod.name} manufactured by EcoMargin. Specifications: Connector: ${prod.connector}, Protection: ${prod.protection}, Efficiency: ${prod.efficiency}, Warranty: ${prod.warranty}. Features: ${prod.features.join(', ')}. Applications: ${prod.applications}.`,
+      power: prod.power,
+      sku: `EM-PROD-${catIdx}-${idx}`,
+      price: 'Call for Quote'
+    }))
+  );
+
+  const productFaqs = [
+    { question: 'Are EcoMargin EV chargers ARAI certified?', answer: 'Yes, our complete charger range (both AC type 2 destination chargers and DC Fast CCS2 charging stations) are fully ARAI certified under Indian safety regulations.' },
+    { question: 'What is the warranty period for commercial chargers?', answer: 'We offer a standard 3-year manufacturer warranty on all commercial AC and DC charging hardware, which can be extended via customized AMC packages.' },
+    { question: 'Do you provide dynamic load management (DLM)?', answer: 'Yes, our smart OCPP 1.6J and 2.0.1 compliant chargers support dynamic load balancing to protect building grid limits and optimize fleet dispatch.' }
+  ];
+
   return (
     <>
       <SEO 
         title="EV Charger Product Range (3.3kW to 240kW)" 
         description="Commercial AC chargers & ultra-fast DC charging stations manufactured in India with ARAI & CE certifications." 
+        products={allProductsList}
+        faqs={productFaqs}
       />
       
       <PageHeader 
@@ -264,9 +283,22 @@ export default function ProductsPage() {
           </div>
         ))}
 
+        {/* Dynamic FAQ Accordion */}
+        <div style={{ marginTop: '6rem', background: 'var(--color-bg-card)', padding: '4rem 3rem', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-border)' }}>
+          <h2 style={{ fontSize: '2rem', marginBottom: '2.5rem', textAlign: 'center', fontFamily: 'Outfit, sans-serif' }}>Frequently Asked Questions</h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', maxWidth: '800px', margin: '0 auto' }}>
+            {productFaqs.map((faq, idx) => (
+              <div key={idx} style={{ borderTop: idx > 0 ? '1px solid var(--color-border)' : 'none', paddingTop: idx > 0 ? '1.5rem' : '0' }}>
+                <h3 style={{ fontSize: '1.15rem', marginBottom: '0.5rem', color: 'var(--color-primary)' }}>{faq.question}</h3>
+                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', lineHeight: '1.6' }}>{faq.answer}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
 
       <QuoteModal isOpen={quoteModalOpen} onClose={() => setQuoteModalOpen(false)} defaultProduct={selectedProduct} />
     </>
-  )
+  );
 }

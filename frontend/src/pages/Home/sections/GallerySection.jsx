@@ -141,6 +141,7 @@ export default function GallerySection() {
                     src={hasError ? fallbackUrl : (src || fallbackUrl)} 
                     alt={item.title || 'EcoMargin Platform Showcase'} 
                     onError={() => handleImageError(item.id || index)}
+                    loading="lazy"
                     style={{ 
                       width: '100%', 
                       height: '100%', 

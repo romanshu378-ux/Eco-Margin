@@ -49,7 +49,7 @@ export default function BlogsPage() {
               >
                 <div style={{ height: '220px', background: 'var(--color-bg-alt)', borderBottom: '1px solid var(--color-border)', overflow: 'hidden' }}>
                   {img ? (
-                    <img src={img} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={img} alt={blog.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--color-text-muted)' }}>
                       [Blog Cover]

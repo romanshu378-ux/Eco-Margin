@@ -60,7 +60,7 @@ export default function BlogsSection() {
                 style={{ background: 'var(--color-bg)', borderRadius: 'var(--radius-xl)', overflow: 'hidden', border: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', transition: 'transform var(--transition-fast)' }}
               >
                 <div style={{ height: '200px', background: 'var(--color-bg-card)', borderBottom: '1px solid var(--color-border)', overflow: 'hidden' }}>
-                  <img src={img} alt={blog.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img src={img} alt={blog.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
                 <div style={{ padding: '2rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', fontSize: '0.875rem' }}>

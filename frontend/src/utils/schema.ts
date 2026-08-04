@@ -211,3 +211,52 @@ export const getFAQSchema = (faqs: FAQItem[]) => {
     }))
   };
 };
+
+export const getImageObjectSchema = (url: string, caption: string) => {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ImageObject',
+    'url': url,
+    'caption': caption
+  };
+};
+
+export interface ArticleDetails {
+  title: string;
+  description: string;
+  image: string;
+  author: string;
+  datePublished: string;
+  dateModified?: string;
+  publisherName?: string;
+  publisherLogo?: string;
+}
+
+export const getArticleSchema = (article: ArticleDetails) => {
+  const siteUrl = getSiteUrl();
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    'headline': article.title,
+    'description': article.description,
+    'image': article.image,
+    'datePublished': article.datePublished,
+    'dateModified': article.dateModified || article.datePublished,
+    'author': {
+      '@type': 'Person',
+      'name': article.author
+    },
+    'publisher': {
+      '@type': 'Organization',
+      'name': article.publisherName || 'EcoMargin LLP',
+      'logo': {
+        '@type': 'ImageObject',
+        'url': article.publisherLogo || 'https://res.cloudinary.com/dcumpbswm/image/upload/v1785843387/dark_mfegwj.png'
+      }
+    },
+    'mainEntityOfPage': {
+      '@type': 'WebPage',
+      '@id': `${siteUrl}/blogs`
+    }
+  };
+};

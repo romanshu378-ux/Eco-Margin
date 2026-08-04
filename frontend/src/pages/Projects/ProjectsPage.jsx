@@ -57,7 +57,7 @@ export default function ProjectsPage() {
               >
                 <div style={{ height: '220px', background: 'var(--color-bg-alt)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
                   {img ? (
-                    <img src={img} alt={proj.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={img} alt={proj.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     <span style={{ color: 'var(--color-text-muted)' }}>[EcoMargin EPC Project]</span>
                   )}
