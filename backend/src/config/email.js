@@ -1,35 +1,71 @@
-// EcoMargin — Email Config (Nodemailer)
+// EcoMargin — Email Config (Brevo REST API Edition)
 // src/config/email.js
 
 'use strict'
 
-const nodemailer = require('nodemailer')
-const logger     = require('./logger')
+const SibApiV3Sdk = require('@getbrevo/brevo')
+const logger = require('./logger')
 
-const transporter = nodemailer.createTransport({
-  host:   process.env.SMTP_HOST || 'smtp.gmail.com',
-  port:   parseInt(process.env.SMTP_PORT) || 587,
-  secure: process.env.SMTP_SECURE === 'true',
-  auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
-  },
-})
+const promiseTimeout = (promise, ms) => {
+  let timeout = new Promise((resolve, reject) => {
+    let id = setTimeout(() => {
+      clearTimeout(id)
+      reject(new Error(`Brevo REST API call timed out after ${ms} ms`))
+    }, ms)
+  })
+  return Promise.race([promise, timeout])
+}
 
 const sendEmail = async ({ to, subject, html, text }) => {
-  try {
-    const info = await transporter.sendMail({
-      from:    process.env.EMAIL_FROM || 'EcoMargin <noreply@ecomargin.com>',
-      to,
-      subject,
-      html,
-      text,
-    })
-    logger.info(`Email sent: ${info.messageId} → ${to}`)
-    return info
-  } catch (error) {
-    logger.error('Email send failed:', error)
-    throw error
+  console.log('Sending email... Using Brevo API')
+  console.log(`Recipient: ${to}`)
+  console.log(`Subject: ${subject}`)
+
+  const apiKey = process.env.BREVO_API_KEY
+  if (!apiKey) {
+    const errMsg = 'BREVO_API_KEY environment variable is missing.'
+    logger.error('Email send failed: ' + errMsg)
+    throw new Error(errMsg)
+  }
+
+  const senderEmail = 'support@ecomargin.in'
+  const senderName = 'EcoMargin LLP'
+
+  const client = new SibApiV3Sdk.BrevoClient({ apiKey })
+
+  const payload = {
+    sender: { name: senderName, email: senderEmail },
+    to: [{ email: to }],
+    subject,
+    htmlContent: html || text
+  }
+
+  let attempt = 0
+  const maxRetries = 2
+
+  while (true) {
+    try {
+      const response = await promiseTimeout(
+        client.transactionalEmails.sendTransacEmail(payload),
+        10000
+      )
+      console.log('Brevo Status Code: 200/201 Success')
+      console.log('Brevo Response:', JSON.stringify(response))
+      logger.info(`Email sent: ${response.messageId} → ${to}`)
+      return response
+    } catch (err) {
+      attempt++
+      const statusCode = err.status || err.statusCode || err.response?.status || 'Unknown'
+      const errorBody = err.response?.body || err.message
+      
+      console.error(`Failure reason (Attempt ${attempt}):`, errorBody)
+      console.error(`Brevo Status Code: ${statusCode}`)
+
+      if (attempt > maxRetries) {
+        logger.error('Email send failed: ' + errorBody)
+        throw err
+      }
+    }
   }
 }
 

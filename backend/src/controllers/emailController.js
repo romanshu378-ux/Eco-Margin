@@ -1,15 +1,29 @@
-// EcoMargin Backend — Email Controller
+// EcoMargin Backend — Email Controller (Brevo REST API Edition)
 // src/controllers/emailController.js
 'use strict'
 
-const { EmailLog, Lead } = require('../models')
+const { EmailLog } = require('../models')
 const emailService = require('../services/emailService')
+
+const verifyApiKey = (res) => {
+  if (!process.env.BREVO_API_KEY) {
+    res.status(500).json({
+      success: false,
+      message: 'Email sending failed',
+      error: 'BREVO_API_KEY environment variable is missing.'
+    })
+    return false
+  }
+  return true
+}
 
 /**
  * POST /api/email/send
  * Generic custom email sender endpoint from Admin Panel
  */
 exports.sendCustomEmail = async (req, res) => {
+  if (!verifyApiKey(res)) return
+
   try {
     const { leadId, to, cc, bcc, subject, body, sentBy } = req.body
 
@@ -28,13 +42,24 @@ exports.sendCustomEmail = async (req, res) => {
     })
 
     if (!result.success) {
-      return res.status(500).json({ success: false, message: result.error || 'Failed to deliver email via SMTP' })
+      return res.status(500).json({
+        success: false,
+        message: 'Email sending failed',
+        error: result.error || 'Failed to deliver email via Brevo REST API'
+      })
     }
 
-    return res.json({ success: true, message: 'Email sent successfully via Nodemailer SMTP.', data: result })
+    return res.json({
+      success: true,
+      message: 'Email sent successfully'
+    })
   } catch (err) {
     console.error('❌ Error sending custom email:', err)
-    return res.status(500).json({ success: false, message: err.message })
+    return res.status(500).json({
+      success: false,
+      message: 'Email sending failed',
+      error: err.message
+    })
   }
 }
 
@@ -43,6 +68,8 @@ exports.sendCustomEmail = async (req, res) => {
  * Trigger customer confirmation email
  */
 exports.sendCustomerEmail = async (req, res) => {
+  if (!verifyApiKey(res)) return
+
   try {
     const { leadId, customerName, email, product, date } = req.body
 
@@ -51,9 +78,25 @@ exports.sendCustomerEmail = async (req, res) => {
     }
 
     const result = await emailService.sendCustomerConfirmation({ leadId, customerName, email, product, date })
-    return res.json({ success: true, data: result })
+    
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        message: 'Email sending failed',
+        error: result.error || 'Failed to deliver customer confirmation email via Brevo'
+      })
+    }
+
+    return res.json({
+      success: true,
+      message: 'Email sent successfully'
+    })
   } catch (err) {
-    return res.status(500).json({ success: false, message: err.message })
+    return res.status(500).json({
+      success: false,
+      message: 'Email sending failed',
+      error: err.message
+    })
   }
 }
 
@@ -62,13 +105,31 @@ exports.sendCustomerEmail = async (req, res) => {
  * Trigger admin sales notification email
  */
 exports.sendAdminEmail = async (req, res) => {
+  if (!verifyApiKey(res)) return
+
   try {
     const { leadId, name, company, phone, email, product, message, time } = req.body
 
     const result = await emailService.sendAdminNotification({ leadId, name, company, phone, email, product, message, time })
-    return res.json({ success: true, data: result })
+    
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        message: 'Email sending failed',
+        error: result.error || 'Failed to deliver admin notification email via Brevo'
+      })
+    }
+
+    return res.json({
+      success: true,
+      message: 'Email sent successfully'
+    })
   } catch (err) {
-    return res.status(500).json({ success: false, message: err.message })
+    return res.status(500).json({
+      success: false,
+      message: 'Email sending failed',
+      error: err.message
+    })
   }
 }
 

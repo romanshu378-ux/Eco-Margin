@@ -135,13 +135,22 @@ exports.emailQuotation = async (req, res) => {
       sentBy: req.user?.email || 'Sales Admin'
     })
 
-    if (result.success) {
-      await quotation.update({ status: 'Sent' })
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        message: 'Email sending failed',
+        error: result.error || 'Failed to deliver quotation email via Brevo'
+      })
     }
 
-    return res.json({ success: true, message: `Quotation #${quotation.quotation_no} emailed successfully!`, data: result })
+    await quotation.update({ status: 'Sent' })
+    return res.json({ success: true, message: 'Email sent successfully' })
   } catch (err) {
-    return res.status(500).json({ success: false, message: err.message })
+    return res.status(500).json({
+      success: false,
+      message: 'Email sending failed',
+      error: err.message
+    })
   }
 }
 
