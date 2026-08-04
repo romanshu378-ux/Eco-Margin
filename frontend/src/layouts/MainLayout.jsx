@@ -4,6 +4,8 @@ import { motion } from 'framer-motion'
 import Navbar from '@components/common/Navbar/Navbar'
 import Footer from '@components/common/Footer/Footer'
 import InstallAppButton from '@components/common/InstallAppButton/InstallAppButton'
+import InstallPopup from '../components/InstallPopup'
+import UpdateToast from '../components/UpdateToast'
 import { pageTransition } from '@animations/variants'
 
 export default function MainLayout() {
@@ -21,6 +23,8 @@ export default function MainLayout() {
       </motion.main>
       <Footer />
       <InstallAppButton placement="floating" />
+      <InstallPopup />
+      <UpdateToast />
     </div>
   )
 }
