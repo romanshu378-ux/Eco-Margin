@@ -255,8 +255,9 @@ export default function SEO({
       <link rel="canonical" href={canonical} />
 
       {/* Favicon settings */}
-      <link rel="icon" type="image/png" href="/favicon.png?v=2" />
-      <link rel="apple-touch-icon" href="/favicon.png" />
+      <link rel="icon" type="image/png" href="https://res.cloudinary.com/dcumpbswm/image/upload/v1785843070/logo_x5xeec.png" />
+      <link rel="shortcut icon" href="https://res.cloudinary.com/dcumpbswm/image/upload/v1785843070/logo_x5xeec.png" />
+      <link rel="apple-touch-icon" href="https://res.cloudinary.com/dcumpbswm/image/upload/v1785843070/logo_x5xeec.png" />
 
       {/* Search Console & Webmaster Verifications */}
       {gsc && <meta name="google-site-verification" content={gsc} />}
