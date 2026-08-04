@@ -254,9 +254,9 @@ export default function SEO({
       <meta name="robots" content={robotsSetting} />
       <link rel="canonical" href={canonical} />
 
-      {/* Dynamic Favicon */}
-      {faviconUrl && <link rel="icon" type="image/x-icon" href={faviconUrl} />}
-      {faviconUrl && <link rel="shortcut icon" href={faviconUrl} />}
+      {/* Favicon settings */}
+      <link rel="icon" type="image/png" href="/favicon.png?v=2" />
+      <link rel="apple-touch-icon" href="/favicon.png" />
 
       {/* Search Console & Webmaster Verifications */}
       {gsc && <meta name="google-site-verification" content={gsc} />}
