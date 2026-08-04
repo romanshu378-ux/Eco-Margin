@@ -192,6 +192,22 @@ async function ensureSchemaSynchronizations() {
     await sequelize.query("ALTER TABLE activity_logs MODIFY COLUMN lead_id INT NULL;").catch(() => {})
     await sequelize.query("ALTER TABLE activity_logs ADD CONSTRAINT fk_activity_logs_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;").catch(() => {})
 
+    // Ensure seo table has all schema fields
+    await sequelize.query("ALTER TABLE seo ADD COLUMN focus_keyword VARCHAR(255) NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE seo ADD COLUMN robots VARCHAR(100) DEFAULT 'index, follow';").catch(() => {})
+    await sequelize.query("ALTER TABLE seo ADD COLUMN og_description TEXT NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE seo ADD COLUMN twitter_card VARCHAR(100) DEFAULT 'summary_large_image';").catch(() => {})
+    await sequelize.query("ALTER TABLE seo ADD COLUMN schema_type VARCHAR(100) DEFAULT 'Organization';").catch(() => {})
+    await sequelize.query("ALTER TABLE seo ADD COLUMN structured_data TEXT NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE seo ADD COLUMN organization_schema TEXT NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE seo ADD COLUMN gsc_verification VARCHAR(255) NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE seo ADD COLUMN bing_verification VARCHAR(255) NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE seo ADD COLUMN ga_measurement_id VARCHAR(100) NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE seo ADD COLUMN gtm_container_id VARCHAR(100) NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE seo ADD COLUMN clarity_id VARCHAR(100) NULL;").catch(() => {})
+    await sequelize.query("ALTER TABLE seo ADD COLUMN created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;").catch(() => {})
+    await sequelize.query("ALTER TABLE seo ADD COLUMN updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;").catch(() => {})
+
     logger.info('🛡️ CMS table schemas verified and synchronized safely.')
   } catch (err) {
     logger.warn('⚠️ Schema alter notice:', err.message)

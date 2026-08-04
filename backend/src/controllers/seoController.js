@@ -105,8 +105,28 @@ Sitemap: ${SITE_URL}/sitemap.xml
 
 // ── 3. GET Dynamic SEO Record by Route ────────────────────────────
 exports.getSEOByRoute = async (req, res) => {
+  const routeParam = req.query.route || req.params.route || '/'
+  const defaultPayload = {
+    pageRoute: routeParam,
+    metaTitle: 'EcoMargin | OEM EV Charger Manufacturer & EPC Company',
+    metaDescription: 'EcoMargin manufactures 3.3kW to 240kW commercial AC & DC chargers, OCPP CSMS software, and turnkey EPC charging station installation.',
+    keywords: 'EV Charger Manufacturer, DC Fast Charger 60kW 120kW 240kW, AC Type 2 Charger, EV Charging Station EPC, OCPP 2.0.1 Software, ARAI Certified EV Charger India',
+    focusKeyword: 'EV Charger Manufacturer',
+    canonicalUrl: `${SITE_URL}${routeParam}`,
+    robots: 'index, follow',
+    ogTitle: 'EcoMargin | Dynamic EV Charging Solutions',
+    ogDescription: 'Leading OEM EV Charger Manufacturer & Infrastructure EPC Contractor.',
+    ogImage: `${SITE_URL}/og-image.jpg`,
+    twitterCard: 'summary_large_image',
+    schemaType: 'Organization',
+    gscVerification: '',
+    bingVerification: '',
+    gaMeasurementId: '',
+    gtmContainerId: '',
+    clarityId: '',
+  }
+
   try {
-    const routeParam = req.query.route || req.params.route || '/'
     let record = await SEO.findOne({ where: { pageRoute: routeParam } })
 
     if (!record) {
@@ -114,33 +134,16 @@ exports.getSEOByRoute = async (req, res) => {
       record = await SEO.findOne({ where: { pageRoute: '/' } })
     }
 
-    const defaultPayload = {
-      pageRoute: routeParam,
-      metaTitle: 'EcoMargin | OEM EV Charger Manufacturer & EPC Company',
-      metaDescription: 'EcoMargin manufactures 3.3kW to 240kW commercial AC & DC chargers, OCPP CSMS software, and turnkey EPC charging station installation.',
-      keywords: 'EV Charger Manufacturer, DC Fast Charger 60kW 120kW 240kW, AC Type 2 Charger, EV Charging Station EPC, OCPP 2.0.1 Software, ARAI Certified EV Charger India',
-      focusKeyword: 'EV Charger Manufacturer',
-      canonicalUrl: `${SITE_URL}${routeParam}`,
-      robots: 'index, follow',
-      ogTitle: 'EcoMargin | Dynamic EV Charging Solutions',
-      ogDescription: 'Leading OEM EV Charger Manufacturer & Infrastructure EPC Contractor.',
-      ogImage: `${SITE_URL}/og-image.jpg`,
-      twitterCard: 'summary_large_image',
-      schemaType: 'Organization',
-      gscVerification: '',
-      bingVerification: '',
-      gaMeasurementId: '',
-      gtmContainerId: '',
-      clarityId: '',
-    }
-
     return res.status(200).json({
       success: true,
       data: record ? record.toJSON() : defaultPayload,
     })
   } catch (err) {
-    console.error('❌ [SEO Fetch Error]:', err.message)
-    return res.status(500).json({ success: false, message: err.message })
+    console.warn('⚠️ [SEO Optional Fallback Triggered - Fetch Error]:', err.message)
+    return res.status(200).json({
+      success: true,
+      data: defaultPayload,
+    })
   }
 }
 
