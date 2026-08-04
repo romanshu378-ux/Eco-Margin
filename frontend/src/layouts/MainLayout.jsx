@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Navbar from '@components/common/Navbar/Navbar'
 import Footer from '@components/common/Footer/Footer'
+import InstallAppButton from '@components/common/InstallAppButton/InstallAppButton'
 import { pageTransition } from '@animations/variants'
 
 export default function MainLayout() {
@@ -19,6 +20,7 @@ export default function MainLayout() {
         <Outlet />
       </motion.main>
       <Footer />
+      <InstallAppButton placement="floating" />
     </div>
   )
 }

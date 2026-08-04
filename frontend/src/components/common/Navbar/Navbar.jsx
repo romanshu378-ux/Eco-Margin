@@ -5,6 +5,7 @@ import LogoIcon from '@assets/icons/LogoIcon'
 import ThemeToggle from '../ThemeToggle/ThemeToggle'
 import Button from '../../ui/Button/Button'
 import QuoteModal from '../QuoteModal/QuoteModal'
+import InstallAppButton from '../InstallAppButton/InstallAppButton'
 import { useLogos } from '../../../hooks/useCMS'
 
 export default function Navbar() {
@@ -106,7 +107,8 @@ export default function Navbar() {
           {/* Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <ThemeToggle />
-            <div style={{ display: 'none' }} className="desktop-actions">
+            <div style={{ display: 'none', alignItems: 'center', gap: '0.75rem' }} className="desktop-actions">
+              <InstallAppButton placement="nav" />
               <Button variant="primary" size="sm" onClick={() => setQuoteModalOpen(true)}>
                 Request Quote
               </Button>
@@ -227,7 +229,8 @@ export default function Navbar() {
                     ))}
                   </ul>
 
-                  <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--color-border)' }}>
+                  <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                    <InstallAppButton placement="drawer" />
                     <Button variant="primary" fullWidth onClick={() => { setMobileMenuOpen(false); setQuoteModalOpen(true); }} style={{ height: '48px' }}>
                       Request Quote
                     </Button>
