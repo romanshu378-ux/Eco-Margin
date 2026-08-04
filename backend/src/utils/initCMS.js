@@ -74,14 +74,14 @@ const defaultSEO = {
   metaTitle: "EcoMargin | EV Charger Manufacturer & EPC Infrastructure Company",
   metaDescription: "EcoMargin manufactures 3.3kW to 240kW commercial AC & DC chargers, OCPP CSMS software, and turnkey EPC charging station installation.",
   keywords: "EV Charger Manufacturer India, DC Fast Charger 60kW 120kW 240kW, ARAI AIS-138 Certified",
-  canonicalUrl: "https://ecomargin.vercel.app",
+  canonicalUrl: "https://ecomargin.in",
   ogTitle: "EcoMargin EV Charging Infrastructure & OEM Factory",
-  ogImage: "https://ecomargin.vercel.app/og-image.jpg",
+  ogImage: "https://ecomargin.in/og-image.jpg",
   organizationSchema: `{
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "EcoMargin Infrastructure Pvt. Ltd.",
-  "url": "https://ecomargin.vercel.app"
+  "url": "https://ecomargin.in"
 }`
 }
 

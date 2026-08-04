@@ -170,7 +170,7 @@ export default function DashboardLayout() {
               )}
             </NavLink>
 
-            <a href="https://ecomargin.vercel.app" target="_blank" rel="noreferrer" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem' }}>
+            <a href="https://ecomargin.in" target="_blank" rel="noreferrer" className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem' }}>
               <FiGlobe /> View Live Website
             </a>
           </div>
