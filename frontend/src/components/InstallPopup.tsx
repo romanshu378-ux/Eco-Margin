@@ -10,6 +10,7 @@ export default function InstallPopup() {
   const { isInstallable, isInstalled, isIOS, isSafari, installApp, dismissPrompt } = usePWAInstall();
   const [shouldShow, setShouldShow] = useState(false);
   const [showIOSInstructions, setShowIOSInstructions] = useState(false);
+  const [logoError, setLogoError] = useState(false);
 
   useEffect(() => {
     if (!isInstallable && !(isIOS && isSafari)) return;
@@ -40,10 +41,14 @@ export default function InstallPopup() {
     dismissPrompt();
   };
 
+  const logoUrl = logoError
+    ? 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" style="background:%230F9D58"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-weight="bold" font-family="sans-serif" font-size="14">EM</text></svg>'
+    : 'https://res.cloudinary.com/dcumpbswm/image/upload/v1785843387/dark_mfegwj.png';
+
   return (
     <AnimatePresence>
       {shouldShow && (
-        <div style={{ position: 'fixed', bottom: '2rem', left: '1.5rem', zIndex: 1000, width: 'calc(100% - 3rem)', maxWidth: '420px' }}>
+        <div className="pwa-install-popup" style={{ position: 'fixed', bottom: '2rem', left: '1.5rem', zIndex: 1000, width: 'calc(100% - 3rem)', maxWidth: '420px' }}>
           {!showIOSInstructions ? (
             <motion.div
               initial={{ opacity: 0, y: 50, scale: 0.95 }}
@@ -64,8 +69,9 @@ export default function InstallPopup() {
             >
               <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                 <img
-                  src="https://res.cloudinary.com/dcumpbswm/image/upload/v1785843387/dark_mfegwj.png"
+                  src={logoUrl}
                   alt="EcoMargin Logo"
+                  onError={() => setLogoError(true)}
                   style={{ width: '48px', height: '48px', objectFit: 'contain' }}
                 />
                 <div style={{ display: 'flex', flexDirection: 'column' }}>

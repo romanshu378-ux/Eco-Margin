@@ -15,7 +15,8 @@ export default function Navbar() {
   const [quoteModalOpen, setQuoteModalOpen] = useState(false)
   const location = useLocation()
 
-  const headerLogoUrl = logos?.header?.imageUrl || logos?.white_logo?.imageUrl
+  const [logoError, setLogoError] = useState(false)
+  const headerLogoUrl = logoError ? null : (logos?.header?.imageUrl || logos?.white_logo?.imageUrl)
   const headerLogoAlt = logos?.header?.altText || 'EcoMargin Corporate Logo'
 
   useEffect(() => {
@@ -29,6 +30,15 @@ export default function Navbar() {
   useEffect(() => {
     setMobileMenuOpen(false)
   }, [location.pathname])
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.classList.add('mobile-menu-open')
+    } else {
+      document.body.classList.remove('mobile-menu-open')
+    }
+    return () => document.body.classList.remove('mobile-menu-open')
+  }, [mobileMenuOpen])
 
   const navLinks = [
     { name: 'Home', path: '/' },
@@ -68,6 +78,7 @@ export default function Navbar() {
               <img 
                 src={headerLogoUrl} 
                 alt={headerLogoAlt} 
+                onError={() => setLogoError(true)}
                 style={{ height: '36px', width: 'auto', objectFit: 'contain' }} 
               />
             ) : (
@@ -172,6 +183,7 @@ export default function Navbar() {
                   right: 0,
                   bottom: 0,
                   width: 'min(92vw, 420px)',
+                  maxWidth: '420px',
                   height: '100dvh',
                   background: 'var(--color-bg-card)',
                   boxShadow: '-10px 0 30px rgba(0, 0, 0, 0.25)',
@@ -185,7 +197,7 @@ export default function Navbar() {
               >
                 {/* Drawer Header */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.5rem', borderBottom: '1px solid var(--color-border)', width: '100%', minWidth: 0 }}>
-                  <span style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: '1.2rem', color: 'var(--color-text)', overflowWrap: 'break-word', wordBreak: 'break-word', whiteSpace: 'normal' }}>Menu</span>
+                  <span style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: '1.2rem', color: 'var(--color-text)', overflowWrap: 'anywhere', wordBreak: 'break-word', whiteSpace: 'normal' }}>Menu</span>
                   <button
                     onClick={() => setMobileMenuOpen(false)}
                     style={{
@@ -210,7 +222,7 @@ export default function Navbar() {
 
                 {/* Drawer Body Links */}
                 <div style={{ flex: 1, padding: '2rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', minWidth: 0 }}>
-                  <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', minWidth: 0 }}>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2" style={{ listStyle: 'none', gap: '0.5rem', width: '100%', minWidth: 0, padding: 0, margin: 0 }}>
                     {navLinks.map((link) => (
                       <li key={link.name} style={{ width: '100%', minWidth: 0 }}>
                         <Link
@@ -230,7 +242,7 @@ export default function Navbar() {
                             transition: 'all var(--transition-fast)',
                             width: '100%',
                             minWidth: 0,
-                            overflowWrap: 'break-word',
+                            overflowWrap: 'anywhere',
                             wordBreak: 'break-word',
                             whiteSpace: 'normal'
                           }}
@@ -255,7 +267,7 @@ export default function Navbar() {
                     padding: '2rem 1.5rem', 
                     background: 'var(--color-bg-alt)', 
                     borderTop: '1px solid var(--color-border)',
-                    paddingBottom: 'calc(6rem + env(safe-area-inset-bottom))',
+                    paddingBottom: 'calc(env(safe-area-inset-bottom) + 32px)',
                     display: 'flex',
                     flexDirection: 'column',
                     gap: '1rem',
@@ -263,25 +275,25 @@ export default function Navbar() {
                     minWidth: 0
                   }}
                 >
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-text-muted)', overflowWrap: 'break-word', wordBreak: 'break-word', whiteSpace: 'normal' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-text-muted)', overflowWrap: 'anywhere', wordBreak: 'break-word', whiteSpace: 'normal' }}>
                     Contact Information
                   </span>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--color-text)', width: '100%', minWidth: 0 }}>
                     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', minWidth: 0 }}>
                       <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Email</span>
-                      <a href="mailto:support@ecomargin.in" style={{ color: 'var(--color-primary)', textDecoration: 'none', overflowWrap: 'break-word', wordBreak: 'break-word', whiteSpace: 'normal', width: '100%', minWidth: 0 }}>
+                      <a href="mailto:support@ecomargin.in" style={{ color: 'var(--color-primary)', textDecoration: 'none', overflowWrap: 'anywhere', wordBreak: 'break-word', whiteSpace: 'normal', width: '100%', minWidth: 0 }}>
                         support@ecomargin.in
                       </a>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', minWidth: 0 }}>
                       <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Phone</span>
-                      <a href="tel:+918302313065" style={{ color: 'var(--color-text)', textDecoration: 'none', overflowWrap: 'break-word', wordBreak: 'break-word', whiteSpace: 'normal', width: '100%', minWidth: 0 }}>
+                      <a href="tel:+918302313065" style={{ color: 'var(--color-text)', textDecoration: 'none', overflowWrap: 'anywhere', wordBreak: 'break-word', whiteSpace: 'normal', width: '100%', minWidth: 0 }}>
                         +91-8302313065
                       </a>
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', minWidth: 0 }}>
                       <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Corporate Address</span>
-                      <span style={{ lineHeight: '1.4', overflowWrap: 'break-word', wordBreak: 'break-word', whiteSpace: 'normal', width: '100%', minWidth: 0 }}>
+                      <span style={{ lineHeight: '1.4', overflowWrap: 'anywhere', wordBreak: 'break-word', whiteSpace: 'normal', width: '100%', minWidth: 0 }}>
                         NH-11, iStart Nest, Govt Engineering College, Bharatpur, Rajasthan - 321001
                       </span>
                     </div>

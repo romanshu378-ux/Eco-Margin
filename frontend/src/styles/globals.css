@@ -95,6 +95,32 @@ input, textarea, select {
 .block {
   display: block !important;
 }
+.grid {
+  display: grid !important;
+}
+.grid-cols-1 {
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+}
+.flex-shrink-0 {
+  flex-shrink: 0 !important;
+}
+.flex-1 {
+  flex: 1 1 0% !important;
+}
+.min-w-0 {
+  min-width: 0 !important;
+}
+
+/* Hide PWA Install Popup when mobile menu is open */
+body.mobile-menu-open .pwa-install-popup {
+  display: none !important;
+}
+
+@media (min-width: 640px) {
+  .sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
 
 @media (min-width: 1024px) {
   .lg\:flex {
@@ -107,4 +133,5 @@ input, textarea, select {
     display: block !important;
   }
 }
+
 

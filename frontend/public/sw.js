@@ -1,7 +1,7 @@
 // EcoMargin PWA — Enterprise Service Worker
 // public/sw.js
 
-const CACHE_NAME = 'ecomargin-cache-v2';
+const CACHE_NAME = 'ecomargin-cache-v3';
 const ASSETS_TO_CACHE = [
   '/',
   '/index.html',
@@ -26,6 +26,7 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
+            console.log('SW deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
@@ -36,8 +37,18 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests
   if (event.request.method !== 'GET') return;
+
+  const url = event.request.url;
+  // Skip caching Cloudinary/Unsplash dynamic images to prevent serving outdated images
+  if (url.includes('cloudinary.com') || url.includes('unsplash.com') || event.request.destination === 'image') {
+    event.respondWith(
+      fetch(event.request).catch(() => {
+        return caches.match('/favicon.png');
+      })
+    );
+    return;
+  }
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {

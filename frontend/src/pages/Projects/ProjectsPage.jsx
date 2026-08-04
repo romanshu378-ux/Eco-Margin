@@ -13,6 +13,7 @@ const fallbackProjects = [
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState(fallbackProjects)
+  const [imgErrors, setImgErrors] = useState({})
 
   useEffect(() => {
     const fetchLiveProjects = async () => {
@@ -28,20 +29,25 @@ export default function ProjectsPage() {
     fetchLiveProjects()
   }, [])
 
+  const handleImageError = (id) => {
+    setImgErrors(prev => ({ ...prev, [id]: true }))
+  }
+
   return (
     <>
-      <SEO title="Our Projects" description="View our portfolio of successful EV charging deployments." />
-      
-      <PageHeader 
-        title="Turnkey EPC Projects & Portfolio" 
-        description="Discover how EcoMargin engineers, installs, and operates high-power EV charging infrastructure."
+      <SEO 
+        title="EcoMargin Projects | Fleet Charging & EPC Installations"
+        description="Explore EcoMargin (Eco Margin LLP) EV charging infrastructure projects across India, including highway corridors, metro feeder depots, and private fleet hubs."
       />
+      
+      <PageHeader title="Our Projects" subtitle="Powering electric mobility transitions across highway corridors, transit hubs and logistics networks." />
 
       <div className="container" style={{ padding: '6rem 0' }}>
         <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
           
           {projects.map((proj, i) => {
-            const img = proj.imageUrl || proj.image_url || (Array.isArray(proj.images) ? proj.images[0] : '');
+            const hasError = imgErrors[proj.id || i];
+            const img = hasError ? null : (proj.imageUrl || proj.image_url || (Array.isArray(proj.images) ? proj.images[0] : ''));
             return (
               <motion.div 
                 key={proj.id || i} 
@@ -57,7 +63,7 @@ export default function ProjectsPage() {
               >
                 <div style={{ height: '220px', background: 'var(--color-bg-alt)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
                   {img ? (
-                    <img src={img} alt={proj.title} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={img} alt={proj.title} onError={() => handleImageError(proj.id || i)} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                   ) : (
                     <span style={{ color: 'var(--color-text-muted)' }}>[EcoMargin EPC Project]</span>
                   )}
