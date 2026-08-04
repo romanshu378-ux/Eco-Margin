@@ -12,6 +12,8 @@ import {
   getBreadcrumbSchema,
   getProductSchema,
   getFAQSchema,
+  getOrganizationSchema,
+  getWebPageSchema,
   ProductDetails,
   FAQItem
 } from '../utils/schema';
@@ -106,8 +108,10 @@ export default function SEO({
   const clarityId = seoData?.clarityId || '';
 
   // Generate Schemas
-  const orgSchema = getLocalBusinessSchema(companyName, metaDesc, phone, email, ogImg);
+  const organizationSchema = getOrganizationSchema(companyName);
   const webSiteSchema = getWebsiteSchema(siteName);
+  const webPageSchema = getWebPageSchema(metaTitle, metaDesc, canonicalLink);
+  const localBusinessSchema = getLocalBusinessSchema(companyName, metaDesc, phone, email, ogImg);
   
   const breadcrumbItems = breadcrumbs || [
     { name: 'Home', url: siteUrl },
@@ -165,8 +169,10 @@ export default function SEO({
       <meta name="twitter:image" content={ogImg} />
 
       {/* ── 6. DYNAMIC STRUCTURED DATA SCHEMAS ── */}
-      <script type="application/ld+json">{JSON.stringify(orgSchema)}</script>
+      <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(webSiteSchema)}</script>
+      <script type="application/ld+json">{JSON.stringify(webPageSchema)}</script>
+      <script type="application/ld+json">{JSON.stringify(localBusinessSchema)}</script>
       <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
 
       {productSchema && (

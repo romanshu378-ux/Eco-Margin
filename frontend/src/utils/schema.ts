@@ -11,60 +11,66 @@ export interface LocalBusinessAddress {
   addressCountry: string;
 }
 
-export const getLocalBusinessSchema = (
-  companyName: string,
-  description: string,
-  phone: string,
-  email: string,
-  ogImg: string
-) => {
+export const getOrganizationSchema = (companyName: string = 'EcoMargin LLP') => {
   const siteUrl = getSiteUrl();
   return {
     '@context': 'https://schema.org',
-    '@type': 'LocalBusiness',
+    '@type': 'Organization',
     '@id': `${siteUrl}/#organization`,
     'name': companyName,
-    'legalName': 'EcoMargin LLP',
+    'alternateName': ['EcoMargin', 'Eco Margin'],
     'url': siteUrl,
     'logo': 'https://res.cloudinary.com/dcumpbswm/image/upload/v1785843387/dark_mfegwj.png',
-    'image': ogImg,
-    'description': description,
-    'telephone': phone,
-    'email': email,
-    'priceRange': '₹₹₹',
+    'email': 'support@ecomargin.in',
+    'telephone': '+91-8302313065',
     'address': {
       '@type': 'PostalAddress',
-      'streetAddress': 'Shiv Colony, Tijara Phatak',
-      'addressLocality': 'Alwar',
+      'streetAddress': 'NH-11, iStart Nest, Government Engineering College',
+      'addressLocality': 'Bharatpur',
       'addressRegion': 'Rajasthan',
-      'postalCode': '301001',
+      'postalCode': '321001',
       'addressCountry': 'IN'
     },
-    'geo': {
-      '@type': 'GeoCoordinates',
-      'latitude': 27.553,
-      'longitude': 76.6346
-    },
-    'openingHoursSpecification': {
-      '@type': 'OpeningHoursSpecification',
-      'dayOfWeek': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-      'opens': '09:00',
-      'closes': '19:00'
-    }
+    'sameAs': [
+      'https://www.linkedin.com/company/ecomargin',
+      'https://www.instagram.com/ecomargin',
+      'https://www.facebook.com/ecomargin',
+      'https://www.youtube.com/@ecomargin',
+      'https://twitter.com/ecomargin'
+    ]
   };
 };
 
-export const getWebsiteSchema = (siteName: string) => {
+export const getWebsiteSchema = (siteName: string = 'EcoMargin') => {
   const siteUrl = getSiteUrl();
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': `${siteUrl}/#website`,
     'name': siteName,
     'url': siteUrl,
     'potentialAction': {
       '@type': 'SearchAction',
       'target': `${siteUrl}/products?search={search_term_string}`,
       'query-input': 'required name=search_term_string'
+    }
+  };
+};
+
+export const getWebPageSchema = (title: string, description: string, canonicalUrl: string) => {
+  const siteUrl = getSiteUrl();
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': `${canonicalUrl}#webpage`,
+    'url': canonicalUrl,
+    'name': title,
+    'description': description,
+    'isPartOf': {
+      '@id': `${siteUrl}/#website`
+    },
+    'about': {
+      '@id': `${siteUrl}/#organization`
     }
   };
 };
@@ -79,6 +85,56 @@ export const getBreadcrumbSchema = (items: { name: string; url: string }[]) => {
       'name': item.name,
       'item': item.url
     }))
+  };
+};
+
+export const getLocalBusinessSchema = (
+  companyName: string = 'EcoMargin LLP',
+  description: string = '',
+  phone: string = '+91-8302313065',
+  email: string = 'support@ecomargin.in',
+  ogImg: string = ''
+) => {
+  const siteUrl = getSiteUrl();
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    '@id': `${siteUrl}/#localbusiness`,
+    'name': companyName,
+    'legalName': 'EcoMargin LLP',
+    'url': siteUrl,
+    'logo': 'https://res.cloudinary.com/dcumpbswm/image/upload/v1785843387/dark_mfegwj.png',
+    'image': ogImg || 'https://res.cloudinary.com/dcumpbswm/image/upload/v1785843387/dark_mfegwj.png',
+    'description': description,
+    'telephone': phone || '+91-8302313065',
+    'email': email || 'support@ecomargin.in',
+    'priceRange': '₹₹₹',
+    'address': {
+      '@type': 'PostalAddress',
+      'streetAddress': 'NH-11, iStart Nest, Government Engineering College',
+      'addressLocality': 'Bharatpur',
+      'addressRegion': 'Rajasthan',
+      'postalCode': '321001',
+      'addressCountry': 'IN'
+    },
+    'geo': {
+      '@type': 'GeoCoordinates',
+      'latitude': 27.2023,
+      'longitude': 77.4912
+    },
+    'openingHoursSpecification': {
+      '@type': 'OpeningHoursSpecification',
+      'dayOfWeek': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      'opens': '09:00',
+      'closes': '19:00'
+    },
+    'areaServed': [
+      {
+        '@type': 'Country',
+        'name': 'India',
+        'identifier': 'IN'
+      }
+    ]
   };
 };
 
