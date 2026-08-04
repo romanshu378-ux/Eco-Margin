@@ -1,16 +1,16 @@
 {
-  "name": "EcoMargin Infrastructure",
+  "name": "EcoMargin LLP",
   "short_name": "EcoMargin",
-  "description": "OEM EV Charger Manufacturer & Turnkey EPC Infrastructure Company",
+  "description": "OEM EV Charger Manufacturer & Turnkey EPC Solutions",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#0B0F19",
-  "theme_color": "#10B981",
+  "theme_color": "#0F9D58",
   "icons": [
     {
-      "src": "/favicon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml"
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
     }
   ]
 }

@@ -53,7 +53,7 @@ export default function SEO({
   // Dynamic Head Metadata Resolution
   const metaTitle = title
     ? `${title} | ${siteName}`
-    : seoData?.metaTitle || 'EcoMargin | EV Charger Manufacturer & EPC Infrastructure Company'
+    : seoData?.metaTitle || 'EcoMargin | EV Charger Manufacturer & EPC Solutions'
   const metaDesc =
     description ||
     seoData?.metaDescription ||
@@ -63,7 +63,7 @@ export default function SEO({
     seoData?.keywords ||
     'EV Charger Manufacturer, DC Fast Charger 60kW 120kW 240kW, AC Type 2 Charger, EV Charging Station EPC, OCPP 2.0.1 Software, ARAI Certified EV Charger India'
   const canonical = canonicalUrl || seoData?.canonicalUrl || `${siteUrl}${pageRoute === '/' ? '' : pageRoute}`
-  const ogImg = ogImage || seoData?.ogImage || logos?.header?.imageUrl || `${siteUrl}/og-image.jpg`
+  const ogImg = ogImage || seoData?.ogImage || logos?.header?.imageUrl || 'https://res.cloudinary.com/dcumpbswm/image/upload/v1785843387/dark_mfegwj.png'
   const robotsSetting = robots || seoData?.robots || 'index, follow, max-image-preview:large'
   const faviconUrl = logos?.favicon?.imageUrl
 
