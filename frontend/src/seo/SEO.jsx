@@ -42,7 +42,7 @@ export default function SEO({
   }, [pageRoute])
 
   const siteName = 'EcoMargin'
-  const siteUrl = 'https://ecomargin.in'
+  const siteUrl = import.meta.env.VITE_SITE_URL || 'https://www.ecomargin.in'
 
   const companyName = footerData?.companyName || 'EcoMargin LLP'
   const phone = footerData?.phone || '+91-8302313065'
@@ -64,7 +64,7 @@ export default function SEO({
     'EV Charger Manufacturer, DC Fast Charger 60kW 120kW 240kW, AC Type 2 Charger, EV Charging Station EPC, OCPP 2.0.1 Software, ARAI Certified EV Charger India'
   const canonical = canonicalUrl || seoData?.canonicalUrl || `${siteUrl}${pageRoute === '/' ? '' : pageRoute}`
   const ogImg = ogImage || seoData?.ogImage || logos?.header?.imageUrl || `${siteUrl}/og-image.jpg`
-  const robotsSetting = robots || seoData?.robots || 'index, follow'
+  const robotsSetting = robots || seoData?.robots || 'index, follow, max-image-preview:large'
   const faviconUrl = logos?.favicon?.imageUrl
 
   // Search Console & Analytics verification tags

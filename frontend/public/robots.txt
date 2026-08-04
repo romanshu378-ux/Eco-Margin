@@ -6,4 +6,4 @@ Disallow: /login
 Disallow: /register
 Disallow: /forgot-password
 
-Sitemap: https://ecomargin.in/sitemap.xml
+Sitemap: https://www.ecomargin.in/sitemap.xml

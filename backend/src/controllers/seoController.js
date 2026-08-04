@@ -6,7 +6,7 @@
 const { SEO, Product, Blog, Project, Service, Category, Download } = require('../models')
 const { slugify } = require('../utils/slugify')
 
-const SITE_URL = process.env.SITE_URL || 'https://ecomargin.in'
+const SITE_URL = process.env.SITE_URL || 'https://www.ecomargin.in'
 
 // ── 1. GET Dynamic Sitemap XML ───────────────────────────────────
 exports.generateSitemap = async (req, res) => {
