@@ -49,11 +49,16 @@ export const publicApi = {
   // Fetch Footer & Contact Info CMS Data
   getFooter: async () => {
     try {
-      const response = await api.get('/public/footer')
+      const response = await api.get('/footer')
       return response
     } catch (error) {
-      console.warn('[PublicAPI] Offline fallback for footer:', error.message)
-      return { success: false, data: null }
+      try {
+        const response = await api.get('/public/footer')
+        return response
+      } catch (err) {
+        console.warn('[PublicAPI] Error fetching footer:', err.message)
+        return { success: false, data: null }
+      }
     }
   },
   getFooterCMS: async () => {
@@ -63,15 +68,20 @@ export const publicApi = {
   // Fetch Contact Page Info
   getContact: async () => {
     try {
-      const response = await api.get('/public/contact')
+      const response = await api.get('/contact')
       return response
     } catch (error) {
-      console.warn('[PublicAPI] Offline fallback for contact:', error.message)
-      return { success: false, data: null }
+      try {
+        const response = await api.get('/public/contact')
+        return response
+      } catch (err) {
+        console.warn('[PublicAPI] Error fetching contact:', err.message)
+        return { success: false, data: null }
+      }
     }
   },
   getContactCMS: async () => {
-    return publicApi.getFooter()
+    return publicApi.getContact()
   },
 
   // Fetch Global SEO Metadata

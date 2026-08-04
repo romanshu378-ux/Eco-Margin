@@ -3,23 +3,27 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import LogoIcon from '@assets/icons/LogoIcon'
-import { FiShield, FiCheckCircle, FiPhoneCall, FiMail, FiMapPin } from 'react-icons/fi'
+import { 
+  FiShield, FiCheckCircle, FiPhoneCall, FiMail, 
+  FiMapPin, FiClock, FiMessageSquare, FiExternalLink 
+} from 'react-icons/fi'
 import { useFooterCMS, useLogos } from '../../../hooks/useCMS'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
-  const { data: footerCMS } = useFooterCMS()
+  const { data: footerCMS, loading: cmsLoading, error: cmsError } = useFooterCMS()
   const { logos } = useLogos()
-
-  const footerLogoUrl = logos?.footer?.imageUrl || logos?.white_logo?.imageUrl
-  const footerLogoAlt = logos?.footer?.altText || 'EcoMargin Corporate Logo'
 
   const companyName = footerCMS?.companyName || ''
   const address = footerCMS?.address || ''
   const phone = footerCMS?.phone || ''
   const altPhone = footerCMS?.altPhone || ''
   const email = footerCMS?.email || ''
-  const copyright = footerCMS?.copyright || `© ${currentYear} All Rights Reserved.`
+  const supportEmail = footerCMS?.supportEmail || ''
+  const businessHours = footerCMS?.businessHours || ''
+  const whatsapp = footerCMS?.whatsapp || ''
+  const googleMapsEmbedUrl = footerCMS?.googleMapsEmbedUrl || ''
+  const copyright = footerCMS?.copyright || `© ${currentYear} ${companyName || 'EcoMargin LLP'}. All Rights Reserved.`
 
   return (
     <footer style={{ 
@@ -66,7 +70,7 @@ export default function Footer() {
         {/* Footer Links Grid */}
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', 
           gap: '2.5rem',
           marginBottom: '3rem'
         }}>
@@ -78,26 +82,9 @@ export default function Footer() {
                 EcoMargin
               </span>
             </Link>
-            <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', fontSize: '0.875rem', lineHeight: 1.6 }}>
+            <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', fontSize: '0.875rem', lineHeight: 1.6, maxWidth: '360px' }}>
               {companyName ? `${companyName} is a leading OEM EV Charger Manufacturer and Infrastructure EPC Contractor.` : 'Leading OEM EV Charger Manufacturer & Infrastructure EPC Contractor.'}
             </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
-              {address && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <FiMapPin style={{ color: 'var(--color-primary)' }} /> Registered Address: {address}
-                </div>
-              )}
-              {phone && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <FiPhoneCall style={{ color: 'var(--color-primary)' }} /> Sales & Support: {phone} {altPhone ? `/ ${altPhone}` : ''}
-                </div>
-              )}
-              {email && (
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <FiMail style={{ color: 'var(--color-primary)' }} /> Sales Enquiries: {email}
-                </div>
-              )}
-            </div>
           </div>
 
           {/* Manufacturing Range */}
@@ -145,6 +132,99 @@ export default function Footer() {
             </ul>
           </div>
 
+          {/* Dedicated Dynamic Contact Column */}
+          <div>
+            <h4 style={{ marginBottom: '1.25rem', fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-primary)' }}>
+              CONTACT
+            </h4>
+
+            {cmsLoading ? (
+              <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>Loading...</p>
+            ) : cmsError || !footerCMS ? (
+              <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>Contact information unavailable</p>
+            ) : (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem', fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
+                {address && (
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                    <FiMapPin style={{ color: 'var(--color-primary)', marginTop: '0.2rem', flexShrink: 0 }} />
+                    <span style={{ whiteSpace: 'pre-line', lineHeight: 1.4 }}>{address}</span>
+                  </div>
+                )}
+
+                {phone && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <FiPhoneCall style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
+                    <a href={`tel:${phone.replace(/[^0-9+]/g, '')}`} style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>
+                      {phone}
+                    </a>
+                  </div>
+                )}
+
+                {altPhone && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <FiPhoneCall style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
+                    <a href={`tel:${altPhone.replace(/[^0-9+]/g, '')}`} style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>
+                      {altPhone}
+                    </a>
+                  </div>
+                )}
+
+                {email && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <FiMail style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
+                    <a href={`mailto:${email}`} style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>
+                      {email}
+                    </a>
+                  </div>
+                )}
+
+                {supportEmail && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <FiMail style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
+                    <a href={`mailto:${supportEmail}`} style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>
+                      {supportEmail}
+                    </a>
+                  </div>
+                )}
+
+                {businessHours && (
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                    <FiClock style={{ color: 'var(--color-primary)', marginTop: '0.2rem', flexShrink: 0 }} />
+                    <span style={{ whiteSpace: 'pre-line', lineHeight: 1.4 }}>{businessHours}</span>
+                  </div>
+                )}
+
+                {whatsapp && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <FiMessageSquare style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
+                    <a 
+                      href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}
+                    >
+                      {whatsapp}
+                    </a>
+                  </div>
+                )}
+
+                {googleMapsEmbedUrl && (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.25rem' }}>
+                    <FiExternalLink style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
+                    <a 
+                      href={googleMapsEmbedUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      style={{ color: 'var(--color-primary)', textDecoration: 'underline' }}
+                    >
+                      View on Map
+                    </a>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
         </div>
 
         {/* Copyright Bar */}
@@ -171,3 +251,4 @@ export default function Footer() {
     </footer>
   )
 }
+

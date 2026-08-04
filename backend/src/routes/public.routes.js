@@ -10,13 +10,17 @@ const dealerController = require('../controllers/dealerController')
 const newsletterController = require('../controllers/newsletterController')
 const logoController = require('../controllers/logoController')
 
+const seoController = require('../controllers/seoController')
+
 // Public Unauthenticated CMS GET Endpoints
 router.get('/homepage', publicController.getPublicHomepage)
 router.get('/about', publicController.getPublicAbout)
 router.get('/manufacturing', publicController.getPublicManufacturing)
 router.get('/footer', publicController.getPublicFooter)
 router.get('/contact', publicController.getPublicContact)
-router.get('/seo', publicController.getPublicSEO)
+router.get('/seo', seoController.getSEOByRoute)
+router.get('/sitemap.xml', seoController.generateSitemap)
+router.get('/robots.txt', seoController.generateRobotsTxt)
 router.get('/logo', logoController.getLogos)
 
 // Catalog & Portfolio Endpoints

@@ -79,8 +79,14 @@ if (process.env.NODE_ENV !== 'test') {
 // ── 6. STATIC FILES ───────────────────────────────────────────────
 app.use('/uploads', express.static('uploads'))
 
-// ── 7. API ROUTES ─────────────────────────────────────────────────
+const seoController = require('./controllers/seoController')
+
+// ── 7. API ROUTES & ROOT SEO FILES ────────────────────────────────
 app.use('/api/v1', routes)
+app.use('/api', routes)
+
+app.get('/sitemap.xml', seoController.generateSitemap)
+app.get('/robots.txt', seoController.generateRobotsTxt)
 
 // ── 8. ROOT HEALTH CHECK FOR RENDER ───────────────────────────────
 app.get('/', (req, res) => {

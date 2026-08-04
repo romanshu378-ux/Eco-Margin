@@ -114,13 +114,19 @@ export function useFooter() {
     let isMounted = true
     const fetchFooter = async () => {
       try {
+        setLoading(true)
+        setError(null)
         const res = await publicApi.getFooterCMS()
         const payload = extractPayload(res)
-        if (isMounted && payload) {
-          setData(payload)
+        if (isMounted) {
+          if (payload && typeof payload === 'object' && Object.keys(payload).length > 0) {
+            setData(payload)
+          } else {
+            setError('Contact information unavailable')
+          }
         }
       } catch (err) {
-        if (isMounted) setError(err.message)
+        if (isMounted) setError(err?.message || 'Contact information unavailable')
       } finally {
         if (isMounted) setLoading(false)
       }

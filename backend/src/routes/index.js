@@ -19,9 +19,11 @@ const mediaController = require('../controllers/mediaController');
 
 const publicController = require('../controllers/publicController');
 
-// Mount domain routes
+// Direct Public Endpoint Aliases
 router.get('/health', healthController.checkHealth);
 router.get('/homepage', publicController.getPublicHomepage);
+router.get('/footer', publicController.getPublicFooter);
+router.get('/contact', publicController.getPublicContact);
 router.use('/auth', authRoutes);
 router.use('/admin', adminRoutes);
 router.use('/stations', stationRoutes);

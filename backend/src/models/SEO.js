@@ -1,4 +1,4 @@
-// EcoMargin — SEO CMS Model (Sequelize)
+// EcoMargin — Enterprise SEO CMS Model (Sequelize)
 // src/models/SEO.js
 'use strict'
 
@@ -17,7 +17,7 @@ SEO.init(
     pageRoute: {
       type: DataTypes.STRING(255),
       field: 'page_route',
-      allowNull: true,
+      allowNull: false,
       defaultValue: '/',
     },
     metaTitle: {
@@ -34,14 +34,29 @@ SEO.init(
       type: DataTypes.TEXT,
       allowNull: true,
     },
+    focusKeyword: {
+      type: DataTypes.STRING(255),
+      field: 'focus_keyword',
+      allowNull: true,
+    },
     canonicalUrl: {
       type: DataTypes.STRING(500),
       field: 'canonical_url',
       allowNull: true,
     },
+    robots: {
+      type: DataTypes.STRING(100),
+      allowNull: true,
+      defaultValue: 'index, follow',
+    },
     ogTitle: {
       type: DataTypes.STRING(255),
       field: 'og_title',
+      allowNull: true,
+    },
+    ogDescription: {
+      type: DataTypes.TEXT,
+      field: 'og_description',
       allowNull: true,
     },
     ogImage: {
@@ -49,9 +64,52 @@ SEO.init(
       field: 'og_image',
       allowNull: true,
     },
+    twitterCard: {
+      type: DataTypes.STRING(100),
+      field: 'twitter_card',
+      allowNull: true,
+      defaultValue: 'summary_large_image',
+    },
+    schemaType: {
+      type: DataTypes.STRING(100),
+      field: 'schema_type',
+      allowNull: true,
+      defaultValue: 'Organization',
+    },
+    structuredData: {
+      type: DataTypes.TEXT,
+      field: 'structured_data',
+      allowNull: true,
+    },
     organizationSchema: {
       type: DataTypes.TEXT,
       field: 'organization_schema',
+      allowNull: true,
+    },
+    // Verification & Analytics Identifiers
+    gscVerification: {
+      type: DataTypes.STRING(255),
+      field: 'gsc_verification',
+      allowNull: true,
+    },
+    bingVerification: {
+      type: DataTypes.STRING(255),
+      field: 'bing_verification',
+      allowNull: true,
+    },
+    gaMeasurementId: {
+      type: DataTypes.STRING(100),
+      field: 'ga_measurement_id',
+      allowNull: true,
+    },
+    gtmContainerId: {
+      type: DataTypes.STRING(100),
+      field: 'gtm_container_id',
+      allowNull: true,
+    },
+    clarityId: {
+      type: DataTypes.STRING(100),
+      field: 'clarity_id',
       allowNull: true,
     },
   },
