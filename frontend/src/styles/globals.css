@@ -151,5 +151,63 @@ body.mobile-menu-open .pwa-install-popup {
   transition: all var(--transition-fast) !important;
 }
 
+/* Footer Responsive Styles */
+footer, footer * {
+  box-sizing: border-box !important;
+}
+
+.footer-container-root {
+  width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+.footer-grid {
+  display: grid !important;
+  grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  gap: 20px !important;
+}
+
+.footer-company-bio {
+  grid-column: span 1 !important;
+}
+
+.footer-wrap-text {
+  overflow-wrap: break-word !important;
+  word-break: break-word !important;
+  white-space: normal !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.footer-contact-item {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 0.5rem !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+.footer-contact-icon {
+  margin-top: 0.2rem !important;
+  flex-shrink: 0 !important;
+}
+
+@media (min-width: 480px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+  .footer-company-bio {
+    grid-column: span 2 !important;
+  }
+}
+
+@media (min-width: 768px) {
+  .footer-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+    gap: 2.5rem !important;
+  }
+}
+
+
 
 

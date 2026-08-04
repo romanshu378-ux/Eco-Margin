@@ -26,13 +26,16 @@ export default function Footer() {
   const copyright = footerCMS?.copyright || `© ${currentYear} ${companyName || 'EcoMargin LLP'}. All Rights Reserved.`
 
   return (
-    <footer style={{ 
-      background: '#0B0F19', 
-      borderTop: '1px solid var(--color-border)',
-      padding: '4rem 0 2rem 0',
-      color: 'var(--color-text)',
-      marginTop: 'auto'
-    }}>
+    <footer 
+      className="footer-container-root"
+      style={{ 
+        background: '#0B0F19', 
+        borderTop: '1px solid var(--color-border)',
+        padding: '4rem 0 2rem 0',
+        color: 'var(--color-text)',
+        marginTop: 'auto'
+      }}
+    >
       <div className="container">
         
         {/* Top Badges Bar */}
@@ -68,14 +71,9 @@ export default function Footer() {
         </div>
 
         {/* Footer Links Grid */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', 
-          gap: '2.5rem',
-          marginBottom: '3rem'
-        }}>
+        <div className="footer-grid" style={{ marginBottom: '3rem' }}>
           {/* Company Bio */}
-          <div style={{ gridColumn: 'span 2' }}>
+          <div className="footer-company-bio" style={{ minWidth: 0 }}>
             <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '1.25rem' }}>
               <div style={{ color: 'var(--color-primary)' }}><LogoIcon size={30} /></div>
               <span style={{ fontFamily: 'Outfit', fontSize: '1.4rem', fontWeight: '800', color: '#ffffff' }}>
@@ -88,52 +86,52 @@ export default function Footer() {
           </div>
 
           {/* Manufacturing Range */}
-          <div>
+          <div style={{ minWidth: 0 }}>
             <h4 style={{ marginBottom: '1.25rem', fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-primary)' }}>
               Charger Range
             </h4>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem' }}>
-              <li><Link to="/products" style={{ color: 'var(--color-text-muted)' }}>3.3kW / 7.4kW AC Single Phase</Link></li>
-              <li><Link to="/products" style={{ color: 'var(--color-text-muted)' }}>11kW / 22kW AC Three Phase</Link></li>
-              <li><Link to="/products" style={{ color: 'var(--color-text-muted)' }}>30kW / 60kW DC Fast Station</Link></li>
-              <li><Link to="/products" style={{ color: 'var(--color-text-muted)' }}>120kW / 160kW Dual Gun DC</Link></li>
-              <li><Link to="/products" style={{ color: 'var(--color-text-muted)' }}>240kW Heavy Bus Charger</Link></li>
-              <li><Link to="/products" style={{ color: 'var(--color-text-muted)' }}>Portable Fleet Chargers</Link></li>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem', padding: 0, margin: 0 }}>
+              <li><Link to="/products" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>3.3kW / 7.4kW AC Single Phase</Link></li>
+              <li><Link to="/products" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>11kW / 22kW AC Three Phase</Link></li>
+              <li><Link to="/products" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>30kW / 60kW DC Fast Station</Link></li>
+              <li><Link to="/products" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>120kW / 160kW Dual Gun DC</Link></li>
+              <li><Link to="/products" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>240kW Heavy Bus Charger</Link></li>
+              <li><Link to="/products" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>Portable Fleet Chargers</Link></li>
             </ul>
           </div>
 
           {/* Solutions & EPC */}
-          <div>
+          <div style={{ minWidth: 0 }}>
             <h4 style={{ marginBottom: '1.25rem', fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-primary)' }}>
               Solutions & Services
             </h4>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem' }}>
-              <li><Link to="/services" style={{ color: 'var(--color-text-muted)' }}>Turnkey EPC Installation</Link></li>
-              <li><Link to="/solutions" style={{ color: 'var(--color-text-muted)' }}>OCPP Cloud CSMS Software</Link></li>
-              <li><Link to="/services" style={{ color: 'var(--color-text-muted)' }}>Annual Maintenance (AMC)</Link></li>
-              <li><Link to="/manufacturing" style={{ color: 'var(--color-text-muted)' }}>OEM & White Label Supply</Link></li>
-              <li><Link to="/dealer-partner" style={{ color: 'var(--color-text-muted)' }}>CPO & Franchise Partner</Link></li>
-              <li><Link to="/downloads" style={{ color: 'var(--color-text-muted)' }}>Datasheets & Certificates</Link></li>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem', padding: 0, margin: 0 }}>
+              <li><Link to="/services" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>Turnkey EPC Installation</Link></li>
+              <li><Link to="/solutions" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>OCPP Cloud CSMS Software</Link></li>
+              <li><Link to="/services" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>Annual Maintenance (AMC)</Link></li>
+              <li><Link to="/manufacturing" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>OEM & White Label Supply</Link></li>
+              <li><Link to="/dealer-partner" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>CPO & Franchise Partner</Link></li>
+              <li><Link to="/downloads" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>Datasheets & Certificates</Link></li>
             </ul>
           </div>
 
           {/* Corporate Links */}
-          <div>
+          <div style={{ minWidth: 0 }}>
             <h4 style={{ marginBottom: '1.25rem', fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-primary)' }}>
               Corporate
             </h4>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem' }}>
-              <li><Link to="/about" style={{ color: 'var(--color-text-muted)' }}>About EcoMargin</Link></li>
-              <li><Link to="/projects" style={{ color: 'var(--color-text-muted)' }}>Completed Projects</Link></li>
-              <li><Link to="/blogs" style={{ color: 'var(--color-text-muted)' }}>Industry Insights</Link></li>
-              <li><Link to="/career" style={{ color: 'var(--color-text-muted)' }}>Careers</Link></li>
-              <li><Link to="/contact" style={{ color: 'var(--color-text-muted)' }}>Contact Sales</Link></li>
-              <li><Link to="/privacy-policy" style={{ color: 'var(--color-text-muted)' }}>Privacy Policy</Link></li>
+            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem', padding: 0, margin: 0 }}>
+              <li><Link to="/about" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>About EcoMargin</Link></li>
+              <li><Link to="/projects" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>Completed Projects</Link></li>
+              <li><Link to="/blogs" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>Industry Insights</Link></li>
+              <li><Link to="/career" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>Careers</Link></li>
+              <li><Link to="/contact" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>Contact Sales</Link></li>
+              <li><Link to="/privacy-policy" className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', display: 'block' }}>Privacy Policy</Link></li>
             </ul>
           </div>
 
           {/* Dedicated Dynamic Contact Column */}
-          <div>
+          <div style={{ minWidth: 0 }}>
             <h4 style={{ marginBottom: '1.25rem', fontSize: '0.95rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-primary)' }}>
               CONTACT
             </h4>
@@ -143,64 +141,65 @@ export default function Footer() {
             ) : cmsError || !footerCMS ? (
               <p style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>Contact information unavailable</p>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem', fontSize: '0.85rem', color: 'var(--color-text-muted)' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem', fontSize: '0.85rem', color: 'var(--color-text-muted)', width: '100%', minWidth: 0 }}>
                 {address && (
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                    <FiMapPin style={{ color: 'var(--color-primary)', marginTop: '0.2rem', flexShrink: 0 }} />
-                    <span style={{ whiteSpace: 'pre-line', lineHeight: 1.4 }}>{address}</span>
+                  <div className="footer-contact-item">
+                    <FiMapPin className="footer-contact-icon" style={{ color: 'var(--color-primary)' }} />
+                    <span className="footer-wrap-text" style={{ whiteSpace: 'pre-line', lineHeight: 1.4 }}>{address}</span>
                   </div>
                 )}
 
                 {phone && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <FiPhoneCall style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
-                    <a href={`tel:${phone.replace(/[^0-9+]/g, '')}`} style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>
+                  <div className="footer-contact-item">
+                    <FiPhoneCall className="footer-contact-icon" style={{ color: 'var(--color-primary)' }} />
+                    <a href={`tel:${phone.replace(/[^0-9+]/g, '')}`} className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>
                       {phone}
                     </a>
                   </div>
                 )}
 
                 {altPhone && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <FiPhoneCall style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
-                    <a href={`tel:${altPhone.replace(/[^0-9+]/g, '')}`} style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>
+                  <div className="footer-contact-item">
+                    <FiPhoneCall className="footer-contact-icon" style={{ color: 'var(--color-primary)' }} />
+                    <a href={`tel:${altPhone.replace(/[^0-9+]/g, '')}`} className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>
                       {altPhone}
                     </a>
                   </div>
                 )}
 
                 {email && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <FiMail style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
-                    <a href={`mailto:${email}`} style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>
+                  <div className="footer-contact-item">
+                    <FiMail className="footer-contact-icon" style={{ color: 'var(--color-primary)' }} />
+                    <a href={`mailto:${email}`} className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>
                       {email}
                     </a>
                   </div>
                 )}
 
                 {supportEmail && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <FiMail style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
-                    <a href={`mailto:${supportEmail}`} style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>
+                  <div className="footer-contact-item">
+                    <FiMail className="footer-contact-icon" style={{ color: 'var(--color-primary)' }} />
+                    <a href={`mailto:${supportEmail}`} className="footer-wrap-text" style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>
                       {supportEmail}
                     </a>
                   </div>
                 )}
 
                 {businessHours && (
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                    <FiClock style={{ color: 'var(--color-primary)', marginTop: '0.2rem', flexShrink: 0 }} />
-                    <span style={{ whiteSpace: 'pre-line', lineHeight: 1.4 }}>{businessHours}</span>
+                  <div className="footer-contact-item">
+                    <FiClock className="footer-contact-icon" style={{ color: 'var(--color-primary)' }} />
+                    <span className="footer-wrap-text" style={{ whiteSpace: 'pre-line', lineHeight: 1.4 }}>{businessHours}</span>
                   </div>
                 )}
 
                 {whatsapp && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <FiMessageSquare style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
+                  <div className="footer-contact-item">
+                    <FiMessageSquare className="footer-contact-icon" style={{ color: 'var(--color-primary)' }} />
                     <a 
                       href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`} 
                       target="_blank" 
                       rel="noopener noreferrer" 
+                      className="footer-wrap-text"
                       style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}
                     >
                       {whatsapp}
@@ -209,12 +208,13 @@ export default function Footer() {
                 )}
 
                 {googleMapsEmbedUrl && (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.25rem' }}>
-                    <FiExternalLink style={{ color: 'var(--color-primary)', flexShrink: 0 }} />
+                  <div className="footer-contact-item">
+                    <FiExternalLink className="footer-contact-icon" style={{ color: 'var(--color-primary)' }} />
                     <a 
                       href={googleMapsEmbedUrl} 
                       target="_blank" 
                       rel="noopener noreferrer" 
+                      className="footer-wrap-text"
                       style={{ color: 'var(--color-primary)', textDecoration: 'underline' }}
                     >
                       View on Map
