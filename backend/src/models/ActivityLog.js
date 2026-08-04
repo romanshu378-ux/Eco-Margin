@@ -32,6 +32,15 @@ ActivityLog.init(
       field: 'ip_address',
       allowNull: true,
     },
+    lead_id: {
+      type: DataTypes.INTEGER.UNSIGNED,
+      allowNull: true,
+    },
+    performed_by: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+      defaultValue: 'System',
+    },
   },
   {
     sequelize,

@@ -19,6 +19,9 @@ const mediaController = require('../controllers/mediaController');
 
 const publicController = require('../controllers/publicController');
 
+const emailRoutes = require('./emailRoutes');
+const crmRoutes = require('./crmRoutes');
+
 // Direct Public Endpoint Aliases
 router.get('/health', healthController.checkHealth);
 router.get('/homepage', publicController.getPublicHomepage);
@@ -38,6 +41,8 @@ router.use('/newsletters', newsletterRoutes);
 router.use('/settings', settingRoutes);
 router.use('/downloads', downloadsRoutes);
 router.use('/logo', logoRoutes);
+router.use('/email', emailRoutes);
+router.use('/crm', crmRoutes);
 
 // Media Upload & Delete Endpoints
 router.post('/media/upload', mediaController.uploadMedia);

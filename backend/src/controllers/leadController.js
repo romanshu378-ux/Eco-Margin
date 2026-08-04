@@ -137,26 +137,47 @@ exports.createLead = async (req, res) => {
 
     logger.info(`✅ [Lead Created] ID ${newLead.id} for ${newLead.email}`)
 
-    // Email Notification to Admin (non-blocking if SMTP not configured)
-    const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_USER || 'sales@ecomargin.com'
-    sendEmail({
-      to: adminEmail,
-      subject: `🚨 New EV Charger Lead: ${finalName} (${company || 'Individual'})`,
-      html: `
-        <h2>New RFQ Lead Received on EcoMargin</h2>
-        <p><strong>Name:</strong> ${finalName}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone}</p>
-        <p><strong>Company:</strong> ${company || 'N/A'}</p>
-        <p><strong>Requirement / Subject:</strong> ${finalSubject}</p>
-        <p><strong>Message:</strong></p>
-        <blockquote style="background: #f4f4f4; padding: 10px; border-left: 3px solid #10b981;">${finalMessage || 'No detailed message provided.'}</blockquote>
-        <p><a href="${process.env.ADMIN_URL || 'https://ecomargin-admin.vercel.app'}/contact" style="background:#10b981;color:#fff;padding:8px 16px;text-decoration:none;border-radius:4px;">View Lead in Admin Dashboard</a></p>
-      `,
-      text: `New Lead: ${finalName} - ${email} - ${phone} - ${company || ''}`
-    }).catch(emailErr => {
-      logger.warn(`⚠️ Could not send admin notification email: ${emailErr.message}`)
-    })
+    // 1. Send Automatic Customer Confirmation Email (Non-blocking)
+    const emailService = require('../services/emailService')
+    const { Notification, ActivityLog } = require('../models')
+
+    emailService.sendCustomerConfirmation({
+      leadId: newLead.id,
+      customerName: finalName,
+      email: email.trim().toLowerCase(),
+      product: finalSubject,
+      date: new Date().toLocaleDateString('en-IN')
+    }).catch(err => console.warn('⚠️ [Customer Email Async Error]:', err.message))
+
+    // 2. Send Automatic Admin Sales Notification Email (Non-blocking)
+    emailService.sendAdminNotification({
+      leadId: newLead.id,
+      name: finalName,
+      company,
+      phone,
+      email: email.trim().toLowerCase(),
+      product: finalSubject,
+      message: finalMessage,
+      time: new Date().toLocaleString()
+    }).catch(err => console.warn('⚠️ [Admin Email Async Error]:', err.message))
+
+    // 3. Create Notification item for Admin Header Bell System
+    Notification.create({
+      title: 'New RFQ Enquiry Received',
+      message: `Lead #${newLead.id} from ${finalName} (${company || 'Individual'}) regarding ${finalSubject}`,
+      type: 'Lead',
+      is_read: false,
+      link: '/leads'
+    }).catch(err => console.warn('⚠️ [Notification Create Error]:', err.message))
+
+    // 4. Record Activity Log
+    ActivityLog.create({
+      lead_id: newLead.id,
+      action: 'Lead Created',
+      type: 'Enquiry',
+      description: `New Lead submitted by ${finalName} (${email})`,
+      performed_by: 'Customer'
+    }).catch(err => console.warn('⚠️ [ActivityLog Error]:', err.message))
 
     return res.status(201).json({
       success: true,

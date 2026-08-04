@@ -66,10 +66,29 @@ export const adminService = {
   deleteBlog: (id) => api.delete(`/admin/blogs/${id}`),
 
   // Enquiries & Leads Management CRUD
-  getLeads: () => api.get('/admin/leads'),
+  getLeads: (params) => api.get('/admin/leads', { params }),
   createLead: (data) => api.post('/admin/leads', data),
   updateLead: (id, data) => api.put(`/admin/leads/${id}`, data),
+  updateLeadStatus: (id, status) => api.patch(`/admin/leads/${id}/status`, { status }),
   deleteLead: (id) => api.delete(`/admin/leads/${id}`),
+
+  // Email Service APIs
+  sendCustomEmail: (data) => api.post('/email/send', data),
+  getEmailHistory: (leadId) => api.get(`/email/history/${leadId}`),
+
+  // CRM Quotation APIs
+  generateQuotation: (data) => api.post('/crm/quotations', data),
+  getQuotations: (leadId) => api.get(`/crm/quotations/lead/${leadId}`),
+  emailQuotation: (id) => api.post(`/crm/quotations/${id}/email`),
+
+  // CRM Lead Notes & Timeline
+  addLeadNote: (data) => api.post('/crm/notes', data),
+  getLeadNotes: (leadId) => api.get(`/crm/notes/lead/${leadId}`),
+  getLeadTimeline: (leadId) => api.get(`/crm/timeline/lead/${leadId}`),
+
+  // CRM Notifications
+  getNotifications: () => api.get('/crm/notifications'),
+  markNotificationRead: (id) => api.put(`/crm/notifications/${id}/read`),
 
   // Dealer Applications Management CRUD
   getDealers: () => api.get('/admin/dealer-applications'),

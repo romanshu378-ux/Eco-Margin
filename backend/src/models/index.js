@@ -21,9 +21,10 @@ const Blog = require('./Blog')
 const Lead = require('./Lead')
 const DealerApplication = require('./DealerApplication')
 const Newsletter = require('./Newsletter')
-const ActivityLog = require('./ActivityLog')
-const Setting = require('./Setting')
-const Logo = require('./Logo')
+const EmailLog = require('./EmailLog')
+const Quotation = require('./Quotation')
+const LeadNote = require('./LeadNote')
+const Notification = require('./Notification')
 
 // Define Non-Circular Model Associations
 User.hasMany(Station, { foreignKey: 'operator_id', as: 'operatedStations', onDelete: 'SET NULL', onUpdate: 'CASCADE' })
@@ -46,6 +47,19 @@ Review.belongsTo(User, { foreignKey: 'user_id', as: 'user', onDelete: 'CASCADE',
 
 Station.hasMany(Review, { foreignKey: 'station_id', as: 'reviews', onDelete: 'CASCADE', onUpdate: 'CASCADE' })
 Review.belongsTo(Station, { foreignKey: 'station_id', as: 'station', onDelete: 'CASCADE', onUpdate: 'CASCADE' })
+
+// Lead CRM Associations
+Lead.hasMany(EmailLog, { foreignKey: 'lead_id', as: 'emailLogs', onDelete: 'CASCADE' })
+EmailLog.belongsTo(Lead, { foreignKey: 'lead_id', as: 'lead', onDelete: 'CASCADE' })
+
+Lead.hasMany(Quotation, { foreignKey: 'lead_id', as: 'quotations', onDelete: 'CASCADE' })
+Quotation.belongsTo(Lead, { foreignKey: 'lead_id', as: 'lead', onDelete: 'CASCADE' })
+
+Lead.hasMany(LeadNote, { foreignKey: 'lead_id', as: 'notes', onDelete: 'CASCADE' })
+LeadNote.belongsTo(Lead, { foreignKey: 'lead_id', as: 'lead', onDelete: 'CASCADE' })
+
+Lead.hasMany(ActivityLog, { foreignKey: 'lead_id', as: 'activities', onDelete: 'CASCADE' })
+ActivityLog.belongsTo(Lead, { foreignKey: 'lead_id', as: 'lead', onDelete: 'CASCADE' })
 
 module.exports = {
   User,
@@ -70,4 +84,8 @@ module.exports = {
   ActivityLog,
   Setting,
   Logo,
+  EmailLog,
+  Quotation,
+  LeadNote,
+  Notification,
 }

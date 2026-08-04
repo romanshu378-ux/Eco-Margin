@@ -5,17 +5,29 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { 
   FiMail, FiPhone, FiUser, FiBriefcase, FiCalendar, FiSearch, 
   FiFilter, FiRefreshCw, FiEdit2, FiTrash2, FiCheck, FiAlertCircle, 
-  FiX, FiSave, FiInbox, FiClock, FiCheckCircle
+  FiX, FiSave, FiInbox, FiClock, FiCheckCircle, FiMessageCircle,
+  FiFileText, FiDollarSign, FiList, FiTrendingUp, FiCheckSquare, FiSend
 } from 'react-icons/fi';
 import adminService from '../../services/adminService';
+
+// Import Modals
+import EmailHistoryModal from '../../components/modals/EmailHistoryModal';
+import SendEmailModal from '../../components/modals/SendEmailModal';
+import QuotationModal from '../../components/modals/QuotationModal';
+import WhatsAppModal from '../../components/modals/WhatsAppModal';
+import LeadTimelineModal from '../../components/modals/LeadTimelineModal';
 
 export default function ContactPage() {
   const [leads, setLeads] = useState([]);
   const [stats, setStats] = useState({
     totalLeads: 0,
     newLeads: 0,
+    quotationsSent: 0,
+    wonLeads: 0,
+    lostLeads: 0,
     todayLeads: 0,
-    closedLeads: 0
+    emailsSent: 0,
+    pendingFollowups: 0
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,9 +38,11 @@ export default function ContactPage() {
   const [statusFilter, setStatusFilter] = useState('All');
   const [dateFilter, setDateFilter] = useState('all');
 
-  // Modal State
-  const [showModal, setShowModal] = useState(false);
-  const [editingLead, setEditingLead] = useState(null);
+  // Active Lead for Modals
+  const [activeLead, setActiveLead] = useState(null);
+  const [activeModal, setActiveModal] = useState(null); // 'emailHistory', 'sendEmail', 'quotation', 'whatsapp', 'timeline', 'edit'
+
+  // Edit Lead Form State
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -80,10 +94,23 @@ export default function ContactPage() {
 
     const totalLeads = dataList.length;
     const newLeads = dataList.filter(l => l.status === 'New').length;
+    const quotationsSent = dataList.filter(l => l.status === 'Quotation Sent').length;
+    const wonLeads = dataList.filter(l => l.status === 'Order Won' || l.status === 'Completed').length;
+    const lostLeads = dataList.filter(l => l.status === 'Order Lost').length;
     const todayLeads = dataList.filter(l => new Date(l.createdAt || l.created_at) >= today).length;
-    const closedLeads = dataList.filter(l => l.status === 'Closed').length;
+    const emailsSent = dataList.filter(l => l.status === 'Replied' || l.status === 'Quotation Sent').length;
+    const pendingFollowups = dataList.filter(l => l.status === 'Contacted' || l.status === 'Negotiation' || l.status === 'Site Visit').length;
 
-    setStats({ totalLeads, newLeads, todayLeads, closedLeads });
+    setStats({
+      totalLeads,
+      newLeads,
+      quotationsSent,
+      wonLeads,
+      lostLeads,
+      todayLeads,
+      emailsSent,
+      pendingFollowups
+    });
   };
 
   useEffect(() => {
@@ -99,10 +126,8 @@ export default function ContactPage() {
   const handleStatusChange = async (leadId, newStatus) => {
     try {
       await adminService.updateLeadStatus(leadId, newStatus);
-      showToast(`Status updated to "${newStatus}"!`);
-      // Update local state instantly
+      showToast(`Lead #${leadId} status updated to "${newStatus}"!`);
       setLeads(prev => prev.map(l => l.id === leadId ? { ...l, status: newStatus } : l));
-      // Re-compute stats
       fetchLeads();
     } catch (err) {
       console.error('❌ Error updating lead status:', err);
@@ -110,9 +135,9 @@ export default function ContactPage() {
     }
   };
 
-  // Handle Edit Lead Modal
+  // Handle Open Edit Modal
   const handleOpenEdit = (lead) => {
-    setEditingLead(lead);
+    setActiveLead(lead);
     setFormData({
       fullName: lead.fullName || lead.full_name || lead.name || '',
       email: lead.email || '',
@@ -124,7 +149,7 @@ export default function ContactPage() {
       notes: lead.notes || ''
     });
     setFormError(null);
-    setShowModal(true);
+    setActiveModal('edit');
   };
 
   const handleDelete = async (id) => {
@@ -140,7 +165,7 @@ export default function ContactPage() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmitEdit = async (e) => {
     e.preventDefault();
     setFormError(null);
     if (!formData.fullName.trim() || !formData.email.trim() || !formData.phone.trim()) {
@@ -150,14 +175,14 @@ export default function ContactPage() {
 
     setSaving(true);
     try {
-      if (editingLead) {
-        await adminService.updateLead(editingLead.id, formData);
+      if (activeLead) {
+        await adminService.updateLead(activeLead.id, formData);
         showToast('Lead details updated successfully!');
       } else {
         await adminService.createLead(formData);
         showToast('Lead created successfully!');
       }
-      setShowModal(false);
+      setActiveModal(null);
       fetchLeads();
     } catch (err) {
       console.error('❌ Error saving lead:', err);
@@ -183,9 +208,13 @@ export default function ContactPage() {
   const getStatusColor = (status) => {
     switch (status) {
       case 'New': return { bg: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6', border: '1px solid rgba(59, 130, 246, 0.3)' };
-      case 'In Progress': return { bg: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.3)' };
-      case 'Replied': return { bg: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)' };
-      case 'Closed': return { bg: 'rgba(107, 114, 128, 0.15)', color: '#6b7280', border: '1px solid rgba(107, 114, 128, 0.3)' };
+      case 'Contacted': return { bg: 'rgba(245, 158, 11, 0.15)', color: '#f59e0b', border: '1px solid rgba(245, 158, 11, 0.3)' };
+      case 'Quotation Sent': return { bg: 'rgba(168, 85, 247, 0.15)', color: '#a855f7', border: '1px solid rgba(168, 85, 247, 0.3)' };
+      case 'Negotiation': return { bg: 'rgba(236, 72, 153, 0.15)', color: '#ec4899', border: '1px solid rgba(236, 72, 153, 0.3)' };
+      case 'Site Visit': return { bg: 'rgba(14, 165, 233, 0.15)', color: '#0ea5e9', border: '1px solid rgba(14, 165, 233, 0.3)' };
+      case 'Order Won':
+      case 'Completed': return { bg: 'rgba(16, 185, 129, 0.15)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)' };
+      case 'Order Lost': return { bg: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.3)' };
       default: return { bg: 'rgba(107, 114, 128, 0.15)', color: '#6b7280', border: '1px solid rgba(107, 114, 128, 0.3)' };
     }
   };
@@ -196,8 +225,8 @@ export default function ContactPage() {
       {/* Top Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>RFQ Enquiries & Lead Management</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Track B2B Leads, RFQ Quotations, Inquiry Statuses, and Admin Follow-up Notes</p>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>RFQ Enquiries & Lead CRM System</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Track B2B Leads, Send Emails, Generate PDF Quotations, WhatsApp Chat & Activity History</p>
         </div>
         <div style={{ display: 'flex', gap: '0.75rem' }}>
           <button onClick={fetchLeads} className="btn btn-outline" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -218,15 +247,16 @@ export default function ContactPage() {
         </div>
       )}
 
-      {/* Dashboard Stat Cards */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
+      {/* 8 Expanded Dashboard Stat Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
+        
         <div className="card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(59, 130, 246, 0.15)', color: '#3b82f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
             <FiInbox />
           </div>
           <div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Leads</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{stats.totalLeads}</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Leads</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700 }}>{stats.totalLeads}</div>
           </div>
         </div>
 
@@ -235,30 +265,71 @@ export default function ContactPage() {
             <FiClock />
           </div>
           <div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>New Leads</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: '#f59e0b' }}>{stats.newLeads}</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>New Leads</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#f59e0b' }}>{stats.newLeads}</div>
+          </div>
+        </div>
+
+        <div className="card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(168, 85, 247, 0.15)', color: '#a855f7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
+            <FiFileText />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Quotations Sent</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#a855f7' }}>{stats.quotationsSent}</div>
           </div>
         </div>
 
         <div className="card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.15)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
-            <FiCalendar />
+            <FiTrendingUp />
           </div>
           <div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Today's Leads</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--primary)' }}>{stats.todayLeads}</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Order Won</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--primary)' }}>{stats.wonLeads}</div>
+          </div>
+        </div>
+
+        <div className="card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
+            <FiAlertCircle />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Order Lost</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#ef4444' }}>{stats.lostLeads}</div>
+          </div>
+        </div>
+
+        <div className="card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(14, 165, 233, 0.15)', color: '#0ea5e9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
+            <FiSend />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Emails Dispatched</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#0ea5e9' }}>{stats.emailsSent}</div>
+          </div>
+        </div>
+
+        <div className="card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(236, 72, 153, 0.15)', color: '#ec4899', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
+            <FiList />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>In Negotiation</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#ec4899' }}>{stats.pendingFollowups}</div>
           </div>
         </div>
 
         <div className="card" style={{ padding: '1.25rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(107, 114, 128, 0.15)', color: '#6b7280', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem' }}>
-            <FiCheckCircle />
+            <FiCalendar />
           </div>
           <div>
-            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 600 }}>Closed Leads</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 700 }}>{stats.closedLeads}</div>
+            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Today's Leads</div>
+            <div style={{ fontSize: '1.4rem', fontWeight: 700 }}>{stats.todayLeads}</div>
           </div>
         </div>
+
       </div>
 
       {/* Filter & Controls Bar */}
@@ -271,7 +342,7 @@ export default function ContactPage() {
             type="text"
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            placeholder="Search leads by name, email, company, or subject..."
+            placeholder="Search leads by name, email, company, or requirement..."
             style={{ background: 'transparent', border: 'none', color: 'inherit', width: '100%', outline: 'none', fontSize: '0.875rem' }}
           />
         </div>
@@ -283,13 +354,17 @@ export default function ContactPage() {
             className="input"
             value={statusFilter}
             onChange={e => setStatusFilter(e.target.value)}
-            style={{ minWidth: '130px', fontSize: '0.85rem' }}
+            style={{ minWidth: '150px', fontSize: '0.85rem' }}
           >
             <option value="All">All Statuses</option>
             <option value="New">New</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Replied">Replied</option>
-            <option value="Closed">Closed</option>
+            <option value="Contacted">Contacted</option>
+            <option value="Quotation Sent">Quotation Sent</option>
+            <option value="Negotiation">Negotiation</option>
+            <option value="Site Visit">Site Visit</option>
+            <option value="Order Won">Order Won</option>
+            <option value="Order Lost">Order Lost</option>
+            <option value="Completed">Completed</option>
           </select>
         </div>
 
@@ -324,27 +399,29 @@ export default function ContactPage() {
             <thead>
               <tr style={{ borderBottom: '1px solid var(--border)', color: 'var(--text-muted)' }}>
                 <th style={{ padding: '0.75rem 1rem' }}>ID & Date</th>
-                <th style={{ padding: '0.75rem 1rem' }}>Full Name</th>
+                <th style={{ padding: '0.75rem 1rem' }}>Full Name & Company</th>
                 <th style={{ padding: '0.75rem 1rem' }}>Email & Phone</th>
-                <th style={{ padding: '0.75rem 1rem' }}>Company</th>
-                <th style={{ padding: '0.75rem 1rem' }}>Subject / Requirement</th>
-                <th style={{ padding: '0.75rem 1rem' }}>Status</th>
-                <th style={{ padding: '0.75rem 1rem', textAlign: 'right' }}>Actions</th>
+                <th style={{ padding: '0.75rem 1rem' }}>Product Requirement</th>
+                <th style={{ padding: '0.75rem 1rem' }}>Lead Status</th>
+                <th style={{ padding: '0.75rem 1rem', textAlign: 'right' }}>CRM Actions</th>
               </tr>
             </thead>
             <tbody>
               {filteredLeads.map(lead => {
                 const name = lead.fullName || lead.full_name || lead.name || 'Client';
-                const createdDate = lead.createdAt || lead.created_at ? new Date(lead.createdAt || lead.created_at).toLocaleDateString() : 'Today';
+                const createdDate = lead.createdAt || lead.created_at ? new Date(lead.createdAt || lead.created_at).toLocaleDateString('en-IN') : 'Today';
                 const statusStyle = getStatusColor(lead.status);
 
                 return (
                   <tr key={lead.id} style={{ borderBottom: '1px solid var(--border)' }}>
                     <td style={{ padding: '1rem', color: 'var(--text-muted)' }}>
-                      <span style={{ fontWeight: 600, color: 'var(--text-main)' }}>#{lead.id}</span><br />
+                      <span style={{ fontWeight: 700, color: 'var(--text-main)' }}>#{lead.id}</span><br />
                       <span style={{ fontSize: '0.75rem' }}>{createdDate}</span>
                     </td>
-                    <td style={{ padding: '1rem', fontWeight: 600 }}>{name}</td>
+                    <td style={{ padding: '1rem' }}>
+                      <div style={{ fontWeight: 700 }}>{name}</div>
+                      <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{lead.company || 'Individual Account'}</div>
+                    </td>
                     <td style={{ padding: '1rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: 'var(--primary)' }}>
                         <FiMail size={13} /> <a href={`mailto:${lead.email}`} style={{ color: 'inherit', textDecoration: 'none' }}>{lead.email}</a>
@@ -353,8 +430,7 @@ export default function ContactPage() {
                         <FiPhone size={13} /> {lead.phone}
                       </div>
                     </td>
-                    <td style={{ padding: '1rem', color: 'var(--text-muted)' }}>{lead.company || 'Individual'}</td>
-                    <td style={{ padding: '1rem', maxWidth: '250px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                    <td style={{ padding: '1rem', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                       {lead.subject || lead.product_requirement || 'EV Charger Inquiry'}
                     </td>
                     <td style={{ padding: '1rem' }}>
@@ -374,19 +450,78 @@ export default function ContactPage() {
                         }}
                       >
                         <option value="New" style={{ background: '#1e293b', color: '#fff' }}>New</option>
-                        <option value="In Progress" style={{ background: '#1e293b', color: '#fff' }}>In Progress</option>
-                        <option value="Replied" style={{ background: '#1e293b', color: '#fff' }}>Replied</option>
-                        <option value="Closed" style={{ background: '#1e293b', color: '#fff' }}>Closed</option>
+                        <option value="Contacted" style={{ background: '#1e293b', color: '#fff' }}>Contacted</option>
+                        <option value="Quotation Sent" style={{ background: '#1e293b', color: '#fff' }}>Quotation Sent</option>
+                        <option value="Negotiation" style={{ background: '#1e293b', color: '#fff' }}>Negotiation</option>
+                        <option value="Site Visit" style={{ background: '#1e293b', color: '#fff' }}>Site Visit</option>
+                        <option value="Order Won" style={{ background: '#1e293b', color: '#fff' }}>Order Won</option>
+                        <option value="Order Lost" style={{ background: '#1e293b', color: '#fff' }}>Order Lost</option>
+                        <option value="Completed" style={{ background: '#1e293b', color: '#fff' }}>Completed</option>
                       </select>
                     </td>
                     <td style={{ padding: '1rem', textAlign: 'right' }}>
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
-                        <button onClick={() => handleOpenEdit(lead)} className="btn btn-outline" style={{ padding: '0.4rem', color: 'var(--primary)' }} title="View Details / Edit Notes">
+                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.4rem', flexWrap: 'wrap' }}>
+                        
+                        {/* 1. Send Email */}
+                        <button 
+                          onClick={() => { setActiveLead(lead); setActiveModal('sendEmail'); }} 
+                          className="btn btn-outline" 
+                          style={{ padding: '0.35rem 0.5rem', fontSize: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', color: '#0ea5e9' }}
+                          title="Send Email via SMTP"
+                        >
+                          <FiSend /> Email
+                        </button>
+
+                        {/* 2. Email History */}
+                        <button 
+                          onClick={() => { setActiveLead(lead); setActiveModal('emailHistory'); }} 
+                          className="btn btn-outline" 
+                          style={{ padding: '0.35rem 0.5rem', fontSize: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', color: '#a855f7' }}
+                          title="View Sent / Failed Email Logs"
+                        >
+                          <FiMail /> Logs
+                        </button>
+
+                        {/* 3. Generate Quote */}
+                        <button 
+                          onClick={() => { setActiveLead(lead); setActiveModal('quotation'); }} 
+                          className="btn btn-outline" 
+                          style={{ padding: '0.35rem 0.5rem', fontSize: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', color: 'var(--primary)' }}
+                          title="Generate Commercial PDF Quote"
+                        >
+                          <FiFileText /> Quote
+                        </button>
+
+                        {/* 4. WhatsApp */}
+                        <button 
+                          onClick={() => { setActiveLead(lead); setActiveModal('whatsapp'); }} 
+                          className="btn btn-outline" 
+                          style={{ padding: '0.35rem 0.5rem', fontSize: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', color: '#25D366' }}
+                          title="Chat on WhatsApp"
+                        >
+                          <FiMessageCircle /> WA
+                        </button>
+
+                        {/* 5. Notes & Timeline */}
+                        <button 
+                          onClick={() => { setActiveLead(lead); setActiveModal('timeline'); }} 
+                          className="btn btn-outline" 
+                          style={{ padding: '0.35rem 0.5rem', fontSize: '0.75rem', display: 'inline-flex', alignItems: 'center', gap: '0.25rem', color: '#f59e0b' }}
+                          title="Activity History & Follow-up Notes"
+                        >
+                          <FiClock /> Notes
+                        </button>
+
+                        {/* 6. Edit Lead */}
+                        <button onClick={() => handleOpenEdit(lead)} className="btn btn-outline" style={{ padding: '0.35rem' }} title="Edit Lead Details">
                           <FiEdit2 />
                         </button>
-                        <button onClick={() => handleDelete(lead.id)} className="btn btn-outline" style={{ padding: '0.4rem', color: 'var(--danger)' }} title="Delete Lead">
+
+                        {/* 7. Delete Lead */}
+                        <button onClick={() => handleDelete(lead.id)} className="btn btn-outline" style={{ padding: '0.35rem', color: 'var(--danger)' }} title="Delete Lead">
                           <FiTrash2 />
                         </button>
+
                       </div>
                     </td>
                   </tr>
@@ -397,15 +532,36 @@ export default function ContactPage() {
         )}
       </div>
 
-      {/* Edit Lead & Notes Modal */}
-      {showModal && (
+      {/* Render Modals Dynamically */}
+      {activeModal === 'emailHistory' && activeLead && (
+        <EmailHistoryModal lead={activeLead} onClose={() => { setActiveModal(null); setActiveLead(null); }} />
+      )}
+
+      {activeModal === 'sendEmail' && activeLead && (
+        <SendEmailModal lead={activeLead} onClose={() => { setActiveModal(null); setActiveLead(null); }} onEmailSent={fetchLeads} />
+      )}
+
+      {activeModal === 'quotation' && activeLead && (
+        <QuotationModal lead={activeLead} onClose={() => { setActiveModal(null); setActiveLead(null); }} onQuotationCreated={fetchLeads} />
+      )}
+
+      {activeModal === 'whatsapp' && activeLead && (
+        <WhatsAppModal lead={activeLead} onClose={() => { setActiveModal(null); setActiveLead(null); }} />
+      )}
+
+      {activeModal === 'timeline' && activeLead && (
+        <LeadTimelineModal lead={activeLead} onClose={() => { setActiveModal(null); setActiveLead(null); }} />
+      )}
+
+      {/* Edit Lead Modal */}
+      {activeModal === 'edit' && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0,0,0,0.75)', zIndex: 9999, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
           <div className="card" style={{ width: '100%', maxWidth: '650px', padding: '2rem', maxHeight: '90vh', overflowY: 'auto' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
               <h3 style={{ fontSize: '1.25rem', margin: 0 }}>
-                {editingLead ? `Lead Inquiry #${editingLead.id}` : 'Create Lead Record'}
+                {activeLead ? `Lead Inquiry #${activeLead.id}` : 'Create Lead Record'}
               </h3>
-              <button onClick={() => setShowModal(false)} className="btn btn-outline" style={{ border: 'none', padding: '0.4rem' }}>
+              <button onClick={() => setActiveModal(null)} className="btn btn-outline" style={{ border: 'none', padding: '0.4rem' }}>
                 <FiX size={20} />
               </button>
             </div>
@@ -416,7 +572,7 @@ export default function ContactPage() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <form onSubmit={handleSubmitEdit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Full Name *</label>
@@ -448,9 +604,13 @@ export default function ContactPage() {
                   <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.35rem' }}>Lead Status</label>
                   <select className="input" value={formData.status} onChange={e => setFormData({ ...formData, status: e.target.value })}>
                     <option value="New">New</option>
-                    <option value="In Progress">In Progress</option>
-                    <option value="Replied">Replied</option>
-                    <option value="Closed">Closed</option>
+                    <option value="Contacted">Contacted</option>
+                    <option value="Quotation Sent">Quotation Sent</option>
+                    <option value="Negotiation">Negotiation</option>
+                    <option value="Site Visit">Site Visit</option>
+                    <option value="Order Won">Order Won</option>
+                    <option value="Order Lost">Order Lost</option>
+                    <option value="Completed">Completed</option>
                   </select>
                 </div>
               </div>
@@ -466,7 +626,7 @@ export default function ContactPage() {
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
-                <button type="button" onClick={() => setShowModal(false)} disabled={saving} className="btn btn-outline">Cancel</button>
+                <button type="button" onClick={() => setActiveModal(null)} disabled={saving} className="btn btn-outline">Cancel</button>
                 <button type="submit" disabled={saving} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   {saving ? 'Saving...' : <><FiSave /> Save Changes</>}
                 </button>

@@ -19,16 +19,21 @@ export default function DashboardLayout() {
   useEffect(() => {
     const fetchUnread = async () => {
       try {
-        const res = await adminService.getDashboardStats();
-        if (res && res.data && typeof res.data.unreadCount === 'number') {
-          setUnreadCount(res.data.unreadCount);
+        const res = await adminService.getNotifications();
+        if (res && typeof res.unreadCount === 'number') {
+          setUnreadCount(res.unreadCount);
+        } else {
+          const leadsRes = await adminService.getLeads();
+          if (Array.isArray(leadsRes)) {
+            setUnreadCount(leadsRes.filter(l => l.status === 'New').length);
+          }
         }
       } catch (err) {
         console.warn('Notice fetching unread count:', err.message);
       }
     };
     fetchUnread();
-    const interval = setInterval(fetchUnread, 30000); // Polling every 30 seconds
+    const interval = setInterval(fetchUnread, 15000); // Poll every 15s
     return () => clearInterval(interval);
   }, []);
 
