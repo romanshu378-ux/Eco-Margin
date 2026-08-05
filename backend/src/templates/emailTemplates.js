@@ -42,15 +42,15 @@ function getCustomerConfirmationTemplate({ customerName, leadId, product, date }
         <div><span class="info-label">Submitted Date:</span> <span class="info-val">${date || new Date().toLocaleDateString('en-IN')}</span></div>
       </div>
 
-      <p>If you have any urgent queries, feel free to reach out to our dedicated support team at <a href="mailto:support@ecomargin.in" style="color: #10b981;">support@ecomargin.in</a> or call our sales line at <strong>+91-8302313065</strong>.</p>
+      <p>If you have any urgent queries, feel free to reach out to our dedicated support team at <a href="mailto:${process.env.SUPPORT_EMAIL || process.env.MAIL_FROM}" style="color: #10b981;">${process.env.SUPPORT_EMAIL || process.env.MAIL_FROM}</a> or call our sales line at <strong>+91-8302313065</strong>.</p>
       
       <div style="text-align: center; margin-top: 25px;">
-        <a href="https://www.ecomargin.in" class="btn">Explore Product Catalog</a>
+        <a href="${process.env.SITE_URL}" class="btn">Explore Product Catalog</a>
       </div>
     </div>
     <div class="footer">
       © ${currentYear} EcoMargin LLP | Enterprise EV Charging Solutions<br>
-      Email: support@ecomargin.in | Phone: +91-8302313065 | Website: https://www.ecomargin.in
+      Email: ${process.env.SUPPORT_EMAIL || process.env.MAIL_FROM} | Phone: +91-8302313065 | Website: ${process.env.SITE_URL}
     </div>
   </div>
 </body>
@@ -62,6 +62,7 @@ function getCustomerConfirmationTemplate({ customerName, leadId, product, date }
   * Generates Admin Sales Notification Email HTML
   */
 function getAdminNotificationTemplate({ name, company, phone, email, product, message, leadId, time }) {
+  const adminPanelUrl = (process.env.CLIENT_URL || '').split(',')[1] || (process.env.CLIENT_URL || '').split(',')[0] || ''
   return `
 <!DOCTYPE html>
 <html>
@@ -82,7 +83,7 @@ function getAdminNotificationTemplate({ name, company, phone, email, product, me
       <h2 style="margin: 0; color: #38bdf8;">🔔 New Sales RFQ Enquiry #${leadId || ''} | EcoMargin LLP</h2>
       <span class="badge">NEW LEAD</span>
     </div>
-    <p style="color: #cbd5e1; font-size: 14px;">A new B2B customer enquiry has been submitted on www.ecomargin.in.</p>
+    <p style="color: #cbd5e1; font-size: 14px;">A new B2B customer enquiry has been submitted on ${process.env.SITE_URL}.</p>
     
     <table>
       <tr><td class="label">Customer Name:</td><td style="font-weight: 700; color: #ffffff;">${name}</td></tr>
@@ -95,7 +96,7 @@ function getAdminNotificationTemplate({ name, company, phone, email, product, me
     </table>
 
     <div style="margin-top: 25px; text-align: center;">
-      <a href="https://admin.ecomargin.in/leads" style="background-color: #3b82f6; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: 700; display: inline-block;">Open Admin Panel & Send Quotation</a>
+      <a href="${adminPanelUrl}/leads" style="background-color: #3b82f6; color: #ffffff; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: 700; display: inline-block;">Open Admin Panel & Send Quotation</a>
     </div>
   </div>
 </body>

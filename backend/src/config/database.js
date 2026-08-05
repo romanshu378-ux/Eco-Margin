@@ -6,6 +6,9 @@ const logger = require('./logger');
 const dbName = process.env.DB_NAME;
 const dbUser = process.env.DB_USER;
 const dbPassword = process.env.DB_PASSWORD;
+const dbHost = process.env.DB_HOST;
+const dbPort = parseInt(process.env.DB_PORT, 10);
+const dbConnectionLimit = parseInt(process.env.DB_CONNECTION_LIMIT, 10) || 10;
 
 if (!dbName) {
   throw new Error('DB_NAME environment variable is required');
@@ -16,14 +19,20 @@ if (!dbUser) {
 if (!dbPassword) {
   throw new Error('DB_PASSWORD environment variable is required');
 }
+if (!dbHost) {
+  throw new Error('DB_HOST environment variable is required');
+}
+if (!dbPort || isNaN(dbPort)) {
+  throw new Error('DB_PORT environment variable is required');
+}
 
 const sequelize = new Sequelize(
   dbName,
   dbUser,
   dbPassword,
   {
-    host: process.env.DB_HOST || 'localhost',
-    port: parseInt(process.env.DB_PORT) || 4000,
+    host: dbHost,
+    port: dbPort,
     dialect: 'mysql',
 
     // ===== TiDB Cloud SSL =====
@@ -35,7 +44,7 @@ const sequelize = new Sequelize(
     },
 
     pool: {
-      max: parseInt(process.env.DB_CONNECTION_LIMIT) || 10,
+      max: dbConnectionLimit,
       min: 2,
       acquire: 30000,
       idle: 10000,

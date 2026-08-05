@@ -3,26 +3,6 @@
 
 'use strict'
 
-require('dotenv').config()
-
-// ── Whitelist of Allowed Production & Development Origins ──────────
-const defaultAllowedOrigins = [
-  'https://admin.ecomargin.in',
-  'https://ecomargin.in',
-  'https://www.ecomargin.in',
-  'https://eco-margin-frontend.vercel.app',
-  'https://eco-margin-admin-panel.vercel.app',
-  'https://ecomargin.vercel.app',
-  'https://ecomargin-admin.vercel.app',
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'http://localhost:5173',
-  'http://localhost:5174',
-  'http://localhost:5000',
-  'http://127.0.0.1:3000',
-  'http://127.0.0.1:5173'
-]
-
 // Parse origins from environment variables (ALLOWED_ORIGINS and CLIENT_URL)
 const parseEnvOrigins = (envVar) => {
   if (!envVar) return []
@@ -35,15 +15,15 @@ const parseEnvOrigins = (envVar) => {
 const envAllowedOrigins = parseEnvOrigins(process.env.ALLOWED_ORIGINS)
 const envClientUrls = parseEnvOrigins(process.env.CLIENT_URL)
 
-// Consolidate unique allowed origins
-const allowedOrigins = [...new Set([...defaultAllowedOrigins, ...envAllowedOrigins, ...envClientUrls])]
+// Consolidate unique allowed origins loaded strictly from environment variables
+const allowedOrigins = [...new Set([...envAllowedOrigins, ...envClientUrls])]
 
 /**
  * CORS Configuration Options for Express & Preflight OPTIONS Requests
  */
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow non-browser requests (mobile apps, cURL, Postman) with no origin header
+    // Allow non-browser requests (mobile apps, server-to-server, cURL, Postman) with no origin header
     if (!origin) {
       return callback(null, true)
     }
@@ -51,7 +31,7 @@ const corsOptions = {
     // Normalize origin by stripping trailing slashes
     const normalizedOrigin = origin.trim().replace(/\/+$/, '')
 
-    if (allowedOrigins.includes(normalizedOrigin) || process.env.NODE_ENV === 'development') {
+    if (allowedOrigins.includes(normalizedOrigin)) {
       return callback(null, true)
     } else {
       console.warn(`⚠️ [CORS Blocked Origin]: ${origin}`)

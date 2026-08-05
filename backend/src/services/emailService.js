@@ -8,12 +8,16 @@ const { getCustomerConfirmationTemplate, getAdminNotificationTemplate } = requir
 
 const apiKey = process.env.BREVO_API_KEY
 const emailCcArchive = process.env.EMAIL_CC_ARCHIVE
+const mailFrom = process.env.MAIL_FROM
 
 if (!apiKey) {
   throw new Error('BREVO_API_KEY environment variable is required')
 }
 if (!emailCcArchive) {
   throw new Error('EMAIL_CC_ARCHIVE environment variable is required')
+}
+if (!mailFrom) {
+  throw new Error('MAIL_FROM environment variable is required')
 }
 
 /**
@@ -38,7 +42,7 @@ async function sendViaBrevo({ leadId, recipient, subject, htmlContent, emailType
   console.log(`Subject: ${subject}`)
 
   // Verify the sender email & name before sending
-  const senderEmail = 'support@ecomargin.in'
+  const senderEmail = mailFrom
   const senderName = 'EcoMargin LLP'
 
   const client = new SibApiV3Sdk.BrevoClient({ apiKey })
@@ -163,7 +167,7 @@ async function sendCustomerConfirmation({ leadId, customerName, email, product, 
  * Sends Admin Sales Alert Email
  */
 async function sendAdminNotification({ leadId, name, company, phone, email, product, message, time }) {
-  const adminEmail = process.env.ADMIN_NOTIFY_EMAIL || 'support@ecomargin.in'
+  const adminEmail = process.env.ADMIN_NOTIFY_EMAIL
   const subject = `New Enquiry Received | EcoMargin LLP - ${name}`
   const htmlContent = getAdminNotificationTemplate({ name, company, phone, email, product, message, leadId, time })
 

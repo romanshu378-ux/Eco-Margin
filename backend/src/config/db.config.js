@@ -8,7 +8,7 @@ const connectDB = async (retries = 5, delay = 5000) => {
   while (retries > 0) {
     try {
       await sequelize.authenticate()
-      console.log(`✅ [TiDB Cloud / MySQL] Database connected successfully at ${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 4000}/${process.env.DB_NAME || 'ecomargin_db'}`)
+      console.log(`✅ [TiDB Cloud / MySQL] Database connected successfully at ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`)
       return true
     } catch (error) {
       retries -= 1

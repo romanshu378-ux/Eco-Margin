@@ -122,7 +122,7 @@ exports.emailQuotation = async (req, res) => {
         <p><strong>Terms:</strong> ${quotation.terms_and_conditions}</p>
         
         <div style="margin-top: 20px;">
-          <a href="https://www.ecomargin.in/contact" style="background: #10b981; color: #0f172a; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: 700;">Accept Quotation / Contact Factory</a>
+          <a href="${process.env.SITE_URL}/contact" style="background: #10b981; color: #0f172a; padding: 10px 20px; text-decoration: none; border-radius: 6px; font-weight: 700;">Accept Quotation / Contact Factory</a>
         </div>
       </div>
     `

@@ -8,12 +8,16 @@ const logger = require('./logger')
 
 const apiKey = process.env.BREVO_API_KEY
 const emailCcArchive = process.env.EMAIL_CC_ARCHIVE
+const mailFrom = process.env.MAIL_FROM
 
 if (!apiKey) {
   throw new Error('BREVO_API_KEY environment variable is required')
 }
 if (!emailCcArchive) {
   throw new Error('EMAIL_CC_ARCHIVE environment variable is required')
+}
+if (!mailFrom) {
+  throw new Error('MAIL_FROM environment variable is required')
 }
 
 const promiseTimeout = (promise, ms) => {
@@ -31,7 +35,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
   console.log(`Recipient: ${to}`)
   console.log(`Subject: ${subject}`)
 
-  const senderEmail = 'support@ecomargin.in'
+  const senderEmail = mailFrom
   const senderName = 'EcoMargin LLP'
 
   const client = new SibApiV3Sdk.BrevoClient({ apiKey })
