@@ -12,21 +12,28 @@ const fallbackBlogs = [
 ]
 
 export default function BlogsSection() {
-  const [blogs, setBlogs] = useState(fallbackBlogs)
+  const [blogs, setBlogs] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchLiveBlogs = async () => {
       try {
         const res = await publicApi.getBlogs()
-        if (res && res.data && res.data.length > 0) {
+        if (res && res.data) {
           setBlogs(res.data.slice(0, 3))
         }
       } catch (err) {
         console.warn('Live blogs fetch notice:', err.message)
+      } finally {
+        setLoading(false)
       }
     }
     fetchLiveBlogs()
   }, [])
+
+  if (!loading && blogs.length === 0) {
+    return null
+  }
 
   return (
     <section style={{ padding: '8rem 0', background: 'var(--color-bg-alt)' }}>

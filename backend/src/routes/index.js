@@ -27,6 +27,8 @@ router.get('/health', healthController.checkHealth);
 router.get('/homepage', publicController.getPublicHomepage);
 router.get('/footer', publicController.getPublicFooter);
 router.get('/contact', publicController.getPublicContact);
+router.get('/blogs', publicController.getPublicBlogs);
+router.get('/blogs/:slug', publicController.getPublicBlogBySlug);
 router.use('/auth', authRoutes);
 router.use('/admin', adminRoutes);
 router.use('/stations', stationRoutes);

@@ -103,13 +103,30 @@ exports.getPublicGallery = async (req, res) => {
 
 // Public GET Published Blogs
 exports.getPublicBlogs = async (req, res) => {
-  setNoCache(res)
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+  res.setHeader('Pragma', 'no-cache')
+  res.setHeader('Expires', '0')
   try {
-    const rows = await Blog.findAll({
-      where: { status: 'Published' },
-      order: [['displayOrder', 'ASC'], ['id', 'DESC']]
-    })
-    return res.status(200).json({ success: true, data: rows })
+    const page = parseInt(req.query.page, 10)
+    const limit = parseInt(req.query.limit, 10)
+
+    if (page && limit) {
+      const offset = (page - 1) * limit
+      const { rows, count } = await Blog.findAndCountAll({
+        where: { status: 'Published' },
+        order: [['displayOrder', 'ASC'], ['id', 'DESC']],
+        limit,
+        offset
+      })
+      const { paginateResponse } = require('../utils/apiResponse')
+      return paginateResponse(res, rows, page, limit, count)
+    } else {
+      const rows = await Blog.findAll({
+        where: { status: 'Published' },
+        order: [['displayOrder', 'ASC'], ['id', 'DESC']]
+      })
+      return res.status(200).json({ success: true, data: rows })
+    }
   } catch (err) {
     console.error('❌ [Public Blogs Fetch Error]:', err.message)
     return res.status(500).json({ success: false, message: err.message })
@@ -118,7 +135,9 @@ exports.getPublicBlogs = async (req, res) => {
 
 // Public GET Published Blog by Slug
 exports.getPublicBlogBySlug = async (req, res) => {
-  setNoCache(res)
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
+  res.setHeader('Pragma', 'no-cache')
+  res.setHeader('Expires', '0')
   try {
     const blog = await Blog.findOne({
       where: { slug: req.params.slug, status: 'Published' }

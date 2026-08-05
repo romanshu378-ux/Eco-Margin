@@ -159,7 +159,7 @@ export const publicApi = {
   // Fetch Published Blogs
   getBlogs: async () => {
     try {
-      const response = await api.get('/public/blogs')
+      const response = await api.get('/blogs')
       return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for blogs:', error.message)
@@ -170,7 +170,7 @@ export const publicApi = {
   // Fetch Blog by Slug
   getBlogBySlug: async (slug) => {
     try {
-      const response = await api.get(`/public/blogs/${slug}`)
+      const response = await api.get(`/blogs/${slug}`)
       return response
     } catch (error) {
       console.warn(`[PublicAPI] Offline fallback for blog slug "${slug}":`, error.message)

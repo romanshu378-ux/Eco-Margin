@@ -13,7 +13,7 @@ const sequelize = new Sequelize(
     dialect: 'mysql',
 
     // ===== TiDB Cloud SSL =====
-    dialectOptions: {
+    dialectOptions: process.env.DB_SSL === 'false' ? {} : {
       ssl: {
         require: true,
         rejectUnauthorized: false,
