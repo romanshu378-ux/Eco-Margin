@@ -28,7 +28,7 @@ describe('CORS Configuration Tests', () => {
       const res = await request(app)
         .post('/api/v1/auth/login')
         .set('Origin', allowedOrigin)
-        .send({ email: 'admin@ecomargin.in', password: 'Password123!' })
+        .send({ email: 'admin2026@ecomargin.in', password: 'Password123!' })
 
       expect(res.headers['access-control-allow-origin']).toBe(allowedOrigin)
       expect(res.headers['access-control-allow-credentials']).toBe('true')
@@ -38,7 +38,7 @@ describe('CORS Configuration Tests', () => {
       const res = await request(app)
         .post('/api/v1/auth/login')
         .set('Origin', disallowedOrigin)
-        .send({ email: 'admin@ecomargin.in', password: 'Password123!' })
+        .send({ email: 'admin2026@ecomargin.in', password: 'Password123!' })
 
       expect(res.headers['access-control-allow-origin']).toBeUndefined()
     })

@@ -19,11 +19,11 @@ const demoUsers = new Map()
 
 // Pre-seed hashed superadmin credentials
 ;(async () => {
-  const adminHash = await hashPassword('password123')
-  demoUsers.set('admin@ecomargin.com', {
+  const adminHash = await hashPassword('Ecomargin@2024')
+  demoUsers.set('admin2026@ecomargin.in', {
     id: 1,
     name: 'Super Admin',
-    email: 'admin@ecomargin.com',
+    email: 'admin2026@ecomargin.in',
     passwordHash: adminHash,
     role: 'superadmin'
   })
@@ -75,12 +75,12 @@ exports.login = asyncHandler(async (req, res, next) => {
   let existingUser = demoUsers.get(email)
 
   // Fallback for demo credentials if map isn't populated yet
-  if (!existingUser && email === 'admin@ecomargin.com') {
-    const adminHash = await hashPassword('password123')
+  if (!existingUser && email === 'admin2026@ecomargin.in') {
+    const adminHash = await hashPassword('Ecomargin@2024')
     existingUser = {
       id: 1,
       name: 'Super Admin',
-      email: 'admin@ecomargin.com',
+      email: 'admin2026@ecomargin.in',
       passwordHash: adminHash,
       role: 'superadmin'
     }

@@ -1,9 +1,8 @@
 USE ecomargin_db;
 
--- 1. Seed Admins (Password is 'password123' hashed using a dummy hash for now, normally use bcrypt)
+-- 1. Seed Admins (Password is 'Ecomargin@2024' hashed using bcrypt)
 INSERT INTO admins (name, email, password_hash, role) VALUES 
-('Super Admin', 'admin@ecomargin.com', '$2a$12$N9uYtW7H/D5G/R0u0Q7B3Oi1A/YtFvP9mO6Q9/h3H2/L8/7xG4u5G', 'superadmin'),
-('Content Editor', 'editor@ecomargin.com', '$2a$12$N9uYtW7H/D5G/R0u0Q7B3Oi1A/YtFvP9mO6Q9/h3H2/L8/7xG4u5G', 'editor');
+('Super Admin', 'admin2026@ecomargin.in', '$2a$12$w/00PE8GX0uB.HGPR.zTk.5p8mpTw8L/21bBHy0iGWTpwBjuuKmRm', 'superadmin');
 
 -- 2. Seed Users
 INSERT INTO users (first_name, last_name, email, password_hash, phone) VALUES 

@@ -50,7 +50,7 @@ export default function LoginPage() {
               style={{ paddingLeft: '2.5rem' }} 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="admin@ecomargin.com"
+              placeholder="admin2026@ecomargin.in"
             />
           </div>
         </div>

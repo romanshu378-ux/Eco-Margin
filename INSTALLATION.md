@@ -252,7 +252,7 @@ npm run clean
 
 | Role     | Email                    | Password    |
 |----------|--------------------------|-------------|
-| Admin    | admin@ecomargin.com      | Admin@123   |
+| Admin    | admin2026@ecomargin.in   | Ecomargin@2024 |
 | Operator | operator@ecomargin.com   | Admin@123   |
 | User     | user@ecomargin.com       | Admin@123   |
 
