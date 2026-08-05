@@ -8,7 +8,10 @@ const asyncHandler = require('../utils/asyncHandler')
 const { AppError } = require('../middleware/errorHandler')
 const { hashPassword, comparePassword } = require('../utils/password')
 
-const JWT_SECRET = process.env.JWT_SECRET || 'supersecretjwtkey_ecomargin_change_in_production'
+const JWT_SECRET = process.env.JWT_SECRET
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required')
+}
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRATION || '24h'
 
 // In-memory mock store for testing auth hashing (in production backed by DB models)

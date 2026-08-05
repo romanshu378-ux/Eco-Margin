@@ -6,6 +6,16 @@
 const SibApiV3Sdk = require('@getbrevo/brevo')
 const logger = require('./logger')
 
+const apiKey = process.env.BREVO_API_KEY
+const emailCcArchive = process.env.EMAIL_CC_ARCHIVE
+
+if (!apiKey) {
+  throw new Error('BREVO_API_KEY environment variable is required')
+}
+if (!emailCcArchive) {
+  throw new Error('EMAIL_CC_ARCHIVE environment variable is required')
+}
+
 const promiseTimeout = (promise, ms) => {
   let timeout = new Promise((resolve, reject) => {
     let id = setTimeout(() => {
@@ -21,13 +31,6 @@ const sendEmail = async ({ to, subject, html, text }) => {
   console.log(`Recipient: ${to}`)
   console.log(`Subject: ${subject}`)
 
-  const apiKey = process.env.BREVO_API_KEY
-  if (!apiKey) {
-    const errMsg = 'BREVO_API_KEY environment variable is missing.'
-    logger.error('Email send failed: ' + errMsg)
-    throw new Error(errMsg)
-  }
-
   const senderEmail = 'support@ecomargin.in'
   const senderName = 'EcoMargin LLP'
 
@@ -36,7 +39,7 @@ const sendEmail = async ({ to, subject, html, text }) => {
   const payload = {
     sender: { name: senderName, email: senderEmail },
     to: [{ email: to }],
-    cc: [{ email: 'ecomargin1@gmail.com', name: 'EcoMargin Archive' }],
+    cc: [{ email: emailCcArchive, name: 'EcoMargin Archive' }],
     subject,
     htmlContent: html || text
   }

@@ -6,6 +6,16 @@ const SibApiV3Sdk = require('@getbrevo/brevo')
 const { EmailLog } = require('../models')
 const { getCustomerConfirmationTemplate, getAdminNotificationTemplate } = require('../templates/emailTemplates')
 
+const apiKey = process.env.BREVO_API_KEY
+const emailCcArchive = process.env.EMAIL_CC_ARCHIVE
+
+if (!apiKey) {
+  throw new Error('BREVO_API_KEY environment variable is required')
+}
+if (!emailCcArchive) {
+  throw new Error('EMAIL_CC_ARCHIVE environment variable is required')
+}
+
 /**
  * Timeout wrapper for Promise.
  */
@@ -27,16 +37,6 @@ async function sendViaBrevo({ leadId, recipient, subject, htmlContent, emailType
   console.log(`Recipient: ${recipient}`)
   console.log(`Subject: ${subject}`)
 
-  const apiKey = process.env.BREVO_API_KEY
-  if (!apiKey) {
-    console.error('❌ BREVO_API_KEY is missing')
-    return {
-      success: false,
-      message: 'Email sending failed',
-      error: 'BREVO_API_KEY environment variable is missing.'
-    }
-  }
-
   // Verify the sender email & name before sending
   const senderEmail = 'support@ecomargin.in'
   const senderName = 'EcoMargin LLP'
@@ -52,7 +52,7 @@ async function sendViaBrevo({ leadId, recipient, subject, htmlContent, emailType
 
   // Map CC (Always include default archive email, append others without duplicates)
   const ccEmails = new Map()
-  ccEmails.set('ecomargin1@gmail.com', { email: 'ecomargin1@gmail.com', name: 'EcoMargin Archive' })
+  ccEmails.set(emailCcArchive, { email: emailCcArchive, name: 'EcoMargin Archive' })
   if (cc) {
     cc.split(',').forEach(emailStr => {
       const emailTrimmed = emailStr.trim().toLowerCase()

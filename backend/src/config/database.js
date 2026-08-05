@@ -3,10 +3,24 @@
 const { Sequelize } = require('sequelize');
 const logger = require('./logger');
 
+const dbName = process.env.DB_NAME;
+const dbUser = process.env.DB_USER;
+const dbPassword = process.env.DB_PASSWORD;
+
+if (!dbName) {
+  throw new Error('DB_NAME environment variable is required');
+}
+if (!dbUser) {
+  throw new Error('DB_USER environment variable is required');
+}
+if (!dbPassword) {
+  throw new Error('DB_PASSWORD environment variable is required');
+}
+
 const sequelize = new Sequelize(
-  process.env.DB_NAME || 'ecomargin_db',
-  process.env.DB_USER || 'root',
-  process.env.DB_PASSWORD || 'fnYNgvLwRvYcD3We',
+  dbName,
+  dbUser,
+  dbPassword,
   {
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT) || 4000,

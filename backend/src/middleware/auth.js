@@ -5,6 +5,11 @@
 const jwt = require('jsonwebtoken')
 const { AppError } = require('./errorHandler')
 
+const jwtSecret = process.env.JWT_SECRET
+if (!jwtSecret) {
+  throw new Error('JWT_SECRET environment variable is required')
+}
+
 const protect = async (req, res, next) => {
   try {
     let token
@@ -21,7 +26,7 @@ const protect = async (req, res, next) => {
     }
 
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'supersecretjwtkey_ecomargin_change_in_production')
+    const decoded = jwt.verify(token, jwtSecret)
     
     // Attach decoded user info to request
     req.user = decoded
