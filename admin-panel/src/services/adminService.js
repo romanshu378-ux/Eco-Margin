@@ -17,14 +17,14 @@ export const adminService = {
   getMediaFiles: () => api.get('/admin/media'),
 
   // CMS GET Endpoints
-  getHomepageCMS: () => api.get('/cms/homepage'),
-  getAboutCMS: () => api.get('/cms/about'),
-  getManufacturingCMS: () => api.get('/cms/manufacturing'),
-  getFooterCMS: () => api.get('/cms/footer'),
-  getSEOCMS: () => api.get('/cms/seo'),
+  getHomepageCMS: (options = {}) => api.get('/cms/homepage', options),
+  getAboutCMS: (options = {}) => api.get('/cms/about', options),
+  getManufacturingCMS: (options = {}) => api.get('/cms/manufacturing', options),
+  getFooterCMS: (options = {}) => api.get('/cms/footer', options),
+  getSEOCMS: (options = {}) => api.get('/cms/seo', options),
 
   // CMS Mutation Endpoints (Save/Update)
-  updateHomepageCMS: (data) => api.put('/cms/homepage', data),
+  updateHomepageCMS: (data, options = {}) => api.put('/cms/homepage', data, options),
   updateAboutCMS: (data) => api.put('/cms/about', data),
   updateManufacturingCMS: (data) => api.put('/cms/manufacturing', data),
   updateFooterCMS: (data) => api.put('/cms/footer', data),

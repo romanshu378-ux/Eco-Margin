@@ -28,6 +28,10 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response.data,
   (error) => {
+    if (axios.isCancel(error) || error?.name === 'CanceledError' || error?.code === 'ERR_CANCELED') {
+      return Promise.reject({ isCanceled: true, message: 'Request canceled' });
+    }
+
     const status = error.response?.status;
     const message = error.response?.data?.message || error.message || 'Server communication error';
 
@@ -39,7 +43,8 @@ api.interceptors.response.use(
     return Promise.reject({
       status,
       message,
-      data: error.response?.data
+      data: error.response?.data,
+      isCanceled: false
     });
   },
 );

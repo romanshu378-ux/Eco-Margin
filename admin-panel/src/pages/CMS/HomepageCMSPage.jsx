@@ -1,6 +1,6 @@
 // EcoMargin Admin Panel — Homepage CMS Management
 // src/pages/CMS/HomepageCMSPage.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FiSave, FiEye, FiSliders, FiVideo, FiLayers, FiCheck, FiAlertCircle } from 'react-icons/fi';
 import { adminService } from '../../services/adminService';
 
@@ -8,6 +8,10 @@ export default function HomepageCMSPage() {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  
+  const abortControllerRef = useRef(null);
+  const isFetchedRef = useRef(false);
+
   const [cms, setCms] = useState({
     heroTitle: "Powering India's EV Infrastructure",
     heroSubtitle: "Design • Manufacturing • EPC Installation • OCPP Software • AMC Services",
@@ -28,23 +32,65 @@ export default function HomepageCMSPage() {
   });
 
   useEffect(() => {
+    // If a request is already in progress, prevent duplicate request by aborting previous
+    if (abortControllerRef.current) {
+      console.log('[Homepage CMS] duplicate request prevented');
+      abortControllerRef.current.abort();
+    }
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     const fetchCMS = async () => {
+      console.log('[Homepage CMS] API request started');
       try {
-        const res = await adminService.getHomepageCMS();
-        if (res && res.data) {
-          const video = res.data.background_video_url || res.data.heroVideoUrl || '';
+        const res = await adminService.getHomepageCMS({ signal: controller.signal });
+        
+        if (res && (res.success === true || res.data)) {
+          const payload = res.data || res;
+          const video = payload.background_video_url || payload.heroVideoUrl || '';
+          
           setCms(prev => ({ 
             ...prev, 
-            ...res.data,
+            ...payload,
             heroVideoUrl: video,
             background_video_url: video
           }));
+
+          // Immediately clear any loading/error state upon receiving valid data
+          setError(null);
+          isFetchedRef.current = true;
+          console.log('[Homepage CMS] API request completed');
         }
       } catch (err) {
-        console.warn('Initial CMS load notice:', err.message);
+        if (err?.isCanceled || err?.name === 'CanceledError' || err?.name === 'AbortError' || err?.code === 'ERR_CANCELED') {
+          console.log('[Homepage CMS] API request cancelled');
+          return;
+        }
+
+        console.warn('❌ Initial CMS load notice:', err.message);
+        console.log('[Homepage CMS] API request failed');
+
+        // Do not display timeout error if valid data has already been received
+        if (!isFetchedRef.current) {
+          setError(err.message || 'Failed to load Homepage CMS');
+        }
+      } finally {
+        if (abortControllerRef.current === controller) {
+          abortControllerRef.current = null;
+        }
       }
     };
+
     fetchCMS();
+
+    return () => {
+      if (abortControllerRef.current === controller) {
+        console.log('[Homepage CMS] API request cancelled');
+        controller.abort();
+        abortControllerRef.current = null;
+      }
+    };
   }, []);
 
   const handleSave = async (e) => {
