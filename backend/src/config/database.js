@@ -35,19 +35,25 @@ const sequelize = new Sequelize(
     port: dbPort,
     dialect: 'mysql',
 
-    // ===== TiDB Cloud SSL =====
-    dialectOptions: process.env.DB_SSL === 'false' ? {} : {
+    // ===== TiDB Cloud SSL & Connection Options =====
+    dialectOptions: process.env.DB_SSL === 'false' ? {
+      connectTimeout: 10000,
+      enableKeepAlive: true,
+    } : {
       ssl: {
         require: true,
         rejectUnauthorized: false,
       },
+      connectTimeout: 10000,
+      enableKeepAlive: true,
     },
 
     pool: {
-      max: dbConnectionLimit,
-      min: 2,
-      acquire: 30000,
+      max: Math.max(dbConnectionLimit, 10),
+      min: 0,
+      acquire: 10000,
       idle: 10000,
+      evict: 1000,
     },
 
     logging:

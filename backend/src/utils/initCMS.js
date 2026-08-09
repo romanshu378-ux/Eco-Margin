@@ -170,43 +170,45 @@ const defaultSettings = [
  */
 async function ensureSchemaSynchronizations() {
   try {
-    await sequelize.query("ALTER TABLE downloads ADD COLUMN description TEXT NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE downloads ADD COLUMN icon_url VARCHAR(500) NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE downloads ADD COLUMN file_size VARCHAR(50) DEFAULT '1.5 MB';").catch(() => {})
-    await sequelize.query("ALTER TABLE downloads ADD COLUMN display_order INT DEFAULT 0;").catch(() => {})
-    await sequelize.query("ALTER TABLE downloads ADD COLUMN status ENUM('Active', 'Draft', 'Inactive') DEFAULT 'Active';").catch(() => {})
+    const alterQueries = [
+      "ALTER TABLE downloads ADD COLUMN description TEXT NULL;",
+      "ALTER TABLE downloads ADD COLUMN icon_url VARCHAR(500) NULL;",
+      "ALTER TABLE downloads ADD COLUMN file_size VARCHAR(50) DEFAULT '1.5 MB';",
+      "ALTER TABLE downloads ADD COLUMN display_order INT DEFAULT 0;",
+      "ALTER TABLE downloads ADD COLUMN status ENUM('Active', 'Draft', 'Inactive') DEFAULT 'Active';",
 
-    await sequelize.query("ALTER TABLE homepage ADD COLUMN hero_video_url VARCHAR(500) NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE homepage ADD COLUMN hero_video_public_id VARCHAR(255) NULL;").catch(() => {})
+      "ALTER TABLE homepage ADD COLUMN hero_video_url VARCHAR(500) NULL;",
+      "ALTER TABLE homepage ADD COLUMN hero_video_public_id VARCHAR(255) NULL;",
 
-    // Lead CRM Tables column synchronization and Foreign Key resolution
-    await sequelize.query("ALTER TABLE email_logs MODIFY COLUMN lead_id INT NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE email_logs ADD CONSTRAINT fk_email_logs_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;").catch(() => {})
+      "ALTER TABLE email_logs MODIFY COLUMN lead_id INT NULL;",
+      "ALTER TABLE email_logs ADD CONSTRAINT fk_email_logs_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;",
 
-    await sequelize.query("ALTER TABLE quotations MODIFY COLUMN lead_id INT NOT NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE quotations ADD CONSTRAINT fk_quotations_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;").catch(() => {})
+      "ALTER TABLE quotations MODIFY COLUMN lead_id INT NOT NULL;",
+      "ALTER TABLE quotations ADD CONSTRAINT fk_quotations_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;",
 
-    await sequelize.query("ALTER TABLE lead_notes MODIFY COLUMN lead_id INT NOT NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE lead_notes ADD CONSTRAINT fk_lead_notes_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;").catch(() => {})
+      "ALTER TABLE lead_notes MODIFY COLUMN lead_id INT NOT NULL;",
+      "ALTER TABLE lead_notes ADD CONSTRAINT fk_lead_notes_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;",
 
-    await sequelize.query("ALTER TABLE activity_logs MODIFY COLUMN lead_id INT NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE activity_logs ADD CONSTRAINT fk_activity_logs_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;").catch(() => {})
+      "ALTER TABLE activity_logs MODIFY COLUMN lead_id INT NULL;",
+      "ALTER TABLE activity_logs ADD CONSTRAINT fk_activity_logs_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;",
 
-    // Ensure seo table has all schema fields
-    await sequelize.query("ALTER TABLE seo ADD COLUMN focus_keyword VARCHAR(255) NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE seo ADD COLUMN robots VARCHAR(100) DEFAULT 'index, follow';").catch(() => {})
-    await sequelize.query("ALTER TABLE seo ADD COLUMN og_description TEXT NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE seo ADD COLUMN twitter_card VARCHAR(100) DEFAULT 'summary_large_image';").catch(() => {})
-    await sequelize.query("ALTER TABLE seo ADD COLUMN schema_type VARCHAR(100) DEFAULT 'Organization';").catch(() => {})
-    await sequelize.query("ALTER TABLE seo ADD COLUMN structured_data TEXT NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE seo ADD COLUMN organization_schema TEXT NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE seo ADD COLUMN gsc_verification VARCHAR(255) NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE seo ADD COLUMN bing_verification VARCHAR(255) NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE seo ADD COLUMN ga_measurement_id VARCHAR(100) NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE seo ADD COLUMN gtm_container_id VARCHAR(100) NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE seo ADD COLUMN clarity_id VARCHAR(100) NULL;").catch(() => {})
-    await sequelize.query("ALTER TABLE seo ADD COLUMN created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;").catch(() => {})
-    await sequelize.query("ALTER TABLE seo ADD COLUMN updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;").catch(() => {})
+      "ALTER TABLE seo ADD COLUMN focus_keyword VARCHAR(255) NULL;",
+      "ALTER TABLE seo ADD COLUMN robots VARCHAR(100) DEFAULT 'index, follow';",
+      "ALTER TABLE seo ADD COLUMN og_description TEXT NULL;",
+      "ALTER TABLE seo ADD COLUMN twitter_card VARCHAR(100) DEFAULT 'summary_large_image';",
+      "ALTER TABLE seo ADD COLUMN schema_type VARCHAR(100) DEFAULT 'Organization';",
+      "ALTER TABLE seo ADD COLUMN structured_data TEXT NULL;",
+      "ALTER TABLE seo ADD COLUMN organization_schema TEXT NULL;",
+      "ALTER TABLE seo ADD COLUMN gsc_verification VARCHAR(255) NULL;",
+      "ALTER TABLE seo ADD COLUMN bing_verification VARCHAR(255) NULL;",
+      "ALTER TABLE seo ADD COLUMN ga_measurement_id VARCHAR(100) NULL;",
+      "ALTER TABLE seo ADD COLUMN gtm_container_id VARCHAR(100) NULL;",
+      "ALTER TABLE seo ADD COLUMN clarity_id VARCHAR(100) NULL;",
+      "ALTER TABLE seo ADD COLUMN created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;",
+      "ALTER TABLE seo ADD COLUMN updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;"
+    ];
+
+    await Promise.all(alterQueries.map(q => sequelize.query(q).catch(() => {})));
 
     logger.info('🛡️ CMS table schemas verified and synchronized safely.')
   } catch (err) {

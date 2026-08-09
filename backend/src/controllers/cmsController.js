@@ -27,76 +27,119 @@ const setCacheHeaders = (req, res) => {
   }
 }
 
+// Helper function to enforce no-cache headers for mutations
+const setNoCache = (res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+}
+
 // ── 1. HOMEPAGE CMS ─────────────────────────────────────────────
 
 // GET Homepage CMS from database
 exports.getHomepageCMS = async (req, res) => {
-  setCacheHeaders(req, res)
+  const reqStart = Date.now();
+  console.log('[Homepage API] request started');
+  setCacheHeaders(req, res);
   try {
-    const record = await Homepage.findOne()
-    const raw = record ? record.toJSON() : {}
+    console.log('[Homepage API] database query started');
+    const dbStart = Date.now();
+    
+    const record = await Homepage.findOne({
+      attributes: [
+        'id', 'heroTitle', 'heroSubtitle', 'heroVideoUrl', 'heroVideoPublicId',
+        'primaryButtonText', 'secondaryButtonText', 'brochureButtonText',
+        'stats', 'sectionVisibility', 'createdAt', 'updatedAt'
+      ]
+    });
+
+    const dbDuration = Date.now() - dbStart;
+    console.log(`[Homepage API] database query completed: ${dbDuration}ms`);
+
+    const raw = record ? record.toJSON() : {};
     
     // Ensure both heroVideoUrl and background_video_url are formatted in payload
     const formattedData = {
       ...raw,
+      heroTitle: raw.heroTitle || "Powering India's EV Infrastructure",
+      heroSubtitle: raw.heroSubtitle || "Design • Manufacturing • EPC Installation • OCPP Software • AMC Services",
       heroVideoUrl: raw.heroVideoUrl || raw.hero_video_url || '',
       background_video_url: raw.heroVideoUrl || raw.hero_video_url || '',
       heroVideoPublicId: raw.heroVideoPublicId || raw.hero_video_public_id || '',
       video_public_id: raw.heroVideoPublicId || raw.hero_video_public_id || '',
+      primaryButtonText: raw.primaryButtonText || "Request Quote",
+      secondaryButtonText: raw.secondaryButtonText || "Contact Sales",
+      brochureButtonText: raw.brochureButtonText || "Download Brochure",
+      stats: raw.stats || [
+        { label: "AC & DC Fast Range", value: "3.3kW – 240kW" },
+        { label: "Certified Factory", value: "ISO & ARAI" },
+        { label: "Network Uptime", value: "99.8%" }
+      ],
+      sectionVisibility: raw.sectionVisibility || {
+        hero: true, intro: true, products: true, manufacturing: true,
+        services: true, whyChooseUs: true, counter: true, industries: true,
+        gallery: true, blogs: true, faq: true, contactCta: true
+      },
       updated_at: raw.updatedAt || raw.updated_at || new Date().toISOString(),
       updatedAt: raw.updatedAt || raw.updated_at || new Date().toISOString()
-    }
+    };
+
+    const totalDuration = Date.now() - reqStart;
+    console.log(`[Homepage API] response completed: ${totalDuration}ms`);
 
     return res.status(200).json({
       success: true,
       message: "Fetched Successfully",
       data: formattedData
-    })
+    });
   } catch (err) {
-    console.error('❌ [Homepage CMS Fetch Error]:', err.message)
+    console.error('❌ [Homepage CMS Fetch Error]:', err.message);
+    const errDuration = Date.now() - reqStart;
+    console.log(`[Homepage API] error response completed: ${errDuration}ms`);
     return res.status(500).json({
       success: false,
       message: err.message || "Failed to fetch Homepage CMS"
-    })
+    });
   }
 }
 
 // PUT Homepage CMS to database (Updates existing MySQL record)
 exports.updateHomepageCMS = async (req, res) => {
-  console.log('📝 [PUT /api/cms/homepage] Request Payload:', JSON.stringify(req.body, null, 2))
-  setNoCache(res)
+  console.log('📝 [PUT /api/cms/homepage] Request Payload:', JSON.stringify(req.body, null, 2));
+  setNoCache(res);
   try {
-    const newVideoUrl = (req.body.background_video_url || req.body.heroVideoUrl || req.body.hero_video_url || '').trim()
-    const newPublicId = (req.body.video_public_id || req.body.heroVideoPublicId || req.body.hero_video_public_id || '').trim()
+    const newVideoUrl = (req.body.background_video_url || req.body.heroVideoUrl || req.body.hero_video_url || '').trim();
+    const newPublicId = (req.body.video_public_id || req.body.heroVideoPublicId || req.body.hero_video_public_id || '').trim();
 
-    let record = await Homepage.findOne()
+    let record = await Homepage.findOne();
 
     if (record) {
-      // If old Cloudinary public_id exists and new public_id / videoUrl is different, destroy old video asset
+      // If old Cloudinary public_id exists and new public_id / videoUrl is different, destroy old video asset non-blockingly
       if (record.heroVideoPublicId && newPublicId && record.heroVideoPublicId !== newPublicId) {
         try {
-          const { cloudinary, isCloudinaryConfigured } = require('../config/cloudinary')
+          const { cloudinary, isCloudinaryConfigured } = require('../config/cloudinary');
           if (isCloudinaryConfigured()) {
-            await cloudinary.uploader.destroy(record.heroVideoPublicId, { resource_type: 'video' })
-            console.log(`🗑️ Destroyed old Cloudinary video asset: ${record.heroVideoPublicId}`)
+            cloudinary.uploader.destroy(record.heroVideoPublicId, { resource_type: 'video' })
+              .then(() => console.log(`🗑️ Destroyed old Cloudinary video asset: ${record.heroVideoPublicId}`))
+              .catch(destroyErr => console.warn('⚠️ Cloudinary video cleanup notice:', destroyErr.message));
           }
         } catch (destroyErr) {
-          console.warn('⚠️ Cloudinary video cleanup notice:', destroyErr.message)
+          console.warn('⚠️ Cloudinary video cleanup notice:', destroyErr.message);
         }
       }
 
       // Overwrite database fields
-      if (newVideoUrl) record.heroVideoUrl = newVideoUrl
-      if (newPublicId) record.heroVideoPublicId = newPublicId
-      if (req.body.heroTitle !== undefined) record.heroTitle = req.body.heroTitle
-      if (req.body.heroSubtitle !== undefined) record.heroSubtitle = req.body.heroSubtitle
-      if (req.body.primaryButtonText !== undefined) record.primaryButtonText = req.body.primaryButtonText
-      if (req.body.secondaryButtonText !== undefined) record.secondaryButtonText = req.body.secondaryButtonText
-      if (req.body.brochureButtonText !== undefined) record.brochureButtonText = req.body.brochureButtonText
-      if (req.body.stats !== undefined) record.stats = req.body.stats
-      if (req.body.sectionVisibility !== undefined) record.sectionVisibility = req.body.sectionVisibility
+      if (newVideoUrl) record.heroVideoUrl = newVideoUrl;
+      if (newPublicId) record.heroVideoPublicId = newPublicId;
+      if (req.body.heroTitle !== undefined) record.heroTitle = req.body.heroTitle;
+      if (req.body.heroSubtitle !== undefined) record.heroSubtitle = req.body.heroSubtitle;
+      if (req.body.primaryButtonText !== undefined) record.primaryButtonText = req.body.primaryButtonText;
+      if (req.body.secondaryButtonText !== undefined) record.secondaryButtonText = req.body.secondaryButtonText;
+      if (req.body.brochureButtonText !== undefined) record.brochureButtonText = req.body.brochureButtonText;
+      if (req.body.stats !== undefined) record.stats = req.body.stats;
+      if (req.body.sectionVisibility !== undefined) record.sectionVisibility = req.body.sectionVisibility;
 
-      await record.save()
+      await record.save();
     } else {
       record = await Homepage.create({
         heroTitle: req.body.heroTitle || "Powering India's EV Infrastructure",
@@ -108,10 +151,10 @@ exports.updateHomepageCMS = async (req, res) => {
         brochureButtonText: req.body.brochureButtonText || "Download Brochure",
         stats: req.body.stats || [],
         sectionVisibility: req.body.sectionVisibility || {}
-      })
+      });
     }
 
-    const raw = record.toJSON()
+    const raw = record.toJSON();
     const responsePayload = {
       ...raw,
       heroVideoUrl: record.heroVideoUrl,
@@ -120,20 +163,20 @@ exports.updateHomepageCMS = async (req, res) => {
       video_public_id: record.heroVideoPublicId,
       updated_at: record.updatedAt,
       updatedAt: record.updatedAt
-    }
+    };
 
-    console.log('✅ [Database Commit] Homepage CMS updated successfully in MySQL table')
+    console.log('✅ [Database Commit] Homepage CMS updated successfully in MySQL table');
     return res.status(200).json({
       success: true,
       message: "Homepage CMS updated successfully",
       data: responsePayload
-    })
+    });
   } catch (err) {
-    console.error('❌ [Homepage CMS Save Error]:', err.message)
+    console.error('❌ [Homepage CMS Save Error]:', err.message);
     return res.status(500).json({
       success: false,
       message: err.message || "Failed to save Homepage CMS"
-    })
+    });
   }
 }
 
