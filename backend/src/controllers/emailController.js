@@ -44,7 +44,7 @@ exports.sendCustomEmail = async (req, res) => {
     if (!result.success) {
       return res.status(500).json({
         success: false,
-        message: 'Email sending failed',
+        message: result.message || 'Email service temporarily unavailable',
         error: result.error || 'Failed to deliver email via Brevo REST API'
       })
     }
@@ -82,7 +82,7 @@ exports.sendCustomerEmail = async (req, res) => {
     if (!result.success) {
       return res.status(500).json({
         success: false,
-        message: 'Email sending failed',
+        message: result.message || 'Email service temporarily unavailable',
         error: result.error || 'Failed to deliver customer confirmation email via Brevo'
       })
     }
@@ -115,7 +115,7 @@ exports.sendAdminEmail = async (req, res) => {
     if (!result.success) {
       return res.status(500).json({
         success: false,
-        message: 'Email sending failed',
+        message: result.message || 'Email service temporarily unavailable',
         error: result.error || 'Failed to deliver admin notification email via Brevo'
       })
     }

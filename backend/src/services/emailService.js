@@ -13,11 +13,37 @@ const mailFrom = process.env.MAIL_FROM
 if (!apiKey) {
   throw new Error('BREVO_API_KEY environment variable is required')
 }
-if (!emailCcArchive) {
-  throw new Error('EMAIL_CC_ARCHIVE environment variable is required')
-}
 if (!mailFrom) {
   throw new Error('MAIL_FROM environment variable is required')
+}
+
+// Log status without printing secrets
+console.log('Brevo Email Service Configured:')
+console.log(`- BREVO_API_KEY configured: ${!!apiKey}`)
+console.log(`- MAIL_FROM configured: ${!!mailFrom}`)
+console.log(`- ADMIN_EMAIL configured: ${!!process.env.ADMIN_EMAIL}`)
+console.log(`- ADMIN_NOTIFY_EMAIL configured: ${!!process.env.ADMIN_NOTIFY_EMAIL}`)
+console.log(`- EMAIL_CC_ARCHIVE configured: ${!!emailCcArchive}`)
+
+function isValidEmail(email) {
+  if (!email) return false
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  return re.test(String(email).trim().toLowerCase())
+}
+
+function parseSenderAddress(senderStr) {
+  if (!senderStr) return { name: 'EcoMargin LLP', email: '' }
+  const match = senderStr.match(/^(.*?)\s*<(.*?)>$/)
+  if (match) {
+    return {
+      name: match[1].trim().replace(/^["']|["']$/g, '') || 'EcoMargin LLP',
+      email: match[2].trim()
+    }
+  }
+  return {
+    name: 'EcoMargin LLP',
+    email: senderStr.trim()
+  }
 }
 
 /**
@@ -41,35 +67,70 @@ async function sendViaBrevo({ leadId, recipient, subject, htmlContent, emailType
   console.log(`Recipient: ${recipient}`)
   console.log(`Subject: ${subject}`)
 
-  // Verify the sender email & name before sending
-  const senderEmail = mailFrom
-  const senderName = 'EcoMargin LLP'
+  // Parse sender name and email from mailFrom
+  const sender = parseSenderAddress(mailFrom)
 
   const client = new SibApiV3Sdk.BrevoClient({ apiKey })
 
-  const payload = {
-    sender: { name: senderName, email: senderEmail },
-    to: [{ email: recipient }],
-    subject,
-    htmlContent
-  }
-
-  // Map CC (Always include default archive email, append others without duplicates)
-  const ccEmails = new Map()
-  ccEmails.set(emailCcArchive, { email: emailCcArchive, name: 'EcoMargin Archive' })
-  if (cc) {
-    cc.split(',').forEach(emailStr => {
-      const emailTrimmed = emailStr.trim().toLowerCase()
-      if (emailTrimmed && !ccEmails.has(emailTrimmed)) {
-        ccEmails.set(emailTrimmed, { email: emailTrimmed })
+  // Validate recipient list
+  const toList = []
+  if (recipient) {
+    recipient.split(',').forEach(emailStr => {
+      const emailTrimmed = emailStr.trim()
+      if (emailTrimmed && isValidEmail(emailTrimmed)) {
+        toList.push({ email: emailTrimmed })
       }
     })
   }
-  payload.cc = Array.from(ccEmails.values())
 
-  // Map BCC if present
+  if (toList.length === 0) {
+    console.error('❌ Error: No valid recipient found in field "to"')
+    return {
+      success: false,
+      message: 'Invalid recipient email address',
+      error: 'No valid recipient email address found.'
+    }
+  }
+
+  const payload = {
+    sender,
+    to: toList,
+    subject
+  }
+
+  // Ensure HTML and Text conversions
+  if (htmlContent) {
+    payload.htmlContent = htmlContent
+    // Basic HTML tag stripping for text fallback
+    payload.textContent = htmlContent.replace(/<[^>]*>/g, '')
+  } else {
+    payload.htmlContent = 'Email content is empty.'
+    payload.textContent = 'Email content is empty.'
+  }
+
+  // Map CC (Always include default archive email if configured and valid, append others without duplicates)
+  const ccEmails = new Map()
+  if (emailCcArchive && isValidEmail(emailCcArchive)) {
+    ccEmails.set(emailCcArchive.toLowerCase(), { email: emailCcArchive.trim(), name: 'EcoMargin Archive' })
+  }
+  if (cc) {
+    cc.split(',').forEach(emailStr => {
+      const emailTrimmed = emailStr.trim().toLowerCase()
+      if (emailTrimmed && isValidEmail(emailTrimmed) && !ccEmails.has(emailTrimmed)) {
+        ccEmails.set(emailTrimmed, { email: emailStr.trim() })
+      }
+    })
+  }
+  if (ccEmails.size > 0) {
+    payload.cc = Array.from(ccEmails.values())
+  }
+
+  // Map BCC if present and valid
   if (bcc) {
-    payload.bcc = bcc.split(',').map(email => ({ email: email.trim() })).filter(e => e.email)
+    const bccList = bcc.split(',').map(email => ({ email: email.trim() })).filter(e => e.email && isValidEmail(e.email))
+    if (bccList.length > 0) {
+      payload.bcc = bccList
+    }
   }
 
   // Map Attachments if present
@@ -102,15 +163,15 @@ async function sendViaBrevo({ leadId, recipient, subject, htmlContent, emailType
       console.log('Brevo Status Code: 200/201 Success')
       console.log('Brevo Response:', JSON.stringify(response))
       console.log('[EMAIL]')
-      console.log(`To: ${recipient}`)
-      console.log(`CC: ${payload.cc.map(c => c.email).join(', ')}`)
+      console.log(`To: ${toList.map(t => t.email).join(', ')}`)
+      console.log(`CC: ${payload.cc ? payload.cc.map(c => c.email).join(', ') : 'None'}`)
       console.log('Status: Sent')
 
       // Ensure email logs are stored only after successful send
       try {
         await EmailLog.create({
           lead_id: leadId || null,
-          recipient,
+          recipient: toList.map(t => t.email).join(', '),
           subject,
           body: htmlContent,
           email_type: emailType || 'Custom',
@@ -129,17 +190,26 @@ async function sendViaBrevo({ leadId, recipient, subject, htmlContent, emailType
       }
     } catch (err) {
       attempt++
-      const statusCode = err.status || err.statusCode || err.response?.status || 'Unknown'
-      const errorBody = err.response?.body || err.message
+      const statusCode = err.statusCode || err.status || err.response?.status || 'Unknown'
+      const errorBody = err.body || err.response?.body || err.message
+      const errorMsg = typeof errorBody === 'object' ? (errorBody.message || JSON.stringify(errorBody)) : errorBody
+      const errorCode = err.body?.code || 'N/A'
       
-      console.error(`Failure reason (Attempt ${attempt}):`, errorBody)
-      console.error(`Brevo Status Code: ${statusCode}`)
+      const requestId = typeof err.rawResponse?.headers?.get === 'function' 
+        ? err.rawResponse.headers.get('sib-request-id') 
+        : err.rawResponse?.headers?.['sib-request-id'];
+
+      console.error(`Failure reason (Attempt ${attempt}):`)
+      console.error(`- HTTP Status: ${statusCode}`)
+      console.error(`- Error Code: ${errorCode}`)
+      console.error(`- Error Message: ${errorMsg}`)
+      console.error(`- Request ID: ${requestId || 'N/A'}`)
 
       if (attempt > maxRetries) {
         return {
           success: false,
-          message: 'Email sending failed',
-          error: errorBody
+          message: 'Email service temporarily unavailable',
+          error: errorMsg || 'Failed to deliver email via Brevo REST API'
         }
       }
     }
@@ -202,4 +272,6 @@ module.exports = {
   sendCustomerConfirmation,
   sendAdminNotification,
   sendCustomEmail,
+  _isValidEmail: isValidEmail,
+  _parseSenderAddress: parseSenderAddress
 }
