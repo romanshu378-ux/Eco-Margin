@@ -1,5 +1,6 @@
-// EcoMargin Frontend — Light Theme Context Provider
+// EcoMargin Frontend — Dynamic Theme Context Provider
 // src/context/ThemeContext.jsx
+
 import React, { createContext, useContext, useEffect, useState } from 'react'
 
 const ThemeContext = createContext()
@@ -13,30 +14,41 @@ export const useTheme = () => {
 }
 
 export const ThemeProvider = ({ children }) => {
-  const [theme] = useState('light')
+  const [theme, setTheme] = useState(() => {
+    try {
+      const saved = localStorage.getItem('ecomargin-theme')
+      if (saved === 'dark' || saved === 'light') {
+        return saved
+      }
+    } catch (e) {
+      // Storage access disabled or unavailable
+    }
+    return 'light'
+  })
 
   useEffect(() => {
-    // Purge any stored dark theme preference
     try {
-      localStorage.removeItem('ecomargin-theme')
-      sessionStorage.removeItem('ecomargin-theme')
-      localStorage.setItem('ecomargin-theme', 'light')
+      localStorage.setItem('ecomargin-theme', theme)
     } catch (e) {
-      // Ignore storage errors
+      // Storage save error
     }
 
-    // Force HTML root to light theme
-    document.documentElement.setAttribute('data-theme', 'light')
-    document.documentElement.style.colorScheme = 'light'
-    document.documentElement.classList.remove('dark')
-  }, [])
+    document.documentElement.setAttribute('data-theme', theme)
+    document.documentElement.style.colorScheme = theme
+
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [theme])
 
   const toggleTheme = () => {
-    // Permanent light theme mode (no-op)
+    setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))
   }
 
   return (
-    <ThemeContext.Provider value={{ theme: 'light', toggleTheme, isDark: false }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, isDark: theme === 'dark' }}>
       {children}
     </ThemeContext.Provider>
   )

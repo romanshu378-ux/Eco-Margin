@@ -72,8 +72,8 @@ export default function BlogDetailPage() {
   if (!blog) {
     return (
       <div className="container" style={{ padding: '8rem 0 5rem 0', textAlign: 'center' }}>
-        <h2 style={{ fontSize: '2rem', marginBottom: '1rem', color: '#0F172A' }}>Article Not Found</h2>
-        <p style={{ color: '#64748B', marginBottom: '2rem' }}>The blog whitepaper you are looking for does not exist or has been moved.</p>
+        <h2 style={{ fontSize: '2rem', marginBottom: '1rem', color: 'var(--color-text)' }}>Article Not Found</h2>
+        <p style={{ color: 'var(--color-text-muted)', marginBottom: '2rem' }}>The blog whitepaper you are looking for does not exist or has been moved.</p>
         <Link to="/blogs">
           <Button variant="primary">Back to All Articles</Button>
         </Link>
@@ -95,20 +95,20 @@ export default function BlogDetailPage() {
         description={blog.summary || (blog.content ? blog.content.substring(0, 150) : 'EcoMargin EV Charging Insights')} 
       />
 
-      <div style={{ background: '#F8FAFC', minHeight: '100vh', paddingTop: '100px', paddingBottom: '6rem' }}>
+      <div style={{ background: 'var(--color-bg)', minHeight: '100vh', paddingTop: '100px', paddingBottom: '6rem' }}>
         <div className="container">
           
           {/* Breadcrumb Navigation */}
           <motion.div 
             initial={{ opacity: 0, y: -10 }} 
             animate={{ opacity: 1, y: 0 }}
-            style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: '#64748B' }}
+            style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--color-text-muted)' }}
           >
             <Link to="/blogs" style={{ color: 'var(--color-primary)', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '0.4rem', textDecoration: 'none' }}>
               <FiArrowLeft /> Back to Blogs
             </Link>
             <span>/</span>
-            <span style={{ color: '#0F172A', fontWeight: '500', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <span style={{ color: 'var(--color-text)', fontWeight: '500', maxWidth: '300px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
               {blog.title}
             </span>
           </motion.div>
@@ -119,33 +119,33 @@ export default function BlogDetailPage() {
             <motion.article 
               variants={fadeUp} initial="hidden" animate="visible"
               style={{
-                background: '#FFFFFF',
+                background: 'var(--color-bg-card)',
                 borderRadius: 'var(--radius-xl)',
-                border: '1px solid #E2E8F0',
+                border: '1px solid var(--color-border)',
                 padding: '2.5rem',
-                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.04)'
+                boxShadow: 'var(--shadow-md)'
               }}
             >
               {/* Category & Meta Information */}
               <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '1.25rem', marginBottom: '1.5rem', fontSize: '0.875rem' }}>
-                <span style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--color-primary)', fontWeight: 700, padding: '0.35rem 0.85rem', borderRadius: 'var(--radius-md)' }}>
+                <span style={{ background: 'var(--color-primary-light)', color: 'var(--color-primary)', fontWeight: 700, padding: '0.35rem 0.85rem', borderRadius: 'var(--radius-md)' }}>
                   Technical Whitepaper
                 </span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#64748B' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: 'var(--color-text-muted)' }}>
                   <FiUser style={{ color: 'var(--color-primary)' }} /> {blog.author || 'EcoMargin Engineering Team'}
                 </span>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: '#64748B' }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', color: 'var(--color-text-muted)' }}>
                   <FiCalendar style={{ color: 'var(--color-primary)' }} /> {formattedDate}
                 </span>
               </div>
 
               {/* Title */}
-              <h1 style={{ fontSize: '2.25rem', lineHeight: 1.3, fontWeight: 800, color: '#0F172A', fontFamily: 'Outfit, sans-serif', marginBottom: '1.5rem' }}>
+              <h1 style={{ fontSize: '2.25rem', lineHeight: 1.3, fontWeight: 800, color: 'var(--color-text)', fontFamily: 'Outfit, sans-serif', marginBottom: '1.5rem' }}>
                 {blog.title}
               </h1>
 
               {/* Featured Cover Image */}
-              <div style={{ height: '380px', width: '100%', borderRadius: 'var(--radius-lg)', overflow: 'hidden', marginBottom: '2.5rem', background: '#F1F5F9', border: '1px solid #E2E8F0' }}>
+              <div style={{ height: '380px', width: '100%', borderRadius: 'var(--radius-lg)', overflow: 'hidden', marginBottom: '2.5rem', background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)' }}>
                 <img 
                   src={imageSrc || fallbackImage} 
                   alt={blog.title}
@@ -156,17 +156,17 @@ export default function BlogDetailPage() {
 
               {/* Summary Highlight Box */}
               {blog.summary && (
-                <div style={{ background: '#F0FDF4', borderLeft: '4px solid var(--color-primary)', padding: '1.25rem 1.5rem', borderRadius: '0 var(--radius-md) var(--radius-md) 0', marginBottom: '2.5rem', color: '#166534', fontSize: '1.05rem', lineHeight: 1.6, fontWeight: 500 }}>
+                <div style={{ background: 'var(--color-primary-light)', borderLeft: '4px solid var(--color-primary)', padding: '1.25rem 1.5rem', borderRadius: '0 var(--radius-md) var(--radius-md) 0', marginBottom: '2.5rem', color: 'var(--color-text)', fontSize: '1.05rem', lineHeight: 1.6, fontWeight: 500 }}>
                   {blog.summary}
                 </div>
               )}
 
               {/* Body Content */}
-              <div style={{ color: '#334155', fontSize: '1.05rem', lineHeight: 1.8 }}>
+              <div style={{ color: 'var(--color-text)', fontSize: '1.05rem', lineHeight: 1.8 }}>
                 {blog.content ? (
                   blog.content.split('\n\n').map((paragraph, index) => {
                     if (paragraph.startsWith('### ')) {
-                      return <h3 key={index} style={{ fontSize: '1.4rem', fontWeight: 700, color: '#0F172A', marginTop: '2rem', marginBottom: '1rem', fontFamily: 'Outfit, sans-serif' }}>{paragraph.replace('### ', '')}</h3>
+                      return <h3 key={index} style={{ fontSize: '1.4rem', fontWeight: 700, color: 'var(--color-text)', marginTop: '2rem', marginBottom: '1rem', fontFamily: 'Outfit, sans-serif' }}>{paragraph.replace('### ', '')}</h3>
                     }
                     if (paragraph.startsWith('- ')) {
                       const items = paragraph.split('\n- ')
@@ -205,17 +205,17 @@ export default function BlogDetailPage() {
           {/* Related Whitepapers Section */}
           {relatedArticles.length > 0 && (
             <div style={{ marginTop: '5rem' }}>
-              <h3 style={{ fontSize: '1.75rem', color: '#0F172A', fontFamily: 'Outfit', marginBottom: '2rem' }}>
+              <h3 style={{ fontSize: '1.75rem', color: 'var(--color-text)', fontFamily: 'Outfit', marginBottom: '2rem' }}>
                 Related Technical Insights
               </h3>
 
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
                 {relatedArticles.map((rel) => (
-                  <div key={rel.id} style={{ background: '#FFFFFF', borderRadius: 'var(--radius-xl)', border: '1px solid #E2E8F0', padding: '1.75rem', display: 'flex', flexDirection: 'column' }}>
-                    <h4 style={{ fontSize: '1.15rem', color: '#0F172A', marginBottom: '0.75rem', lineHeight: 1.4 }}>
+                  <div key={rel.id} style={{ background: 'var(--color-bg-card)', borderRadius: 'var(--radius-xl)', border: '1px solid var(--color-border)', padding: '1.75rem', display: 'flex', flexDirection: 'column' }}>
+                    <h4 style={{ fontSize: '1.15rem', color: 'var(--color-text)', marginBottom: '0.75rem', lineHeight: 1.4 }}>
                       {rel.title}
                     </h4>
-                    <p style={{ color: '#64748B', fontSize: '0.875rem', marginBottom: '1.25rem', flex: 1, lineHeight: 1.6 }}>
+                    <p style={{ color: 'var(--color-text-muted)', fontSize: '0.875rem', marginBottom: '1.25rem', flex: 1, lineHeight: 1.6 }}>
                       {rel.summary}
                     </p>
                     <Link to={`/blogs/${rel.slug}`} style={{ color: 'var(--color-primary)', fontWeight: '700', fontSize: '0.875rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}>

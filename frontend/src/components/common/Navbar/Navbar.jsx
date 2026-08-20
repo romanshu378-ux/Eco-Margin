@@ -5,6 +5,7 @@ import LogoIcon from '@assets/icons/LogoIcon'
 import Button from '../../ui/Button/Button'
 import QuoteModal from '../QuoteModal/QuoteModal'
 import InstallAppButton from '../InstallAppButton/InstallAppButton'
+import ThemeToggle from '../ThemeToggle/ThemeToggle'
 import { useLogos } from '../../../hooks/useCMS'
 
 export default function Navbar() {
@@ -61,10 +62,10 @@ export default function Navbar() {
           right: 0,
           zIndex: 100,
           transition: 'all var(--transition-normal)',
-          background: isScrolled ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.88)',
+          background: 'var(--color-bg-glass)',
           backdropFilter: 'blur(16px)',
-          borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
-          boxShadow: isScrolled ? '0 4px 20px rgba(0, 0, 0, 0.05)' : 'none',
+          borderBottom: '1px solid var(--color-border)',
+          boxShadow: isScrolled ? 'var(--shadow-md)' : 'none',
           height: '80px',
           display: 'flex',
           alignItems: 'center'
@@ -87,7 +88,7 @@ export default function Navbar() {
                   <LogoIcon size={34} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ fontFamily: 'Outfit', fontSize: '1.4rem', fontWeight: '800', letterSpacing: '0.5px', color: '#0F172A', lineHeight: 1.1 }}>
+                  <span style={{ fontFamily: 'Outfit', fontSize: '1.4rem', fontWeight: '800', letterSpacing: '0.5px', color: 'var(--color-text)', lineHeight: 1.1 }}>
                     EcoMargin
                   </span>
                   <span style={{ fontSize: '0.65rem', fontWeight: 600, color: 'var(--color-primary)', letterSpacing: '1px', textTransform: 'uppercase' }}>
@@ -106,13 +107,13 @@ export default function Navbar() {
                   <Link
                     to={link.path}
                     style={{
-                      color: location.pathname === link.path ? 'var(--color-primary)' : '#334155',
+                      color: location.pathname === link.path ? 'var(--color-primary)' : 'var(--color-text)',
                       fontWeight: location.pathname === link.path ? '600' : '500',
                       fontSize: '0.95rem',
                       transition: 'color var(--transition-fast)'
                     }}
                     onMouseEnter={(e) => { if (location.pathname !== link.path) e.currentTarget.style.color = 'var(--color-primary)'; }}
-                    onMouseLeave={(e) => { if (location.pathname !== link.path) e.currentTarget.style.color = '#334155'; }}
+                    onMouseLeave={(e) => { if (location.pathname !== link.path) e.currentTarget.style.color = 'var(--color-text)'; }}
                   >
                     {link.name}
                   </Link>
@@ -123,6 +124,7 @@ export default function Navbar() {
 
           {/* Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            <ThemeToggle variant="header" />
             <div className="hidden lg:flex desktop-actions" style={{ alignItems: 'center', gap: '0.75rem' }}>
               <InstallAppButton placement="nav" />
               <Button variant="primary" size="sm" onClick={() => setQuoteModalOpen(true)}>
@@ -138,7 +140,7 @@ export default function Navbar() {
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: '#0F172A',
+                color: 'var(--color-text)',
                 fontSize: '1.5rem',
                 cursor: 'pointer',
                 display: 'flex',
@@ -167,7 +169,7 @@ export default function Navbar() {
                 left: 0,
                 right: 0,
                 bottom: 0,
-                background: 'rgba(15, 23, 42, 0.5)',
+                background: 'rgba(15, 23, 42, 0.6)',
                 backdropFilter: 'blur(4px)',
                 zIndex: 199
               }}
@@ -187,9 +189,9 @@ export default function Navbar() {
                 width: 'min(90vw, 380px)',
                 maxWidth: '380px',
                 height: '100dvh',
-                background: '#FFFFFF',
-                boxShadow: '-10px 0 30px rgba(0, 0, 0, 0.15)',
-                borderLeft: '1px solid #E2E8F0',
+                background: 'var(--color-bg-card)',
+                boxShadow: '-10px 0 30px rgba(0, 0, 0, 0.25)',
+                borderLeft: '1px solid var(--color-border)',
                 zIndex: 200,
                 display: 'flex',
                 flexDirection: 'column',
@@ -198,15 +200,15 @@ export default function Navbar() {
               }}
             >
               {/* Drawer Header */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', borderBottom: '1px solid #E2E8F0', width: '100%', minWidth: 0, background: '#FFFFFF' }}>
-                <span style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: '1.25rem', color: '#0F172A' }}>Menu</span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--color-border)', width: '100%', minWidth: 0, background: 'var(--color-bg-card)' }}>
+                <span style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: '1.25rem', color: 'var(--color-text)' }}>Menu</span>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
                   aria-label="Close menu"
                   style={{
-                    background: '#F1F5F9',
-                    border: '1px solid #E2E8F0',
-                    color: '#0F172A',
+                    background: 'var(--color-bg-alt)',
+                    border: '1px solid var(--color-border)',
+                    color: 'var(--color-text)',
                     width: '36px',
                     height: '36px',
                     borderRadius: '50%',
@@ -239,10 +241,10 @@ export default function Navbar() {
                             height: '46px',
                             padding: '0 1rem',
                             fontSize: '1.05rem',
-                            color: isActive ? 'var(--color-primary)' : '#1E293B',
+                            color: isActive ? 'var(--color-primary)' : 'var(--color-text)',
                             fontWeight: isActive ? '700' : '500',
                             borderRadius: 'var(--radius-md)',
-                            background: isActive ? 'rgba(16, 185, 129, 0.08)' : 'transparent',
+                            background: isActive ? 'var(--color-primary-light)' : 'transparent',
                             transition: 'all var(--transition-fast)',
                             width: '100%',
                             minWidth: 0
@@ -255,7 +257,8 @@ export default function Navbar() {
                   })}
                 </ul>
 
-                <div style={{ marginTop: '1.25rem', paddingTop: '1.25rem', borderTop: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', minWidth: 0 }}>
+                <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', minWidth: 0 }}>
+                  <ThemeToggle variant="mobile" />
                   <InstallAppButton placement="drawer" />
                   <Button variant="primary" fullWidth onClick={() => { setMobileMenuOpen(false); setQuoteModalOpen(true); }} style={{ height: '48px', flexShrink: 0, fontWeight: 700 }}>
                     Request Quote
@@ -267,8 +270,8 @@ export default function Navbar() {
               <div 
                 style={{ 
                   padding: '1.5rem', 
-                  background: '#F8FAFC', 
-                  borderTop: '1px solid #E2E8F0',
+                  background: 'var(--color-bg-alt)', 
+                  borderTop: '1px solid var(--color-border)',
                   paddingBottom: 'calc(env(safe-area-inset-bottom) + 24px)',
                   display: 'flex',
                   flexDirection: 'column',
@@ -277,19 +280,19 @@ export default function Navbar() {
                   minWidth: 0
                 }}
               >
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#64748B' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-text-muted)' }}>
                   Contact Information
                 </span>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem', color: '#334155', width: '100%', minWidth: 0 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem', color: 'var(--color-text)', width: '100%', minWidth: 0 }}>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '0.7rem', color: '#64748B' }}>Email</span>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)' }}>Email</span>
                     <a href="mailto:support@ecomargin.in" style={{ color: 'var(--color-primary)', textDecoration: 'none', fontWeight: 600 }}>
                       support@ecomargin.in
                     </a>
                   </div>
                   <div style={{ display: 'flex', flexDirection: 'column' }}>
-                    <span style={{ fontSize: '0.7rem', color: '#64748B' }}>Phone</span>
-                    <a href="tel:+918302313065" style={{ color: '#0F172A', textDecoration: 'none', fontWeight: 600 }}>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)' }}>Phone</span>
+                    <a href="tel:+918302313065" style={{ color: 'var(--color-text)', textDecoration: 'none', fontWeight: 600 }}>
                       +91-8302313065
                     </a>
                   </div>
