@@ -1,24 +1,21 @@
 // EcoMargin Frontend — Dynamic Hero Section Component
 // src/pages/Home/sections/HeroSection.jsx
+
 import React, { useState, useEffect, useRef } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { 
   FiArrowRight, 
-  FiMapPin, 
   FiZap, 
+  FiShield, 
+  FiRadio, 
+  FiTool, 
   FiActivity, 
   FiClock, 
-  FiPlayCircle, 
-  FiUser, 
-  FiCreditCard, 
-  FiHelpCircle, 
   FiCpu, 
   FiCloud, 
-  FiShield, 
   FiTrendingUp, 
-  FiSun,
-  FiSearch
+  FiSun 
 } from 'react-icons/fi'
 import QuoteModal from '@components/common/QuoteModal/QuoteModal'
 import { fadeUp, staggerContainer, slideInRight } from '@animations/variants'
@@ -26,10 +23,8 @@ import publicApi from '../../../services/publicApi'
 import './hero.css'
 
 export default function HeroSection() {
-  const navigate = useNavigate()
   const videoRef = useRef(null)
   const [quoteOpen, setQuoteOpen] = useState(false)
-  const [searchLocation, setSearchLocation] = useState('')
 
   const [heroCMS, setHeroCMS] = useState({
     heroTitle: "Smarter Charging.\nGreener Tomorrow.",
@@ -75,15 +70,6 @@ export default function HeroSection() {
     }
   }, [cacheBustedVideoUrl])
 
-  const handleLocationSubmit = (e) => {
-    e.preventDefault()
-    if (searchLocation.trim()) {
-      navigate(`/solutions?location=${encodeURIComponent(searchLocation.trim())}`)
-    } else {
-      navigate('/solutions')
-    }
-  }
-
   // Parse title into line 1 and line 2 for dual-tone display
   const titleText = heroCMS.heroTitle || "Smarter Charging.\nGreener Tomorrow."
   let line1 = "Smarter Charging."
@@ -108,7 +94,7 @@ export default function HeroSection() {
   }
 
   // Determine fallback stats with icons
-  const statIcons = [<FiZap key="1" />, <FiMapPin key="2" />, <FiActivity key="3" />, <FiClock key="4" />]
+  const statIcons = [<FiZap key="1" />, <FiRadio key="2" />, <FiActivity key="3" />, <FiClock key="4" />]
   const displayStats = (heroCMS.stats && heroCMS.stats.length > 0) ? heroCMS.stats : [
     { label: "Charging Points", value: "500+" },
     { label: "Locations", value: "100+" },
@@ -133,7 +119,7 @@ export default function HeroSection() {
               
               {/* 1. Top Pill Badge */}
               <motion.div variants={fadeUp} className="hero-badge">
-                <span className="hero-badge-text">🚀 App &amp; Website Ready</span>
+                <span className="hero-badge-text">🚀 Enterprise EV Infrastructure</span>
               </motion.div>
 
               {/* 2. Main Headline */}
@@ -175,7 +161,7 @@ export default function HeroSection() {
 
             </motion.div>
 
-            {/* Right Visual Composition & Floating Card Column */}
+            {/* Right Visual Composition & Corporate Feature Card Column */}
             <motion.div 
               className="hero-visual-wrapper"
               variants={slideInRight}
@@ -208,49 +194,59 @@ export default function HeroSection() {
                 )}
               </div>
 
-              {/* Floating "Find a Charger" Card */}
-              <div className="charger-finder-card">
-                <div className="charger-finder-header">
-                  <span className="charger-finder-title">
-                    <FiMapPin style={{ color: '#10B981' }} /> Find a Charger
-                  </span>
-                  <span className="charger-finder-status">● Network Active</span>
+              {/* Floating Corporate Feature Card */}
+              <div className="hero-feature-card">
+                <div className="hero-feature-card-header">
+                  <h3 className="hero-feature-card-title">
+                    Built for Modern EV Infrastructure
+                  </h3>
+                  <p className="hero-feature-card-subtitle">
+                    Reliable hardware, intelligent software, and complete EV charging solutions.
+                  </p>
                 </div>
 
-                <form onSubmit={handleLocationSubmit} className="charger-finder-form">
-                  <div className="charger-input-wrapper">
-                    <FiSearch className="charger-input-icon" />
-                    <input 
-                      type="text" 
-                      placeholder="Enter location" 
-                      value={searchLocation}
-                      onChange={(e) => setSearchLocation(e.target.value)}
-                      className="charger-input" 
-                      aria-label="Enter location to find chargers"
-                    />
+                <div className="hero-feature-items-grid">
+                  
+                  <div className="hero-feature-item">
+                    <div className="hero-feature-icon">
+                      <FiZap />
+                    </div>
+                    <div className="hero-feature-text">
+                      <span className="hero-feature-title">Smart Charging</span>
+                      <span className="hero-feature-desc">Intelligent and connected charging solutions</span>
+                    </div>
                   </div>
-                  <button type="submit" className="charger-find-btn">
-                    Find Nearby <FiArrowRight />
-                  </button>
-                </form>
 
-                <div className="quick-actions-grid">
-                  <Link to="/products" className="quick-action-item">
-                    <FiPlayCircle className="quick-action-icon" />
-                    <span>Start Session</span>
-                  </Link>
-                  <Link to="/login" className="quick-action-item">
-                    <FiUser className="quick-action-icon" />
-                    <span>My Sessions</span>
-                  </Link>
-                  <Link to="/services" className="quick-action-item">
-                    <FiCreditCard className="quick-action-icon" />
-                    <span>Payments</span>
-                  </Link>
-                  <Link to="/contact" className="quick-action-item">
-                    <FiHelpCircle className="quick-action-icon" />
-                    <span>Support</span>
-                  </Link>
+                  <div className="hero-feature-item">
+                    <div className="hero-feature-icon">
+                      <FiShield />
+                    </div>
+                    <div className="hero-feature-text">
+                      <span className="hero-feature-title">Safe &amp; Reliable</span>
+                      <span className="hero-feature-desc">Engineered for dependable everyday operation</span>
+                    </div>
+                  </div>
+
+                  <div className="hero-feature-item">
+                    <div className="hero-feature-icon">
+                      <FiRadio />
+                    </div>
+                    <div className="hero-feature-text">
+                      <span className="hero-feature-title">OCPP Ready</span>
+                      <span className="hero-feature-desc">Cloud-connected and platform compatible</span>
+                    </div>
+                  </div>
+
+                  <div className="hero-feature-item">
+                    <div className="hero-feature-icon">
+                      <FiTool />
+                    </div>
+                    <div className="hero-feature-text">
+                      <span className="hero-feature-title">Complete Support</span>
+                      <span className="hero-feature-desc">Installation, commissioning and technical support</span>
+                    </div>
+                  </div>
+
                 </div>
               </div>
 
