@@ -69,7 +69,11 @@ export default function ContactPage() {
 
   return (
     <>
-      <SEO title="Contact Corporate Sales & Factory" description="Contact EcoMargin's EV Charger engineering sales team, request factory quotes, or schedule a plant visit." />
+      <SEO 
+        title="Contact EcoMargin LLP | EV Charging Solutions India" 
+        description="Get in touch with EcoMargin LLP EV charging experts for commercial RFQs, technical support, franchise inquiries, and custom OEM manufacturing." 
+        pageRoute="/contact"
+      />
 
       <PageHeader
         title="Contact Corporate Sales & Factory"

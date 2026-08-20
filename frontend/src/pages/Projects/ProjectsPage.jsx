@@ -36,8 +36,9 @@ export default function ProjectsPage() {
   return (
     <>
       <SEO 
-        title="EcoMargin Projects | Fleet Charging & EPC Installations"
-        description="Explore EcoMargin (Eco Margin LLP) EV charging infrastructure projects across India, including highway corridors, metro feeder depots, and private fleet hubs."
+        title="EV Charging Projects & Infrastructure | EcoMargin LLP"
+        description="Discover successful EV charging infrastructure deployments, highway fast-charging hubs, workplace charging setups, and commercial fleet depots by EcoMargin LLP."
+        pageRoute="/projects"
       />
       
       <PageHeader title="Our Projects" subtitle="Powering electric mobility transitions across highway corridors, transit hubs and logistics networks." />

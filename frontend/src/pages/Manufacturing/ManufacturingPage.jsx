@@ -51,8 +51,9 @@ export default function ManufacturingPage() {
   return (
     <>
       <SEO 
-        title="EV Charger Manufacturing & Plant Infrastructure" 
-        description="Explore EcoMargin's SMT assembly lines, testing labs, burn-in chambers, and R&D facility in India." 
+        title="EV Charger Manufacturing in India | EcoMargin LLP" 
+        description="State-of-the-art EV charger manufacturing by EcoMargin LLP. Advanced power electronics, IP55 enclosure testing, and white-label OEM charger production in India." 
+        pageRoute="/manufacturing"
       />
 
       <PageHeader 

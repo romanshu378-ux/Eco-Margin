@@ -1,7 +1,10 @@
-# EcoMargin — Robots.txt
+# EcoMargin LLP — Robots.txt for Search Engines
 User-agent: *
 Allow: /
+
+# Exclude private app/admin routes
 Disallow: /dashboard/
+Disallow: /admin/
 Disallow: /login
 Disallow: /register
 Disallow: /forgot-password

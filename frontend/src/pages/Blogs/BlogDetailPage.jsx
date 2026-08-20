@@ -91,8 +91,17 @@ export default function BlogDetailPage() {
   return (
     <>
       <SEO 
-        title={`${blog.title} | EcoMargin Whitepapers`} 
-        description={blog.summary || (blog.content ? blog.content.substring(0, 150) : 'EcoMargin EV Charging Insights')} 
+        title={`${blog.title} | EcoMargin LLP`} 
+        description={blog.summary || (blog.content ? blog.content.substring(0, 155) : 'EcoMargin EV Charging Insights')} 
+        pageRoute={`/blogs/${blog.slug}`}
+        image={imageSrc}
+        article={{
+          title: blog.title,
+          description: blog.summary || blog.title,
+          image: imageSrc || DEFAULT_BLOGS[0].coverImage,
+          author: blog.author || 'EcoMargin Engineering Team',
+          datePublished: blog.createdAt || blog.created_at || '2026-02-15T00:00:00.000Z'
+        }}
       />
 
       <div style={{ background: 'var(--color-bg)', minHeight: '100vh', paddingTop: '100px', paddingBottom: '6rem' }}>

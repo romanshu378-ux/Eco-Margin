@@ -18,8 +18,9 @@ export default function HomePage() {
   return (
     <>
       <SEO 
-        title="EcoMargin | EV Charger Manufacturer & EPC Infrastructure Company" 
-        description="EcoMargin manufactures 3.3kW–240kW commercial AC & DC EV chargers, OCPP Cloud CSMS software, and turnkey EPC charging station installation services."
+        title="EcoMargin LLP | EV Charging Solutions & Infrastructure India" 
+        description="EcoMargin LLP provides EV charging solutions, EV chargers, charging infrastructure, installation, software and support for commercial, industrial and public charging applications in India."
+        pageRoute="/"
       />
       
       {/* 1. Animated Corporate Hero */}

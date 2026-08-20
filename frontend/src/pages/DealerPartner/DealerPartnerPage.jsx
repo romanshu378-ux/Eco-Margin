@@ -51,8 +51,9 @@ export default function DealerPartnerPage() {
   return (
     <>
       <SEO 
-        title="Become an EcoMargin Authorized Dealer & CPO Partner" 
-        description="Partner with India's leading EV charger manufacturer. Franchise, Distributor, and Charge Point Operator (CPO) business opportunities." 
+        title="Dealer & Franchise Partner Program | EcoMargin LLP" 
+        description="Partner with EcoMargin LLP as an authorized EV charging station dealer, CPO partner, or distributor across India." 
+        pageRoute="/dealer-partner"
       />
 
       <PageHeader 

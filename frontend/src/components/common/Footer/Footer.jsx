@@ -81,7 +81,7 @@ export default function Footer() {
               </span>
             </Link>
             <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', fontSize: '0.875rem', lineHeight: 1.6, maxWidth: '360px' }}>
-              {companyName ? `${companyName} is a leading OEM EV Charger Manufacturer and Infrastructure EPC Contractor.` : 'Leading OEM EV Charger Manufacturer & Infrastructure EPC Contractor.'}
+              {companyName ? `${companyName} is a leading OEM EV Charger Manufacturer and Infrastructure EPC Contractor in India.` : 'EcoMargin LLP is a leading OEM EV Charger Manufacturer & Infrastructure EPC Contractor in India.'}
             </p>
           </div>
 

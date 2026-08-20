@@ -31,7 +31,11 @@ export default function GalleryPage() {
 
   return (
     <>
-      <SEO title="Factory & Plant Gallery" description="Visual showcase of EcoMargin manufacturing plant and labs." />
+      <SEO 
+        title="EcoMargin EV Charging Infrastructure Gallery" 
+        description="Explore visual showcases of EcoMargin LLP EV charger manufacturing facilities, commercial DC fast charger deployments, testing labs, and charging hubs." 
+        pageRoute="/gallery"
+      />
       
       <PageHeader 
         title="Factory & Manufacturing Gallery" 

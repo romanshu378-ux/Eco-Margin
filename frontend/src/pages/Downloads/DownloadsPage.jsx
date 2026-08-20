@@ -65,8 +65,9 @@ export default function DownloadsPage() {
   return (
     <>
       <SEO 
-        title="Technical Datasheets & Documentation" 
-        description="Download technical specification sheets, product test reports, and EPC installation manuals for EcoMargin EV Chargers." 
+        title="EV Charger Datasheets & User Manual Downloads | EcoMargin LLP" 
+        description="Download official EcoMargin LLP product datasheets, EV charger brochures, user manuals, and technical specification guides." 
+        pageRoute="/downloads"
       />
 
       <PageHeader 

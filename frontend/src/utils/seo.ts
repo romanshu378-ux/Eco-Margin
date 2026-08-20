@@ -12,9 +12,9 @@ export interface SEOMetadata {
 }
 
 export const DEFAULT_SEO: Required<Omit<SEOMetadata, 'url' | 'canonical'>> = {
-  title: 'EcoMargin | Eco Margin LLP - EV Charger Manufacturer & EV Charging Solutions',
-  description: 'EcoMargin (Eco Margin LLP) is an Indian EV Charger Manufacturer providing AC Chargers, DC Fast Chargers, CCS2 Chargers, EV Charging Infrastructure, OCPP Software, EPC Services and Smart EV Charging Solutions.',
-  keywords: 'EcoMargin, Eco Margin, EcoMargin LLP, EV Charger, EV Charging Station, DC Fast Charger, CCS2 Charger, AC Charger, OCPP Charger, EV Infrastructure, EV Software, EV Charger Manufacturer India, EV Charging Solutions',
+  title: 'EcoMargin LLP | EV Charging Solutions & Infrastructure India',
+  description: 'EcoMargin LLP provides EV charging solutions, EV chargers, charging infrastructure, installation, software and support for commercial, industrial and public charging applications in India.',
+  keywords: 'EcoMargin, Ecomargin, EcoMargin LLP, Eco Margin, EcoMargin EV, EV charger manufacturer India, EV charging company India, EV charging solutions India, EV charging infrastructure, AC EV charger, DC fast charger, OCPP software, fleet EV charging, EV charger installation',
   image: 'https://res.cloudinary.com/dcumpbswm/image/upload/v1785843387/dark_mfegwj.png',
   robots: 'index, follow, max-image-preview:large',
 };

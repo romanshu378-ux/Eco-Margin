@@ -32,7 +32,11 @@ export default function BlogsPage() {
 
   return (
     <>
-      <SEO title="Blogs & Technical Insights" description="Latest technical whitepapers, safety compliance guides, and EV industry insights from EcoMargin." />
+      <SEO 
+        title="EV Charging Blog & Technical Insights | EcoMargin LLP" 
+        description="Read latest EV industry insights, technical whitepapers, Indian grid safety standards, thermal management, and OCPP software integration from EcoMargin LLP." 
+        pageRoute="/blogs"
+      />
       
       <PageHeader 
         title="Blogs & Technical Insights" 

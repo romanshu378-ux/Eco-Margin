@@ -17,7 +17,11 @@ export default function AboutPage() {
 
   return (
     <>
-      <SEO title="About Us" description="Learn more about EcoMargin's manufacturing mission and EV charging infrastructure." />
+      <SEO 
+        title="About EcoMargin LLP | EV Charging Infrastructure Company" 
+        description="EcoMargin LLP is a leading Indian EV charging infrastructure and charger manufacturing company committed to reliable hardware, smart OCPP software, and green mobility." 
+        pageRoute="/about"
+      />
       
       <PageHeader 
         title="About EcoMargin Corporate" 

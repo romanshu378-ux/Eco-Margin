@@ -87,8 +87,8 @@ export default function SEO({
 
   // Dynamic Head Metadata Resolution
   const metaTitle = title
-    ? `${title} | EcoMargin | Eco Margin`
-    : seoData?.metaTitle || DEFAULT_SEO.title;
+    ? (title.includes('EcoMargin') || title.includes('Eco Margin') ? title : `${title} | EcoMargin LLP`)
+    : (seoData?.metaTitle || DEFAULT_SEO.title);
 
   const metaDesc =
     description || seoData?.metaDescription || DEFAULT_SEO.description;

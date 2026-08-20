@@ -153,8 +153,9 @@ export default function ServicesPage() {
   return (
     <>
       <SEO 
-        title="EV Charging Installation Services | EcoMargin" 
-        description="EcoMargin offers turnkey EV charging installation, EPC services, AC/DC charger deployment, OCPP software, fleet charging solutions and annual maintenance across India."
+        title="EV Charging Installation, EPC & AMC Services | EcoMargin LLP" 
+        description="Turnkey EV charging station EPC installation, grid load sanctioning, software integration, and nationwide 24/7 AMC maintenance services by EcoMargin LLP."
+        pageRoute="/services"
         faqs={faqs}
       />
 

@@ -171,8 +171,9 @@ export default function ProductsPage() {
   return (
     <>
       <SEO 
-        title="EV Charger Product Range (3.3kW to 240kW)" 
-        description="Commercial AC chargers & ultra-fast DC charging stations manufactured in India with built-in safety protection." 
+        title="EV Chargers & Charging Solutions | EcoMargin LLP" 
+        description="Explore EcoMargin LLP AC & DC fast EV chargers from 3.3kW to 240kW. Built for commercial fleets, highways, workplaces, and public EV charging stations in India." 
+        pageRoute="/products"
         products={allProductsList}
         faqs={productFaqs}
       />
