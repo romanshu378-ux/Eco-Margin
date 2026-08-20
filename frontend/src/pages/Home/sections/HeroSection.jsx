@@ -1,7 +1,7 @@
 // EcoMargin Frontend — Dynamic Hero Section Component
 // src/pages/Home/sections/HeroSection.jsx
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { 
@@ -22,15 +22,17 @@ import { fadeUp, staggerContainer, slideInRight } from '@animations/variants'
 import publicApi from '../../../services/publicApi'
 import './hero.css'
 
+const DEFAULT_HERO_IMAGE = '/hero-ev-composition.jpg'
+
 export default function HeroSection() {
-  const videoRef = useRef(null)
   const [quoteOpen, setQuoteOpen] = useState(false)
+  const [heroImageSrc, setHeroImageSrc] = useState(DEFAULT_HERO_IMAGE)
 
   const [heroCMS, setHeroCMS] = useState({
     heroTitle: "Smarter Charging.\nGreener Tomorrow.",
     heroSubtitle: "EcoMargin delivers reliable, intelligent, and scalable EV charging solutions with integrated hardware and software — powering a cleaner and connected future.",
-    heroVideoUrl: "",
-    background_video_url: "",
+    hero_background_image_url: "",
+    heroBackgroundImageUrl: "",
     primaryButtonText: "Explore Solutions",
     secondaryButtonText: "View Products",
     brochureButtonText: "Brochures",
@@ -49,6 +51,10 @@ export default function HeroSection() {
         const res = await publicApi.getHomepageCMS()
         if (isMounted && res && res.data) {
           setHeroCMS(prev => ({ ...prev, ...res.data }))
+          const cmsImg = res.data.hero_background_image_url || res.data.heroBackgroundImageUrl
+          if (cmsImg && cmsImg.trim() !== '') {
+            setHeroImageSrc(cmsImg)
+          }
         }
       } catch (err) {
         console.warn('Hero CMS live fetch notice:', err.message)
@@ -57,18 +63,6 @@ export default function HeroSection() {
     fetchHeroCMS()
     return () => { isMounted = false }
   }, [])
-
-  const rawVideoUrl = heroCMS.background_video_url || heroCMS.heroVideoUrl || ''
-  const timestamp = heroCMS.updatedAt || heroCMS.updated_at || Date.now()
-  const cacheBustedVideoUrl = rawVideoUrl
-    ? `${rawVideoUrl}${rawVideoUrl.includes('?') ? '&' : '?'}v=${new Date(timestamp).getTime() || Date.now()}`
-    : ''
-
-  useEffect(() => {
-    if (videoRef.current && cacheBustedVideoUrl) {
-      videoRef.current.load()
-    }
-  }, [cacheBustedVideoUrl])
 
   // Parse title into line 1 and line 2 for dual-tone display
   const titleText = heroCMS.heroTitle || "Smarter Charging.\nGreener Tomorrow."
@@ -170,28 +164,13 @@ export default function HeroSection() {
               viewport={{ once: true }}
             >
               <div className="hero-media-card">
-                {cacheBustedVideoUrl ? (
-                  <video
-                    ref={videoRef}
-                    key={rawVideoUrl}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="auto"
-                    poster="/hero-ev-composition.jpg"
-                    onError={(e) => { e.currentTarget.style.display = 'none' }}
-                    className="hero-media-video"
-                  >
-                    <source src={cacheBustedVideoUrl} type="video/mp4" />
-                  </video>
-                ) : (
-                  <img 
-                    src="/hero-ev-composition.jpg" 
-                    alt="EcoMargin Fast EV Charging Station Composition" 
-                    className="hero-media-img" 
-                  />
-                )}
+                <img 
+                  src={heroImageSrc} 
+                  alt="EcoMargin Fast EV Charging Station" 
+                  className="hero-media-img" 
+                  onError={() => setHeroImageSrc(DEFAULT_HERO_IMAGE)}
+                />
+                <div className="hero-media-overlay" />
               </div>
 
               {/* Floating Corporate Feature Card */}

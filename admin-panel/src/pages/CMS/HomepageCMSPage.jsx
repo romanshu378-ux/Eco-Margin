@@ -1,28 +1,32 @@
 // EcoMargin Admin Panel — Homepage CMS Management
 // src/pages/CMS/HomepageCMSPage.jsx
 import React, { useState, useEffect, useRef } from 'react';
-import { FiSave, FiEye, FiSliders, FiVideo, FiLayers, FiCheck, FiAlertCircle } from 'react-icons/fi';
+import { FiSave, FiEye, FiSliders, FiImage, FiLayers, FiCheck, FiAlertCircle } from 'react-icons/fi';
 import { adminService } from '../../services/adminService';
 
 export default function HomepageCMSPage() {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [imgPreviewError, setImgPreviewError] = useState(false);
   
   const abortControllerRef = useRef(null);
   const isFetchedRef = useRef(false);
 
   const [cms, setCms] = useState({
-    heroTitle: "Powering India's EV Infrastructure",
-    heroSubtitle: "Design • Manufacturing • EPC Installation • OCPP Software • AMC Services",
-    heroVideoUrl: "https://res.cloudinary.com/ecomargin/video/upload/v1/hero-ev.mp4",
-    primaryButtonText: "Request Quote",
-    secondaryButtonText: "Contact Sales",
-    brochureButtonText: "Download Brochure",
+    heroTitle: "Smarter Charging.\nGreener Tomorrow.",
+    heroSubtitle: "EcoMargin delivers reliable, intelligent, and scalable EV charging solutions with integrated hardware and software — powering a cleaner and connected future.",
+    hero_background_image_url: "",
+    heroBackgroundImageUrl: "",
+    heroVideoUrl: "",
+    primaryButtonText: "Explore Solutions",
+    secondaryButtonText: "View Products",
+    brochureButtonText: "Brochures",
     stats: [
-      { label: "AC & DC Fast Range", value: "3.3kW – 240kW" },
-      { label: "Certified Factory", value: "ISO & ARAI" },
-      { label: "Network Uptime", value: "99.8%" }
+      { label: "Charging Points", value: "500+" },
+      { label: "Locations", value: "100+" },
+      { label: "Uptime", value: "99.9%" },
+      { label: "Support", value: "24/7" }
     ],
     sectionVisibility: {
       hero: true, intro: true, products: true, manufacturing: true,
@@ -32,7 +36,6 @@ export default function HomepageCMSPage() {
   });
 
   useEffect(() => {
-    // If a request is already in progress, prevent duplicate request by aborting previous
     if (abortControllerRef.current) {
       console.log('[Homepage CMS] duplicate request prevented');
       abortControllerRef.current.abort();
@@ -48,16 +51,15 @@ export default function HomepageCMSPage() {
         
         if (res && (res.success === true || res.data)) {
           const payload = res.data || res;
-          const video = payload.background_video_url || payload.heroVideoUrl || '';
+          const heroImg = payload.hero_background_image_url || payload.heroBackgroundImageUrl || '';
           
           setCms(prev => ({ 
             ...prev, 
             ...payload,
-            heroVideoUrl: video,
-            background_video_url: video
+            hero_background_image_url: heroImg,
+            heroBackgroundImageUrl: heroImg
           }));
 
-          // Immediately clear any loading/error state upon receiving valid data
           setError(null);
           isFetchedRef.current = true;
           console.log('[Homepage CMS] API request completed');
@@ -69,9 +71,6 @@ export default function HomepageCMSPage() {
         }
 
         console.warn('❌ Initial CMS load notice:', err.message);
-        console.log('[Homepage CMS] API request failed');
-
-        // Do not display timeout error if valid data has already been received
         if (!isFetchedRef.current) {
           setError(err.message || 'Failed to load Homepage CMS');
         }
@@ -93,28 +92,29 @@ export default function HomepageCMSPage() {
     };
   }, []);
 
+  const currentImageUrl = cms.hero_background_image_url || cms.heroBackgroundImageUrl || '';
+
   const handleSave = async (e) => {
     if (e && e.preventDefault) e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      const video = cms.heroVideoUrl || cms.background_video_url || '';
       const payload = {
         ...cms,
-        heroVideoUrl: video,
-        background_video_url: video
+        hero_background_image_url: currentImageUrl,
+        heroBackgroundImageUrl: currentImageUrl
       };
 
       const res = await adminService.updateHomepageCMS(payload);
       if (res && (res.success === true || res.data)) {
         if (res.data) {
-          const updatedVideo = res.data.background_video_url || res.data.heroVideoUrl || video;
+          const updatedImg = res.data.hero_background_image_url || res.data.heroBackgroundImageUrl || currentImageUrl;
           setCms(prev => ({
             ...prev,
             ...res.data,
-            heroVideoUrl: updatedVideo,
-            background_video_url: updatedVideo
+            hero_background_image_url: updatedImg,
+            heroBackgroundImageUrl: updatedImg
           }));
         }
         setSaved(true);
@@ -145,7 +145,7 @@ export default function HomepageCMSPage() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <div>
           <h1 style={{ fontSize: '1.5rem', fontWeight: 700, margin: 0 }}>Homepage CMS Manager</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Manage Hero Banners, Videos, CTA Buttons, Stats Counters & Section Visibility</p>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>Manage Hero Banners, Background Images, CTA Buttons, Stats Counters &amp; Section Visibility</p>
         </div>
         <button onClick={handleSave} disabled={loading} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           {loading ? 'Saving to Database...' : saved ? <><FiCheck /> Saved Successfully</> : <><FiSave /> Save Changes</>}
@@ -189,14 +189,51 @@ export default function HomepageCMSPage() {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.35rem' }}>Background Video URL (Cloudinary / MP4)</label>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <input 
-                    type="text" className="input" 
-                    value={cms.heroVideoUrl} 
-                    onChange={(e) => setCms({ ...cms, heroVideoUrl: e.target.value })} 
-                  />
+                <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.35rem' }}>Hero Background Image URL</label>
+                <input 
+                  type="text" className="input" 
+                  placeholder="https://res.cloudinary.com/.../hero-image.webp"
+                  value={currentImageUrl} 
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setImgPreviewError(false);
+                    setCms({ 
+                      ...cms, 
+                      hero_background_image_url: val,
+                      heroBackgroundImageUrl: val 
+                    });
+                  }} 
+                />
+                
+                {/* Image Preview Box */}
+                <div style={{ marginTop: '0.85rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '0.35rem' }}>
+                    Image Preview
+                  </label>
+                  
+                  {currentImageUrl ? (
+                    <div style={{ position: 'relative', width: '100%', maxHeight: '200px', borderRadius: 'var(--radius-md)', overflow: 'hidden', border: '1px solid var(--border)', background: 'var(--bg-main)' }}>
+                      {imgPreviewError ? (
+                        <div style={{ padding: '1.25rem', textAlign: 'center', color: 'var(--danger)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                          <FiAlertCircle /> Unable to load image. Please check the URL.
+                        </div>
+                      ) : (
+                        <img 
+                          src={currentImageUrl} 
+                          alt="Hero Background Preview" 
+                          onLoad={() => setImgPreviewError(false)}
+                          onError={() => setImgPreviewError(true)}
+                          style={{ width: '100%', height: '180px', objectFit: 'cover', display: 'block' }}
+                        />
+                      )}
+                    </div>
+                  ) : (
+                    <div style={{ padding: '1.25rem', textAlign: 'center', border: '1px dashed var(--border)', borderRadius: 'var(--radius-md)', color: 'var(--text-muted)', fontSize: '0.85rem' }}>
+                      No image URL provided. Default fallback Hero image will be displayed.
+                    </div>
+                  )}
                 </div>
+
               </div>
             </div>
           </div>

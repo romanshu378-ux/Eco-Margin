@@ -47,7 +47,7 @@ exports.getHomepageCMS = async (req, res) => {
     
     const record = await Homepage.findOne({
       attributes: [
-        'id', 'heroTitle', 'heroSubtitle', 'heroVideoUrl', 'heroVideoPublicId',
+        'id', 'heroTitle', 'heroSubtitle', 'heroBackgroundImageUrl', 'heroVideoUrl', 'heroVideoPublicId',
         'primaryButtonText', 'secondaryButtonText', 'brochureButtonText',
         'stats', 'sectionVisibility', 'createdAt', 'updatedAt'
       ]
@@ -58,11 +58,13 @@ exports.getHomepageCMS = async (req, res) => {
 
     const raw = record ? record.toJSON() : {};
     
-    // Ensure both heroVideoUrl and background_video_url are formatted in payload
+    // Ensure both hero_background_image_url and heroVideoUrl are formatted in payload
     const formattedData = {
       ...raw,
       heroTitle: raw.heroTitle || "Powering India's EV Infrastructure",
       heroSubtitle: raw.heroSubtitle || "Design • Manufacturing • EPC Installation • OCPP Software • AMC Services",
+      hero_background_image_url: raw.heroBackgroundImageUrl || raw.hero_background_image_url || '',
+      heroBackgroundImageUrl: raw.heroBackgroundImageUrl || raw.hero_background_image_url || '',
       heroVideoUrl: raw.heroVideoUrl || raw.hero_video_url || '',
       background_video_url: raw.heroVideoUrl || raw.hero_video_url || '',
       heroVideoPublicId: raw.heroVideoPublicId || raw.hero_video_public_id || '',
@@ -129,6 +131,10 @@ exports.updateHomepageCMS = async (req, res) => {
       }
 
       // Overwrite database fields
+      const newImageUrl = (req.body.hero_background_image_url || req.body.heroBackgroundImageUrl || '').trim();
+      if (newImageUrl || req.body.hero_background_image_url !== undefined || req.body.heroBackgroundImageUrl !== undefined) {
+        record.heroBackgroundImageUrl = newImageUrl;
+      }
       if (newVideoUrl) record.heroVideoUrl = newVideoUrl;
       if (newPublicId) record.heroVideoPublicId = newPublicId;
       if (req.body.heroTitle !== undefined) record.heroTitle = req.body.heroTitle;
@@ -141,10 +147,12 @@ exports.updateHomepageCMS = async (req, res) => {
 
       await record.save();
     } else {
+      const newImageUrl = (req.body.hero_background_image_url || req.body.heroBackgroundImageUrl || '').trim();
       record = await Homepage.create({
         heroTitle: req.body.heroTitle || "Powering India's EV Infrastructure",
         heroSubtitle: req.body.heroSubtitle || "Design • Manufacturing • EPC Installation • OCPP Software • AMC Services",
-        heroVideoUrl: newVideoUrl || "https://res.cloudinary.com/ecomargin/video/upload/v1/hero-ev.mp4",
+        heroBackgroundImageUrl: newImageUrl || "",
+        heroVideoUrl: newVideoUrl || "",
         heroVideoPublicId: newPublicId || null,
         primaryButtonText: req.body.primaryButtonText || "Request Quote",
         secondaryButtonText: req.body.secondaryButtonText || "Contact Sales",
@@ -157,6 +165,8 @@ exports.updateHomepageCMS = async (req, res) => {
     const raw = record.toJSON();
     const responsePayload = {
       ...raw,
+      hero_background_image_url: raw.heroBackgroundImageUrl || raw.hero_background_image_url || '',
+      heroBackgroundImageUrl: raw.heroBackgroundImageUrl || raw.hero_background_image_url || '',
       heroVideoUrl: record.heroVideoUrl,
       background_video_url: record.heroVideoUrl,
       heroVideoPublicId: record.heroVideoPublicId,

@@ -24,6 +24,20 @@ Homepage.init(
       field: 'hero_subtitle',
       allowNull: true,
     },
+    heroBackgroundImageUrl: {
+      type: DataTypes.STRING(500),
+      field: 'hero_background_image_url',
+      allowNull: true,
+    },
+    hero_background_image_url: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getDataValue('heroBackgroundImageUrl')
+      },
+      set(val) {
+        if (val !== undefined) this.setDataValue('heroBackgroundImageUrl', val)
+      }
+    },
     heroVideoUrl: {
       type: DataTypes.STRING(500),
       field: 'hero_video_url',

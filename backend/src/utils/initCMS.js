@@ -179,6 +179,7 @@ async function ensureSchemaSynchronizations() {
 
       "ALTER TABLE homepage ADD COLUMN hero_video_url VARCHAR(500) NULL;",
       "ALTER TABLE homepage ADD COLUMN hero_video_public_id VARCHAR(255) NULL;",
+      "ALTER TABLE homepage ADD COLUMN hero_background_image_url VARCHAR(500) NULL;",
 
       "ALTER TABLE email_logs MODIFY COLUMN lead_id INT NULL;",
       "ALTER TABLE email_logs ADD CONSTRAINT fk_email_logs_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;",
