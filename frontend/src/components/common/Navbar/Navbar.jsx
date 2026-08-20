@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import LogoIcon from '@assets/icons/LogoIcon'
-import ThemeToggle from '../ThemeToggle/ThemeToggle'
 import Button from '../../ui/Button/Button'
 import QuoteModal from '../QuoteModal/QuoteModal'
 import InstallAppButton from '../InstallAppButton/InstallAppButton'
@@ -121,7 +120,6 @@ export default function Navbar() {
 
           {/* Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-            <ThemeToggle />
             <div className="hidden lg:flex desktop-actions" style={{ alignItems: 'center', gap: '0.75rem' }}>
               <InstallAppButton placement="nav" />
               <Button variant="primary" size="sm" onClick={() => setQuoteModalOpen(true)}>
