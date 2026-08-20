@@ -16,7 +16,7 @@ const factoryCapabilities = [
   },
   {
     icon: <FiShield />,
-    title: 'ARAI & CE Quality Inspection',
+    title: 'Comprehensive Quality Inspection',
     description: 'Multistage insulation resistance, surge protection, and ground fault safety verification.'
   },
   {
@@ -44,7 +44,7 @@ export default function ManufacturingSection() {
             </motion.h2>
             
             <motion.p variants={fadeUp} style={{ color: 'var(--color-text-muted)', fontSize: '1.05rem', lineHeight: 1.6, marginBottom: '2rem' }}>
-              EcoMargin operates an ISO 9001 certified manufacturing plant equipped with automated SMT assembly, environmental chambers, and high-power load banks. Our R&D team designs every hardware and firmware layer locally in India.
+              EcoMargin operates a modern manufacturing plant equipped with automated SMT assembly, environmental chambers, and high-power load banks. Our R&D team designs every hardware and firmware layer locally in India.
             </motion.p>
 
             <motion.div variants={fadeUp} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>

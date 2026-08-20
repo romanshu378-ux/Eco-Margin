@@ -8,7 +8,6 @@ import ProductsSection from './sections/ProductsSection'
 import ManufacturingSection from './sections/ManufacturingSection'
 import ServicesSection from './sections/ServicesSection'
 import WhyChooseUsSection from './sections/WhyChooseUsSection'
-import CounterSection from './sections/CounterSection'
 import IndustriesSection from './sections/IndustriesSection'
 import GallerySection from './sections/GallerySection'
 import BlogsSection from './sections/BlogsSection'
@@ -41,10 +40,7 @@ export default function HomePage() {
       {/* 6. Why Choose EcoMargin */}
       <WhyChooseUsSection />
       
-      {/* 7. Counter Stats */}
-      <CounterSection />
-      
-      {/* 8. Industries Served (Highways, Fleets, Bus Depots, Hotels) */}
+      {/* 7. Industries Served (Highways, Fleets, Bus Depots, Hotels) */}
       <IndustriesSection />
       
       {/* 9. Projects & Installation Gallery */}

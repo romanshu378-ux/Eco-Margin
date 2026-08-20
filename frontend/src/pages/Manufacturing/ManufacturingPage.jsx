@@ -23,7 +23,7 @@ const fallbackSteps = [
     description: '100% of manufactured chargers undergo a 48-hour continuous full-load endurance test in environmental thermal chambers.'
   },
   {
-    title: '4. ARAI & CE Safety Inspection',
+    title: '4. Safety Inspection',
     description: 'Rigorous insulation resistance, earth continuity, high-voltage withstand, surge suppression, and ground fault circuit breaker verification.'
   },
   {
@@ -57,7 +57,7 @@ export default function ManufacturingPage() {
 
       <PageHeader 
         title="Manufacturing Capability & Quality Infrastructure" 
-        description="ISO 9001:2015 Certified Production Facility Engineering India's Highest Uptime Commercial Chargers."
+        description="State-of-the-Art Production Facility Engineering India's Highest Uptime Commercial Chargers."
       />
 
       <div className="container" style={{ padding: '5rem 0' }}>

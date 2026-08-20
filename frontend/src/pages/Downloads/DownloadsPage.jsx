@@ -65,13 +65,13 @@ export default function DownloadsPage() {
   return (
     <>
       <SEO 
-        title="Technical Datasheets & ARAI Certificates" 
-        description="Download technical specification sheets, ARAI/CE test certificates, and EPC installation manuals for EcoMargin EV Chargers." 
+        title="Technical Datasheets & Documentation" 
+        description="Download technical specification sheets, product test reports, and EPC installation manuals for EcoMargin EV Chargers." 
       />
 
       <PageHeader 
-        title="Technical Downloads & Certificates" 
-        description="Access Certified Test Reports, CAD Drawings, Installation Manuals, and Official Product Datasheets."
+        title="Technical Downloads & Documentation" 
+        description="Access Technical Reports, CAD Drawings, Installation Manuals, and Official Product Datasheets."
       />
 
       <div className="container" style={{ padding: '5rem 0' }}>
@@ -98,7 +98,7 @@ export default function DownloadsPage() {
             <FiFolder style={{ fontSize: '3rem', color: 'var(--color-text-muted)', marginBottom: '1rem', opacity: 0.5 }} />
             <h3 style={{ fontSize: '1.25rem', marginBottom: '0.5rem' }}>No Technical Downloads Available</h3>
             <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem' }}>
-              Check back soon for updated ARAI certificates and charger datasheets.
+              Check back soon for updated product datasheets and manuals.
             </p>
           </div>
         )}

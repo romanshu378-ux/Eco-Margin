@@ -31,11 +31,11 @@ export default function GalleryPage() {
 
   return (
     <>
-      <SEO title="Factory & Plant Gallery" description="Visual showcase of EcoMargin ISO 9001 certified manufacturing plant and labs." />
+      <SEO title="Factory & Plant Gallery" description="Visual showcase of EcoMargin manufacturing plant and labs." />
       
       <PageHeader 
         title="Factory & Manufacturing Gallery" 
-        description="A visual tour through our 50,000 sq.ft. certified manufacturing facility, cleanroom SMT lines, and endurance testing labs."
+        description="A visual tour through our 50,000 sq.ft. manufacturing facility, cleanroom SMT lines, and endurance testing labs."
       />
 
       <div className="container" style={{ padding: '6rem 0' }}>

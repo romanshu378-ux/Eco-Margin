@@ -50,8 +50,8 @@ export default function Footer() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
             <FiShield style={{ fontSize: '1.75rem', color: 'var(--color-primary)' }} />
             <div>
-              <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>ARAI & CE Certified</div>
-              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Tested for Indian Grid Standards</div>
+              <div style={{ fontWeight: 700, fontSize: '0.9rem' }}>Tested & Compliant</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Built for Indian Grid Standards</div>
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>

@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 import publicApi from '@services/publicApi'
 
 const fallbackBlogs = [
-  { title: 'Understanding ARAI AIS-138 Certification for Indian EV Chargers', author: 'Dr. R. K. Sharma (CTO)', summary: 'A comprehensive technical overview of grid safety, surge suppression, and insulation testing mandated under AIS-138 Part 1 & 2 standards.', coverImage: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=800&q=80' },
+  { title: 'Understanding Indian Grid Standards & Safety Regulations for EV Chargers', author: 'Dr. R. K. Sharma (CTO)', summary: 'A comprehensive technical overview of grid safety, surge suppression, and insulation testing mandated for EV charging infrastructure.', coverImage: 'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=800&q=80' },
   { title: 'Why Thermal Management & IP55 Enclosures Matter in 50°C Summers', author: 'EcoMargin R&D Team', summary: 'How active liquid cooling and wide voltage tolerance prevent thermal throttling during peak Indian summer ambient temperatures.', coverImage: 'https://images.unsplash.com/photo-1558441719-aa34455441bd?auto=format&fit=crop&w=800&q=80' },
   { title: 'Optimizing Commercial Fleet Charging Schedules with OCPP 2.0.1', author: 'Fleet Engineering Lead', summary: 'Strategies for e-commerce delivery fleets to minimize peak tariff costs using dynamic load balancing.', coverImage: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80' }
 ]
@@ -44,7 +44,7 @@ export default function BlogsSection() {
               Latest Insights & Whitepapers
             </motion.h2>
             <motion.p initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }} style={{ color: 'var(--color-text-muted)', fontSize: '1.125rem' }}>
-              News, ARAI standards, and engineering updates from the EcoMargin team.
+              News, safety standards, and engineering updates from the EcoMargin team.
             </motion.p>
           </div>
           <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>

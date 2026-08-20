@@ -163,7 +163,7 @@ export default function ProductsPage() {
   );
 
   const productFaqs = [
-    { question: 'Are EcoMargin EV chargers ARAI certified?', answer: 'Yes, our complete charger range (both AC type 2 destination chargers and DC Fast CCS2 charging stations) are fully ARAI certified under Indian safety regulations.' },
+    { question: 'Are EcoMargin EV chargers safety compliant?', answer: 'Yes, our complete charger range (both AC type 2 destination chargers and DC Fast CCS2 charging stations) meet all applicable safety regulations.' },
     { question: 'What is the warranty period for commercial chargers?', answer: 'We offer a standard 3-year manufacturer warranty on all commercial AC and DC charging hardware, which can be extended via customized AMC packages.' },
     { question: 'Do you provide dynamic load management (DLM)?', answer: 'Yes, our smart OCPP 1.6J and 2.0.1 compliant chargers support dynamic load balancing to protect building grid limits and optimize fleet dispatch.' }
   ];
@@ -172,7 +172,7 @@ export default function ProductsPage() {
     <>
       <SEO 
         title="EV Charger Product Range (3.3kW to 240kW)" 
-        description="Commercial AC chargers & ultra-fast DC charging stations manufactured in India with ARAI & CE certifications." 
+        description="Commercial AC chargers & ultra-fast DC charging stations manufactured in India with built-in safety protection." 
         products={allProductsList}
         faqs={productFaqs}
       />
