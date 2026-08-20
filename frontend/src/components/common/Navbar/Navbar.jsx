@@ -149,82 +149,86 @@ export default function Navbar() {
             </button>
           </div>
         </div>
+      </header>
 
-        {/* Mobile Navigation Drawer */}
-        <AnimatePresence>
-          {mobileMenuOpen && (
-            <>
-              {/* Backdrop */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setMobileMenuOpen(false)}
-                style={{
-                  position: 'fixed',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  background: 'rgba(0, 0, 0, 0.6)',
-                  backdropFilter: 'blur(8px)',
-                  zIndex: 199
-                }}
-              />
+      {/* Mobile Navigation Drawer (Placed outside <header> to use viewport fixed containing block) */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setMobileMenuOpen(false)}
+              style={{
+                position: 'fixed',
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                background: 'rgba(15, 23, 42, 0.5)',
+                backdropFilter: 'blur(4px)',
+                zIndex: 199
+              }}
+            />
 
-              {/* Drawer Container */}
-              <motion.div
-                initial={{ x: '100%' }}
-                animate={{ x: 0 }}
-                exit={{ x: '100%' }}
-                transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                style={{
-                  position: 'fixed',
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  width: 'min(92vw, 420px)',
-                  maxWidth: '420px',
-                  height: '100dvh',
-                  background: 'var(--color-bg-card)',
-                  boxShadow: '-10px 0 30px rgba(0, 0, 0, 0.25)',
-                  borderLeft: '1px solid var(--color-border)',
-                  zIndex: 200,
-                  display: 'flex',
-                  flexDirection: 'column',
-                  overflowY: 'auto',
-                  overflowX: 'hidden'
-                }}
-              >
-                {/* Drawer Header */}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.5rem', borderBottom: '1px solid var(--color-border)', width: '100%', minWidth: 0 }}>
-                  <span style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: '1.2rem', color: 'var(--color-text)', overflowWrap: 'anywhere', wordBreak: 'break-word', whiteSpace: 'normal' }}>Menu</span>
-                  <button
-                    onClick={() => setMobileMenuOpen(false)}
-                    style={{
-                      background: 'var(--color-bg-alt)',
-                      border: 'none',
-                      color: 'var(--color-text)',
-                      width: '40px',
-                      height: '40px',
-                      borderRadius: '50%',
-                      fontSize: '1.2rem',
-                      cursor: 'pointer',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      transition: 'background var(--transition-fast)',
-                      flexShrink: 0
-                    }}
-                  >
-                    ✕
-                  </button>
-                </div>
+            {/* Drawer Container */}
+            <motion.div
+              initial={{ x: '100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '100%' }}
+              transition={{ type: 'spring', damping: 28, stiffness: 220 }}
+              style={{
+                position: 'fixed',
+                top: 0,
+                right: 0,
+                bottom: 0,
+                width: 'min(90vw, 380px)',
+                maxWidth: '380px',
+                height: '100dvh',
+                background: '#FFFFFF',
+                boxShadow: '-10px 0 30px rgba(0, 0, 0, 0.15)',
+                borderLeft: '1px solid #E2E8F0',
+                zIndex: 200,
+                display: 'flex',
+                flexDirection: 'column',
+                overflowY: 'auto',
+                overflowX: 'hidden'
+              }}
+            >
+              {/* Drawer Header */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', borderBottom: '1px solid #E2E8F0', width: '100%', minWidth: 0, background: '#FFFFFF' }}>
+                <span style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: '1.25rem', color: '#0F172A' }}>Menu</span>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  aria-label="Close menu"
+                  style={{
+                    background: '#F1F5F9',
+                    border: '1px solid #E2E8F0',
+                    color: '#0F172A',
+                    width: '36px',
+                    height: '36px',
+                    borderRadius: '50%',
+                    fontSize: '1.1rem',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'all var(--transition-fast)',
+                    flexShrink: 0
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
 
-                {/* Drawer Body Links */}
-                <div style={{ flex: 1, padding: '2rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', minWidth: 0 }}>
-                  <ul className="grid grid-cols-1 sm:grid-cols-2" style={{ listStyle: 'none', gap: '0.5rem', width: '100%', minWidth: 0, padding: 0, margin: 0 }}>
-                    {navLinks.map((link) => (
+              {/* Drawer Body Links */}
+              <div style={{ flex: 1, padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', minWidth: 0 }}>
+                <ul style={{ listStyle: 'none', gap: '0.4rem', width: '100%', minWidth: 0, padding: 0, margin: 0, display: 'flex', flexDirection: 'column' }}>
+                  {navLinks.map((link) => {
+                    const isActive = location.pathname === link.path
+                    return (
                       <li key={link.name} style={{ width: '100%', minWidth: 0 }}>
                         <Link
                           to={link.path}
@@ -232,79 +236,69 @@ export default function Navbar() {
                           style={{
                             display: 'flex',
                             alignItems: 'center',
-                            height: 'auto',
-                            minHeight: '48px', // Touch target helper
-                            padding: '0.5rem 1rem',
-                            fontSize: '1.1rem',
-                            color: location.pathname === link.path ? 'var(--color-primary)' : 'var(--color-text)',
-                            fontWeight: location.pathname === link.path ? '700' : '500',
+                            height: '46px',
+                            padding: '0 1rem',
+                            fontSize: '1.05rem',
+                            color: isActive ? 'var(--color-primary)' : '#1E293B',
+                            fontWeight: isActive ? '700' : '500',
                             borderRadius: 'var(--radius-md)',
-                            background: location.pathname === link.path ? 'rgba(16, 185, 129, 0.08)' : 'transparent',
+                            background: isActive ? 'rgba(16, 185, 129, 0.08)' : 'transparent',
                             transition: 'all var(--transition-fast)',
                             width: '100%',
-                            minWidth: 0,
-                            overflowWrap: 'anywhere',
-                            wordBreak: 'break-word',
-                            whiteSpace: 'normal'
+                            minWidth: 0
                           }}
                         >
                           {link.name}
                         </Link>
                       </li>
-                    ))}
-                  </ul>
+                    )
+                  })}
+                </ul>
 
-                  <div style={{ marginTop: '1.5rem', paddingTop: '1.5rem', borderTop: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', minWidth: 0 }}>
-                    <InstallAppButton placement="drawer" />
-                    <Button variant="primary" fullWidth onClick={() => { setMobileMenuOpen(false); setQuoteModalOpen(true); }} style={{ height: '48px', flexShrink: 0 }}>
-                      Request Quote
-                    </Button>
+                <div style={{ marginTop: '1.25rem', paddingTop: '1.25rem', borderTop: '1px solid #E2E8F0', display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', minWidth: 0 }}>
+                  <InstallAppButton placement="drawer" />
+                  <Button variant="primary" fullWidth onClick={() => { setMobileMenuOpen(false); setQuoteModalOpen(true); }} style={{ height: '48px', flexShrink: 0, fontWeight: 700 }}>
+                    Request Quote
+                  </Button>
+                </div>
+              </div>
+
+              {/* Drawer Footer / Contact Block */}
+              <div 
+                style={{ 
+                  padding: '1.5rem', 
+                  background: '#F8FAFC', 
+                  borderTop: '1px solid #E2E8F0',
+                  paddingBottom: 'calc(env(safe-area-inset-bottom) + 24px)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.75rem',
+                  width: '100%',
+                  minWidth: 0
+                }}
+              >
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: '#64748B' }}>
+                  Contact Information
+                </span>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem', fontSize: '0.85rem', color: '#334155', width: '100%', minWidth: 0 }}>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontSize: '0.7rem', color: '#64748B' }}>Email</span>
+                    <a href="mailto:support@ecomargin.in" style={{ color: 'var(--color-primary)', textDecoration: 'none', fontWeight: 600 }}>
+                      support@ecomargin.in
+                    </a>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span style={{ fontSize: '0.7rem', color: '#64748B' }}>Phone</span>
+                    <a href="tel:+918302313065" style={{ color: '#0F172A', textDecoration: 'none', fontWeight: 600 }}>
+                      +91-8302313065
+                    </a>
                   </div>
                 </div>
-
-                {/* Drawer Footer / Contact Block */}
-                <div 
-                  style={{ 
-                    padding: '2rem 1.5rem', 
-                    background: 'var(--color-bg-alt)', 
-                    borderTop: '1px solid var(--color-border)',
-                    paddingBottom: 'calc(env(safe-area-inset-bottom) + 32px)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '1rem',
-                    width: '100%',
-                    minWidth: 0
-                  }}
-                >
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--color-text-muted)', overflowWrap: 'anywhere', wordBreak: 'break-word', whiteSpace: 'normal' }}>
-                    Contact Information
-                  </span>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', fontSize: '0.9rem', color: 'var(--color-text)', width: '100%', minWidth: 0 }}>
-                    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', minWidth: 0 }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Email</span>
-                      <a href="mailto:support@ecomargin.in" style={{ color: 'var(--color-primary)', textDecoration: 'none', overflowWrap: 'anywhere', wordBreak: 'break-word', whiteSpace: 'normal', width: '100%', minWidth: 0 }}>
-                        support@ecomargin.in
-                      </a>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', minWidth: 0 }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Phone</span>
-                      <a href="tel:+918302313065" style={{ color: 'var(--color-text)', textDecoration: 'none', overflowWrap: 'anywhere', wordBreak: 'break-word', whiteSpace: 'normal', width: '100%', minWidth: 0 }}>
-                        +91-8302313065
-                      </a>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', minWidth: 0 }}>
-                      <span style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>Corporate Address</span>
-                      <span style={{ lineHeight: '1.4', overflowWrap: 'anywhere', wordBreak: 'break-word', whiteSpace: 'normal', width: '100%', minWidth: 0 }}>
-                        NH-11, iStart Nest, Govt Engineering College, Bharatpur, Rajasthan - 321001
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </>
-          )}
-        </AnimatePresence>
-      </header>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Global RFQ Quote Modal */}
       <QuoteModal isOpen={quoteModalOpen} onClose={() => setQuoteModalOpen(false)} />
