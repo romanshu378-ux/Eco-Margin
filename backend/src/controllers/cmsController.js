@@ -197,10 +197,33 @@ exports.getAboutCMS = async (req, res) => {
   setCacheHeaders(req, res)
   try {
     const record = await About.findOne()
+    const raw = record ? record.toJSON() : {}
+    const formatted = {
+      ...raw,
+      sectionEyebrow: raw.sectionEyebrow || raw.section_eyebrow || "ABOUT ECOMARGIN",
+      title: raw.title || "Powering the Future of Electric Mobility",
+      description: raw.description || "EcoMargin LLP is a leading Indian EV charging infrastructure and charger manufacturing company committed to reliable hardware, smart OCPP software, and green mobility.",
+      secondaryDescription: raw.secondaryDescription || raw.secondary_description || "From commercial AC chargers to ultra-fast DC charging hubs, EcoMargin provides end-to-end EPC installation, OCPP software management, and 24/7 AMC maintenance across India.",
+      imageUrl: raw.imageUrl || raw.image_url || "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=800&q=80",
+      imageAlt: raw.imageAlt || raw.image_alt || "EcoMargin EV Charging Station Infrastructure",
+      primaryButtonText: raw.primaryButtonText || raw.primary_button_text || "Explore Our Solutions",
+      primaryButtonUrl: raw.primaryButtonUrl || raw.primary_button_url || "/solutions",
+      secondaryButtonText: raw.secondaryButtonText || raw.secondary_button_text || "Contact Us",
+      secondaryButtonUrl: raw.secondaryButtonUrl || raw.secondary_button_url || "/contact",
+      missionTitle: raw.missionTitle || raw.mission_title || "Our Mission",
+      missionDescription: raw.missionDescription || raw.mission_description || raw.mission || "Engineering indigenous, high-uptime commercial EV chargers tailored for harsh grid conditions and heavy fleet demands.",
+      visionTitle: raw.visionTitle || raw.vision_title || "Our Vision",
+      visionDescription: raw.visionDescription || raw.vision_description || raw.vision || "To accelerate clean electric mobility adoption across highways, workplaces, and commercial hubs in India.",
+      valuesTitle: raw.valuesTitle || raw.values_title || "Our Core Values",
+      valuesDescription: raw.valuesDescription || raw.values_description || "Engineering excellence, safety compliance, 99.8% network uptime, and customer-centric technical support.",
+      story: raw.story || "Founded in 2020, EcoMargin has grown into a leading OEM charger manufacturer and EPC contractor operating a certified facility in India.",
+      directorMessage: raw.directorMessage || raw.director_message || "India's EV revolution requires ultra-fast, robust charging stations backed by 24/7 NOC monitoring."
+    }
+
     return res.status(200).json({
       success: true,
       message: "Fetched Successfully",
-      data: record ? record.toJSON() : {}
+      data: formatted
     })
   } catch (err) {
     console.error('❌ [About CMS Fetch Error]:', err.message)

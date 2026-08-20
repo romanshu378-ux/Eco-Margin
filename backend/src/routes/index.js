@@ -25,6 +25,7 @@ const crmRoutes = require('./crmRoutes');
 // Direct Public Endpoint Aliases
 router.get('/health', healthController.checkHealth);
 router.get('/homepage', publicController.getPublicHomepage);
+router.get('/about', publicController.getPublicAbout);
 router.get('/footer', publicController.getPublicFooter);
 router.get('/contact', publicController.getPublicContact);
 router.get('/blogs', publicController.getPublicBlogs);

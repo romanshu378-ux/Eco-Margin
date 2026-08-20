@@ -30,9 +30,25 @@ const defaultHomepage = {
 }
 
 const defaultAbout = {
+  sectionEyebrow: "ABOUT ECOMARGIN",
+  title: "Powering the Future of Electric Mobility",
+  description: "EcoMargin LLP is a leading Indian EV charging infrastructure and charger manufacturing company committed to reliable hardware, smart OCPP software, and green mobility.",
+  secondaryDescription: "From commercial AC chargers to ultra-fast DC charging hubs, EcoMargin provides end-to-end EPC installation, OCPP software management, and 24/7 AMC maintenance across India.",
+  imageUrl: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=800&q=80",
+  imageAlt: "EcoMargin EV Charging Station Infrastructure",
+  primaryButtonText: "Explore Our Solutions",
+  primaryButtonUrl: "/solutions",
+  secondaryButtonText: "Contact Us",
+  secondaryButtonUrl: "/contact",
+  missionTitle: "Our Mission",
+  missionDescription: "Engineering indigenous, high-uptime commercial EV chargers tailored for harsh grid conditions and heavy fleet demands.",
+  visionTitle: "Our Vision",
+  visionDescription: "To accelerate clean electric mobility adoption across highways, workplaces, and commercial hubs in India.",
+  valuesTitle: "Our Core Values",
+  valuesDescription: "Engineering excellence, safety compliance, 99.8% network uptime, and customer-centric technical support.",
   vision: "To accelerate global e-mobility adoption by manufacturing reliable, high-uptime EV charging hardware.",
   mission: "Engineering 100% indigenous Indian-manufactured commercial chargers tailored for harsh grid conditions.",
-  story: "Founded in 2020, EcoMargin has grown into a leading OEM charger manufacturer and EPC contractor operating a 50,000 sq.ft. certified facility in Noida, India.",
+  story: "Founded in 2020, EcoMargin has grown into a leading OEM charger manufacturer and EPC contractor operating a certified facility in India.",
   directorMessage: "India's EV revolution requires ultra-fast, robust charging stations backed by 24/7 NOC monitoring."
 }
 
@@ -180,6 +196,23 @@ async function ensureSchemaSynchronizations() {
       "ALTER TABLE homepage ADD COLUMN hero_video_url VARCHAR(500) NULL;",
       "ALTER TABLE homepage ADD COLUMN hero_video_public_id VARCHAR(255) NULL;",
       "ALTER TABLE homepage ADD COLUMN hero_background_image_url VARCHAR(500) NULL;",
+
+      "ALTER TABLE about ADD COLUMN section_eyebrow VARCHAR(255) NULL;",
+      "ALTER TABLE about ADD COLUMN title VARCHAR(255) NULL;",
+      "ALTER TABLE about ADD COLUMN description TEXT NULL;",
+      "ALTER TABLE about ADD COLUMN secondary_description TEXT NULL;",
+      "ALTER TABLE about ADD COLUMN image_url VARCHAR(500) NULL;",
+      "ALTER TABLE about ADD COLUMN image_alt VARCHAR(255) NULL;",
+      "ALTER TABLE about ADD COLUMN primary_button_text VARCHAR(100) NULL;",
+      "ALTER TABLE about ADD COLUMN primary_button_url VARCHAR(255) NULL;",
+      "ALTER TABLE about ADD COLUMN secondary_button_text VARCHAR(100) NULL;",
+      "ALTER TABLE about ADD COLUMN secondary_button_url VARCHAR(255) NULL;",
+      "ALTER TABLE about ADD COLUMN mission_title VARCHAR(255) NULL;",
+      "ALTER TABLE about ADD COLUMN mission_description TEXT NULL;",
+      "ALTER TABLE about ADD COLUMN vision_title VARCHAR(255) NULL;",
+      "ALTER TABLE about ADD COLUMN vision_description TEXT NULL;",
+      "ALTER TABLE about ADD COLUMN values_title VARCHAR(255) NULL;",
+      "ALTER TABLE about ADD COLUMN values_description TEXT NULL;",
 
       "ALTER TABLE email_logs MODIFY COLUMN lead_id INT NULL;",
       "ALTER TABLE email_logs ADD CONSTRAINT fk_email_logs_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;",
