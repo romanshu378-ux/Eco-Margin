@@ -22,6 +22,7 @@ const DealerPartnerPage = lazy(() => import('@pages/DealerPartner/DealerPartnerP
 const DownloadsPage = lazy(() => import('@pages/Downloads/DownloadsPage'))
 const GalleryPage = lazy(() => import('@pages/Gallery/GalleryPage'))
 const BlogsPage = lazy(() => import('@pages/Blogs/BlogsPage'))
+const BlogDetailPage = lazy(() => import('@pages/Blogs/BlogDetailPage'))
 const CareerPage = lazy(() => import('@pages/Career/CareerPage'))
 const ContactPage = lazy(() => import('@pages/Contact/ContactPage'))
 const PrivacyPage = lazy(() => import('@pages/Legal/PrivacyPage'))
@@ -60,6 +61,7 @@ export default function AppRoutes() {
           <Route path={PATHS.DOWNLOADS} element={<Suspense fallback={<PageLoader />}><DownloadsPage /></Suspense>} />
           <Route path={PATHS.GALLERY} element={<Suspense fallback={<PageLoader />}><GalleryPage /></Suspense>} />
           <Route path={PATHS.BLOGS} element={<Suspense fallback={<PageLoader />}><BlogsPage /></Suspense>} />
+          <Route path={PATHS.BLOG_DETAIL} element={<Suspense fallback={<PageLoader />}><BlogDetailPage /></Suspense>} />
           <Route path={PATHS.CAREER} element={<Suspense fallback={<PageLoader />}><CareerPage /></Suspense>} />
           <Route path={PATHS.CONTACT} element={<Suspense fallback={<PageLoader />}><ContactPage /></Suspense>} />
           <Route path={PATHS.PRIVACY} element={<Suspense fallback={<PageLoader />}><PrivacyPage /></Suspense>} />

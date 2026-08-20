@@ -10,6 +10,7 @@ export const PATHS = {
   DOWNLOADS: '/downloads',
   GALLERY: '/gallery',
   BLOGS: '/blogs',
+  BLOG_DETAIL: '/blogs/:slug',
   CAREER: '/career',
   CONTACT: '/contact',
   
