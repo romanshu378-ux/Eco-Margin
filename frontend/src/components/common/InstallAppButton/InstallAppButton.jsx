@@ -142,9 +142,9 @@ export default function InstallAppButton({ placement = 'floating' }) {
       <button
         onClick={handleInstall}
         style={{
-          background: 'rgba(255, 255, 255, 0.05)',
-          color: 'var(--color-text)',
-          border: '1px solid var(--color-border)',
+          background: '#F1F5F9',
+          color: '#0F172A',
+          border: '1px solid #CBD5E1',
           borderRadius: 'var(--radius-md)',
           padding: '0.5rem 0.75rem',
           fontSize: '0.85rem',

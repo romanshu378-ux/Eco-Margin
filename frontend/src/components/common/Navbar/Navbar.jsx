@@ -61,9 +61,10 @@ export default function Navbar() {
           right: 0,
           zIndex: 100,
           transition: 'all var(--transition-normal)',
-          background: isScrolled ? 'var(--color-bg-glass)' : 'rgba(11, 15, 25, 0.75)',
+          background: isScrolled ? 'rgba(255, 255, 255, 0.95)' : 'rgba(255, 255, 255, 0.88)',
           backdropFilter: 'blur(16px)',
-          borderBottom: isScrolled ? '1px solid var(--color-border)' : '1px solid rgba(255, 255, 255, 0.05)',
+          borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
+          boxShadow: isScrolled ? '0 4px 20px rgba(0, 0, 0, 0.05)' : 'none',
           height: '80px',
           display: 'flex',
           alignItems: 'center'
@@ -86,7 +87,7 @@ export default function Navbar() {
                   <LogoIcon size={34} />
                 </div>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ fontFamily: 'Outfit', fontSize: '1.4rem', fontWeight: '800', letterSpacing: '0.5px', color: '#ffffff', lineHeight: 1.1 }}>
+                  <span style={{ fontFamily: 'Outfit', fontSize: '1.4rem', fontWeight: '800', letterSpacing: '0.5px', color: '#0F172A', lineHeight: 1.1 }}>
                     EcoMargin
                   </span>
                   <span style={{ fontSize: '0.65rem', fontWeight: 600, color: 'var(--color-primary)', letterSpacing: '1px', textTransform: 'uppercase' }}>
@@ -104,12 +105,14 @@ export default function Navbar() {
                 <li key={link.name}>
                   <Link
                     to={link.path}
-                    className="text-white hover:text-primary transition"
                     style={{
-                      color: location.pathname === link.path ? 'var(--color-primary)' : undefined,
-                      fontWeight: location.pathname === link.path ? '600' : '400',
-                      fontSize: '0.95rem'
+                      color: location.pathname === link.path ? 'var(--color-primary)' : '#334155',
+                      fontWeight: location.pathname === link.path ? '600' : '500',
+                      fontSize: '0.95rem',
+                      transition: 'color var(--transition-fast)'
                     }}
+                    onMouseEnter={(e) => { if (location.pathname !== link.path) e.currentTarget.style.color = 'var(--color-primary)'; }}
+                    onMouseLeave={(e) => { if (location.pathname !== link.path) e.currentTarget.style.color = '#334155'; }}
                   >
                     {link.name}
                   </Link>
@@ -135,7 +138,7 @@ export default function Navbar() {
               style={{
                 background: 'transparent',
                 border: 'none',
-                color: 'var(--color-text)',
+                color: '#0F172A',
                 fontSize: '1.5rem',
                 cursor: 'pointer',
                 display: 'flex',
