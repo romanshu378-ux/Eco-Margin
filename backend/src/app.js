@@ -61,6 +61,7 @@ const globalLimiter = rateLimit({
     if (req.method === 'GET') {
       const url = req.originalUrl || req.url || '';
       if (
+        url.includes('/health') ||
         url.includes('/footer') ||
         url.includes('/seo') ||
         url.includes('/contact') ||
@@ -90,6 +91,7 @@ app.use(hpp()) // Prevent HTTP Parameter Pollution
 if (process.env.NODE_ENV !== 'test') {
   app.use(
     morgan(':method :url :status :res[content-length] - :response-time ms', {
+      skip: (req) => (req.url || '').includes('/health') || (req.originalUrl || '').includes('/health'),
       stream: {
         write: (msg) => {
           if (logger && typeof logger.http === 'function') {

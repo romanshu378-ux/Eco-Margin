@@ -1,8 +1,11 @@
-// Simple health check endpoint to verify the API is running
+// EcoMargin — Lightweight Health Controller for UptimeRobot & Render Monitoring
+// src/controllers/health.controller.js
+
 exports.checkHealth = (req, res) => {
   res.status(200).json({
-    status: 'success',
-    message: 'EcoMargin API is running',
+    success: true,
+    status: 'healthy',
+    service: 'EcoMargin Backend',
     timestamp: new Date().toISOString()
   });
 };

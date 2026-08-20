@@ -64,7 +64,7 @@ const bootstrap = async () => {
     // 4. Start HTTP Express Server
     server.listen(PORT, () => {
       logger.info(`🚀 Server running on port ${PORT}`)
-      logger.info(`📍 Health check endpoint: http://localhost:${PORT}/api/v1/health`)
+      logger.info(`📍 Health check endpoint: http://localhost:${PORT}/api/health`)
     })
   } catch (error) {
     logDbError(error, 'Fatal Server Bootstrap Crash')
