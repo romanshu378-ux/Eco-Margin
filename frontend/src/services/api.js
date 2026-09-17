@@ -6,7 +6,7 @@ import axios from "axios";
 // Base URL
 const BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
-  "https://eco-margin.onrender.com/api/v1";
+  "https://eco-margin-1-web.onrender.com/api/v1";
 
 // Create Axios Instance
 const api = axios.create({

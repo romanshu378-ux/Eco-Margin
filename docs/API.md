@@ -2,7 +2,7 @@
 
 ## Base URL
 - **Development:** `http://localhost:5000/api/v1`
-- **Production:**  `https://api.ecomargin.com/api/v1`
+- **Production:**  `https://eco-margin-1-web.onrender.com/api/v1`
 
 ## Authentication
 All protected endpoints require a Bearer token:

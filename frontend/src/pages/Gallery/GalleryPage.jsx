@@ -39,7 +39,7 @@ export default function GalleryPage() {
       
       <PageHeader 
         title="Factory & Manufacturing Gallery" 
-        description="A visual tour through our 50,000 sq.ft. manufacturing facility, cleanroom SMT lines, and endurance testing labs."
+        description="A visual tour through our 5,000 sq.ft. manufacturing facility, cleanroom SMT lines, and endurance testing labs."
       />
 
       <div className="container" style={{ padding: '6rem 0' }}>
