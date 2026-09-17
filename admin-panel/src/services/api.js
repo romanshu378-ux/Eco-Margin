@@ -3,8 +3,31 @@
 
 import axios from 'axios';
 
+const getApiBaseUrl = () => {
+  let rawUrl =
+    import.meta.env.VITE_API_BASE_URL ||
+    import.meta.env.VITE_API_URL ||
+    'https://eco-margin-1-web.onrender.com/api/v1';
+
+  rawUrl = rawUrl
+    .replace('https://eco-margin.onrender.com', 'https://eco-margin-1-web.onrender.com')
+    .replace('https://ecomargin-api.onrender.com', 'https://eco-margin-1-web.onrender.com');
+
+  rawUrl = rawUrl.replace(/\/+$/, '');
+
+  if (!rawUrl.endsWith('/api/v1')) {
+    if (rawUrl.endsWith('/api')) {
+      rawUrl = `${rawUrl}/v1`;
+    } else {
+      rawUrl = `${rawUrl}/api/v1`;
+    }
+  }
+
+  return rawUrl;
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://eco-margin-1-web.onrender.com/api/v1',
+  baseURL: getApiBaseUrl(),
   timeout: 30000,
   withCredentials: true,
   headers: {

@@ -3,10 +3,34 @@
 
 import axios from "axios";
 
-// Base URL
-const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ||
-  "https://eco-margin-1-web.onrender.com/api/v1";
+// Helper function to resolve production & development API base URL cleanly
+const getApiBaseUrl = () => {
+  let rawUrl =
+    import.meta.env.VITE_API_BASE_URL ||
+    import.meta.env.VITE_API_URL ||
+    "https://eco-margin-1-web.onrender.com/api/v1";
+
+  // Sanitize any legacy render backend domain
+  rawUrl = rawUrl
+    .replace("https://eco-margin.onrender.com", "https://eco-margin-1-web.onrender.com")
+    .replace("https://ecomargin-api.onrender.com", "https://eco-margin-1-web.onrender.com");
+
+  // Remove trailing slashes
+  rawUrl = rawUrl.replace(/\/+$/, "");
+
+  // Ensure /api/v1 prefix is appended correctly without duplication
+  if (!rawUrl.endsWith("/api/v1")) {
+    if (rawUrl.endsWith("/api")) {
+      rawUrl = `${rawUrl}/v1`;
+    } else {
+      rawUrl = `${rawUrl}/api/v1`;
+    }
+  }
+
+  return rawUrl;
+};
+
+const BASE_URL = getApiBaseUrl();
 
 // Create Axios Instance
 const api = axios.create({
