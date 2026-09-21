@@ -214,17 +214,27 @@ async function ensureSchemaSynchronizations() {
       "ALTER TABLE about ADD COLUMN values_title VARCHAR(255) NULL;",
       "ALTER TABLE about ADD COLUMN values_description TEXT NULL;",
 
+      "ALTER TABLE email_logs ADD COLUMN lead_id INT NULL;",
       "ALTER TABLE email_logs MODIFY COLUMN lead_id INT NULL;",
       "ALTER TABLE email_logs ADD CONSTRAINT fk_email_logs_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;",
 
+      "ALTER TABLE quotations ADD COLUMN lead_id INT NOT NULL;",
       "ALTER TABLE quotations MODIFY COLUMN lead_id INT NOT NULL;",
       "ALTER TABLE quotations ADD CONSTRAINT fk_quotations_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;",
 
+      "ALTER TABLE lead_notes ADD COLUMN lead_id INT NOT NULL;",
       "ALTER TABLE lead_notes MODIFY COLUMN lead_id INT NOT NULL;",
       "ALTER TABLE lead_notes ADD CONSTRAINT fk_lead_notes_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;",
 
+      "ALTER TABLE activity_logs ADD COLUMN lead_id INT NULL;",
+      "ALTER TABLE activity_logs ADD COLUMN type VARCHAR(100) DEFAULT 'Enquiry';",
+      "ALTER TABLE activity_logs ADD COLUMN description TEXT NULL;",
+      "ALTER TABLE activity_logs ADD COLUMN performed_by VARCHAR(255) DEFAULT 'System';",
+      "ALTER TABLE activity_logs ADD COLUMN updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;",
       "ALTER TABLE activity_logs MODIFY COLUMN lead_id INT NULL;",
       "ALTER TABLE activity_logs ADD CONSTRAINT fk_activity_logs_leads FOREIGN KEY (lead_id) REFERENCES leads(id) ON DELETE CASCADE ON UPDATE CASCADE;",
+
+      "CREATE TABLE IF NOT EXISTS notifications (id INT AUTO_INCREMENT PRIMARY KEY, user_id INT UNSIGNED NULL, title VARCHAR(255) NOT NULL, message TEXT NOT NULL, type VARCHAR(100) NOT NULL DEFAULT 'Lead', is_read TINYINT(1) NOT NULL DEFAULT 0, link VARCHAR(500) NULL, created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP, updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;",
 
       "ALTER TABLE seo ADD COLUMN focus_keyword VARCHAR(255) NULL;",
       "ALTER TABLE seo ADD COLUMN robots VARCHAR(100) DEFAULT 'index, follow';",
