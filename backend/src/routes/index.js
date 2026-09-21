@@ -47,8 +47,11 @@ router.use('/logo', logoRoutes);
 router.use('/email', emailRoutes);
 router.use('/crm', crmRoutes);
 
-// Media Upload & Delete Endpoints
-router.post('/media/upload', mediaController.uploadMedia);
-router.post('/media/delete', mediaController.deleteMedia);
+const { protect, restrictTo } = require('../middleware/auth');
+const upload = require('../middlewares/upload');
+
+// Media Upload & Delete Endpoints (Protected Admin Routes)
+router.post('/media/upload', protect, restrictTo('superadmin', 'admin', 'sales_rep'), upload.single('image'), mediaController.uploadMedia);
+router.post('/media/delete', protect, restrictTo('superadmin', 'admin', 'sales_rep'), mediaController.deleteMedia);
 
 module.exports = router;

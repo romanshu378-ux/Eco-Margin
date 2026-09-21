@@ -5,12 +5,12 @@
 
 const express = require('express')
 const router = express.Router()
-const galleryController = require('../controllers/galleryController')
+const { protect, restrictTo } = require('../middleware/auth')
 
 router.get('/', galleryController.getAllGallery)
 router.get('/:id', galleryController.getGalleryById)
-router.post('/', galleryController.createGallery)
-router.put('/:id', galleryController.updateGallery)
-router.delete('/:id', galleryController.deleteGallery)
+router.post('/', protect, restrictTo('superadmin', 'admin', 'sales_rep'), galleryController.createGallery)
+router.put('/:id', protect, restrictTo('superadmin', 'admin', 'sales_rep'), galleryController.updateGallery)
+router.delete('/:id', protect, restrictTo('superadmin', 'admin', 'sales_rep'), galleryController.deleteGallery)
 
 module.exports = router

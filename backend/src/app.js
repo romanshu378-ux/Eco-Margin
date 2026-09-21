@@ -33,17 +33,35 @@ app.set('trust proxy', 1)
 app.use(cors(corsOptions))
 app.options('*', cors(corsOptions))
 
-// ── 2. SECURITY HEADERS (HELMET) ──────────────────────────────────
+// ── 2. SECURITY HEADERS (HELMET & CUSTOM SECURITY POLICIES) ───────
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' },
-    contentSecurityPolicy: false, // Prevent CSP header conflicts with CORS credentials
+    contentSecurityPolicy: false, // Managed via custom report-only header below
     frameguard: { action: 'deny' },
     xssFilter: true,
     noSniff: true,
     referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    hsts: {
+      maxAge: 31536000,
+      includeSubDomains: true,
+      preload: true
+    }
   })
 )
+
+// Add Permissions-Policy & Content-Security-Policy-Report-Only Headers
+app.use((req, res, next) => {
+  res.setHeader(
+    'Permissions-Policy',
+    'camera=(), microphone=(), geolocation=(), payment=(), usb=(), display-capture=()'
+  )
+  res.setHeader(
+    'Content-Security-Policy-Report-Only',
+    "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://res.cloudinary.com https://www.googletagmanager.com; connect-src 'self' https://eco-margin-web.onrender.com https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net; frame-src 'self' https://www.google.com https://www.googletagmanager.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none';"
+  )
+  next()
+})
 
 // ── 3. GLOBAL RATE LIMITER ────────────────────────────────────────
 const globalLimiter = rateLimit({

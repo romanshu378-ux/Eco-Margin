@@ -4,7 +4,11 @@
 
 const express = require('express')
 const router = express.Router()
-const crmController = require('../controllers/crmController')
+const { protect, restrictTo } = require('../middleware/auth')
+
+// Protect all CRM routes
+router.use(protect)
+router.use(restrictTo('superadmin', 'admin', 'sales_rep'))
 
 // Quotations
 router.post('/quotations', crmController.generateQuotation)

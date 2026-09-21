@@ -5,12 +5,12 @@
 
 const express = require('express')
 const router = express.Router()
-const categoryController = require('../controllers/categoryController')
+const { protect, restrictTo } = require('../middleware/auth')
 
 router.get('/', categoryController.getAllCategories)
 router.get('/:id', categoryController.getCategoryById)
-router.post('/', categoryController.createCategory)
-router.put('/:id', categoryController.updateCategory)
-router.delete('/:id', categoryController.deleteCategory)
+router.post('/', protect, restrictTo('superadmin', 'admin', 'sales_rep'), categoryController.createCategory)
+router.put('/:id', protect, restrictTo('superadmin', 'admin', 'sales_rep'), categoryController.updateCategory)
+router.delete('/:id', protect, restrictTo('superadmin', 'admin', 'sales_rep'), categoryController.deleteCategory)
 
 module.exports = router

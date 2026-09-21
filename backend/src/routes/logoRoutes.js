@@ -21,17 +21,19 @@ const uploadMiddleware = upload.fields([
   { name: 'image', maxCount: 1 }
 ])
 
-// REST API Endpoints
+const { protect, restrictTo } = require('../middleware/auth')
+
+// REST API Endpoints — GET is public, mutations require admin auth
 router.get('/', logoController.getLogos)
-router.post('/url', logoController.saveLogoUrl)
-router.post('/upload', uploadMiddleware, (req, res, next) => {
+router.post('/url', protect, restrictTo('superadmin', 'admin', 'sales_rep'), logoController.saveLogoUrl)
+router.post('/upload', protect, restrictTo('superadmin', 'admin', 'sales_rep'), uploadMiddleware, (req, res, next) => {
   if (req.files) {
     if (req.files.file && req.files.file[0]) req.file = req.files.file[0]
     else if (req.files.image && req.files.image[0]) req.file = req.files.image[0]
   }
   next()
 }, logoController.uploadLogo)
-router.put('/:id', logoController.updateLogo)
-router.delete('/:id', logoController.deleteLogo)
+router.put('/:id', protect, restrictTo('superadmin', 'admin', 'sales_rep'), logoController.updateLogo)
+router.delete('/:id', protect, restrictTo('superadmin', 'admin', 'sales_rep'), logoController.deleteLogo)
 
 module.exports = router

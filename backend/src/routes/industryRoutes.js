@@ -5,12 +5,12 @@
 
 const express = require('express')
 const router = express.Router()
-const industryController = require('../controllers/industryController')
+const { protect, restrictTo } = require('../middleware/auth')
 
 router.get('/', industryController.getAllIndustries)
 router.get('/:id', industryController.getIndustryById)
-router.post('/', industryController.createIndustry)
-router.put('/:id', industryController.updateIndustry)
-router.delete('/:id', industryController.deleteIndustry)
+router.post('/', protect, restrictTo('superadmin', 'admin', 'sales_rep'), industryController.createIndustry)
+router.put('/:id', protect, restrictTo('superadmin', 'admin', 'sales_rep'), industryController.updateIndustry)
+router.delete('/:id', protect, restrictTo('superadmin', 'admin', 'sales_rep'), industryController.deleteIndustry)
 
 module.exports = router

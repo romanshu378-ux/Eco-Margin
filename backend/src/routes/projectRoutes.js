@@ -5,12 +5,12 @@
 
 const express = require('express')
 const router = express.Router()
-const projectController = require('../controllers/projectController')
+const { protect, restrictTo } = require('../middleware/auth')
 
 router.get('/', projectController.getAllProjects)
 router.get('/:id', projectController.getProjectById)
-router.post('/', projectController.createProject)
-router.put('/:id', projectController.updateProject)
-router.delete('/:id', projectController.deleteProject)
+router.post('/', protect, restrictTo('superadmin', 'admin', 'sales_rep'), projectController.createProject)
+router.put('/:id', protect, restrictTo('superadmin', 'admin', 'sales_rep'), projectController.updateProject)
+router.delete('/:id', protect, restrictTo('superadmin', 'admin', 'sales_rep'), projectController.deleteProject)
 
 module.exports = router
