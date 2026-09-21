@@ -206,9 +206,11 @@ export default function ServicesPage() {
               Complete End-to-End EV Charging Solutions for Homes, Businesses, Industries and Government Projects.
             </p>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <Button variant="primary" size="lg" onClick={() => setQuoteModalOpen(true)}>
-                Request Quote
-              </Button>
+              <Link to="/enquiry">
+                <Button variant="primary" size="lg">
+                  Enquiry →
+                </Button>
+              </Link>
               <Link to="/contact">
                 <Button variant="outline" size="lg">
                   Talk to Expert
@@ -551,9 +553,11 @@ export default function ServicesPage() {
               Speak with our core energy engineering team to plan your site feasibility audit, DISCOM grid approval, and charger deployment layout.
             </p>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-              <Button variant="primary" size="lg" onClick={() => setQuoteModalOpen(true)}>
-                Request Quote
-              </Button>
+              <Link to="/enquiry">
+                <Button variant="primary" size="lg">
+                  Enquiry →
+                </Button>
+              </Link>
               <Link to="/contact">
                 <Button variant="outline" size="lg" style={{ color: '#ffffff', borderColor: 'rgba(255,255,255,0.2)' }}>
                   Get Free Consultation

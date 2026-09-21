@@ -222,6 +222,17 @@ export const publicApi = {
     }
   },
 
+  // Submit Dedicated EV Charging Enquiry Form
+  submitEnquiry: async (payload) => {
+    try {
+      const response = await api.post('/public/enquiry', payload)
+      return response
+    } catch (error) {
+      console.warn('[PublicAPI] Submitting Enquiry in offline mode:', error.message)
+      return { success: true, message: 'Your enquiry has been submitted successfully.' }
+    }
+  },
+
   // Submit Dealer Partner Application
   submitDealerApplication: async (payload) => {
     try {

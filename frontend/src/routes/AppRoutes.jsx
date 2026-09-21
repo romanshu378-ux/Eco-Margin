@@ -25,6 +25,7 @@ const BlogsPage = lazy(() => import('@pages/Blogs/BlogsPage'))
 const BlogDetailPage = lazy(() => import('@pages/Blogs/BlogDetailPage'))
 const CareerPage = lazy(() => import('@pages/Career/CareerPage'))
 const ContactPage = lazy(() => import('@pages/Contact/ContactPage'))
+const EnquiryPage = lazy(() => import('@pages/Enquiry/EnquiryPage'))
 const PrivacyPage = lazy(() => import('@pages/Legal/PrivacyPage'))
 const TermsPage = lazy(() => import('@pages/Legal/TermsPage'))
 const NotFoundPage = lazy(() => import('@pages/NotFound/NotFoundPage'))
@@ -64,6 +65,8 @@ export default function AppRoutes() {
           <Route path={PATHS.BLOG_DETAIL} element={<Suspense fallback={<PageLoader />}><BlogDetailPage /></Suspense>} />
           <Route path={PATHS.CAREER} element={<Suspense fallback={<PageLoader />}><CareerPage /></Suspense>} />
           <Route path={PATHS.CONTACT} element={<Suspense fallback={<PageLoader />}><ContactPage /></Suspense>} />
+          <Route path={PATHS.ENQUIRY} element={<Suspense fallback={<PageLoader />}><EnquiryPage /></Suspense>} />
+          <Route path="/enquiry" element={<Suspense fallback={<PageLoader />}><EnquiryPage /></Suspense>} />
           <Route path={PATHS.PRIVACY} element={<Suspense fallback={<PageLoader />}><PrivacyPage /></Suspense>} />
           <Route path={PATHS.TERMS} element={<Suspense fallback={<PageLoader />}><TermsPage /></Suspense>} />
           <Route path={PATHS.NOT_FOUND} element={<Suspense fallback={<PageLoader />}><NotFoundPage /></Suspense>} />

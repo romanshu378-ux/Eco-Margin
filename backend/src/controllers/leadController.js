@@ -113,11 +113,29 @@ exports.getLeadById = async (req, res) => {
  */
 exports.createLead = async (req, res) => {
   setNoCache(res)
-  const { fullName, name, email, phone, company, subject, product_requirement, message, requirements } = req.body
+  const { 
+    fullName, name, email, phone, company, city,
+    requirementType, chargerRequirement, requiredPower, quantity, installationRequired,
+    subject, product_requirement, message, requirements 
+  } = req.body
 
   const finalName = fullName || name
-  const finalSubject = subject || product_requirement || 'EV Charger RFQ Inquiry'
-  const finalMessage = message || requirements || ''
+  const reqType = requirementType || 'EV Charging Station'
+  const chargerSpec = chargerRequirement ? ` (${chargerRequirement})` : ''
+  const finalSubject = subject || `${reqType}${chargerSpec}` || product_requirement || 'EV Charging Enquiry'
+
+  // Format structured details cleanly for Admin Panel lead message
+  const detailsParts = []
+  if (city) detailsParts.push(`City/Location: ${city}`)
+  if (requirementType) detailsParts.push(`Requirement Type: ${requirementType}`)
+  if (chargerRequirement) detailsParts.push(`Charger Requirement: ${chargerRequirement}`)
+  if (requiredPower) detailsParts.push(`Required Power: ${requiredPower}`)
+  if (quantity) detailsParts.push(`Quantity: ${quantity}`)
+  if (installationRequired) detailsParts.push(`Installation Required: ${installationRequired}`)
+
+  const userMessage = message || requirements || ''
+  const structuredHeader = detailsParts.length > 0 ? `--- Enquiry Details ---\n${detailsParts.join('\n')}\n-----------------------` : ''
+  const finalMessage = structuredHeader ? `${structuredHeader}\n\nMessage:\n${userMessage}`.trim() : userMessage.trim()
 
   if (!finalName || !email || !phone) {
     return res.status(400).json({ success: false, message: 'Full Name, Email, and Phone number are required fields.' })
@@ -132,7 +150,7 @@ exports.createLead = async (req, res) => {
       subject: finalSubject.trim(),
       message: finalMessage.trim(),
       status: 'New',
-      notes: 'Submitted via Web RFQ Form'
+      notes: 'Submitted via Web Enquiry Form'
     })
 
     logger.info(`✅ [Lead Created] ID ${newLead.id} for ${newLead.email}`)

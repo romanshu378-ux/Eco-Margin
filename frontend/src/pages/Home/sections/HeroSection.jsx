@@ -129,12 +129,12 @@ export default function HeroSection() {
 
               {/* 4. Action CTAs */}
               <motion.div variants={fadeUp} className="hero-cta-group">
-                <Link to="/solutions" className="btn-primary-hero">
-                  {heroCMS.primaryButtonText ? heroCMS.primaryButtonText.replace(' →', '') : "Explore Solutions"} <FiArrowRight />
+                <Link to="/enquiry" className="btn-primary-hero">
+                  Enquiry <FiArrowRight />
                 </Link>
 
                 <Link to="/products" className="btn-secondary-hero">
-                  {heroCMS.secondaryButtonText ? heroCMS.secondaryButtonText.replace(' →', '') : "View Products"} <FiArrowRight />
+                  View Products <FiArrowRight />
                 </Link>
               </motion.div>
 

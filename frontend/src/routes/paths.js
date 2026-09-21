@@ -13,6 +13,7 @@ export const PATHS = {
   BLOG_DETAIL: '/blogs/:slug',
   CAREER: '/career',
   CONTACT: '/contact',
+  ENQUIRY: '/enquiry',
   
   // Legal
   PRIVACY: '/privacy-policy',

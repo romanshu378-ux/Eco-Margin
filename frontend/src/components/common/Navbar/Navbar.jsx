@@ -127,9 +127,11 @@ export default function Navbar() {
             <ThemeToggle variant="header" />
             <div className="hidden lg:flex desktop-actions" style={{ alignItems: 'center', gap: '0.75rem' }}>
               <InstallAppButton placement="nav" />
-              <Button variant="primary" size="sm" onClick={() => setQuoteModalOpen(true)}>
-                Request Quote
-              </Button>
+              <Link to="/enquiry">
+                <Button variant="primary" size="sm">
+                  Enquiry
+                </Button>
+              </Link>
             </div>
 
             {/* Mobile Hamburger */}
@@ -260,9 +262,11 @@ export default function Navbar() {
                 <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', minWidth: 0 }}>
                   <ThemeToggle variant="mobile" />
                   <InstallAppButton placement="drawer" />
-                  <Button variant="primary" fullWidth onClick={() => { setMobileMenuOpen(false); setQuoteModalOpen(true); }} style={{ height: '48px', flexShrink: 0, fontWeight: 700 }}>
-                    Request Quote
-                  </Button>
+                  <Link to="/enquiry" onClick={() => setMobileMenuOpen(false)} style={{ width: '100%' }}>
+                    <Button variant="primary" fullWidth style={{ height: '48px', flexShrink: 0, fontWeight: 700 }}>
+                      Enquiry
+                    </Button>
+                  </Link>
                 </div>
               </div>
 

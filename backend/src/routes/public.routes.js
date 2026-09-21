@@ -36,6 +36,7 @@ router.get('/downloads', publicController.getPublicDownloads)
 
 // Form Submissions
 router.post('/rfq', publicController.submitRFQEnquiry)
+router.post('/enquiry', publicController.submitRFQEnquiry)
 router.post('/dealer-apply', dealerController.createDealer)
 router.post('/newsletter', newsletterController.subscribeNewsletter)
 
