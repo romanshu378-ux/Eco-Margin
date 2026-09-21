@@ -6,7 +6,7 @@
 require('dotenv').config()
 const app = require('./src/app')
 const { sequelize, connectDB } = require('./src/config/db.config')
-const { allowedOrigins } = require('./src/config/cors')
+const { getAllowedOrigins } = require('./src/config/cors')
 const { initCMSDefaults } = require('./src/utils/initCMS')
 
 // Ensure models and associations are loaded
@@ -67,7 +67,7 @@ const startServer = async () => {
 🌐 Port        : ${PORT}
 🗄️ Database    : ${process.env.DB_NAME || 'ecomargin_db'}
 🔒 CORS Allowed Origins:
-   ${allowedOrigins.join('\n   ')}
+   ${getAllowedOrigins().join('\n   ')}
 =====================================================
       `)
     })

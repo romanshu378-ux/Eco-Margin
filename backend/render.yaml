@@ -27,4 +27,4 @@ services:
       - key: AUTH_RATE_LIMIT_MAX
         value: 10
       - key: ALLOWED_ORIGINS
-        value: https://ecomargin.vercel.app,https://ecomargin-admin.vercel.app
+        value: https://admin.ecomargin.in,https://www.ecomargin.in,https://ecomargin.in

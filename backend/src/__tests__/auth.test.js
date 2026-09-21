@@ -23,7 +23,8 @@ describe('Auth API', () => {
     it('should return health check success status', async () => {
       const res = await request(app).get('/api/v1/health')
       expect(res.status).toBe(200)
-      expect(res.body.status).toBe('success')
+      expect(res.body.status).toBe('healthy')
+      expect(res.body.success).toBe(true)
     })
   })
 })

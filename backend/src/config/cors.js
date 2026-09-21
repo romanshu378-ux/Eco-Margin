@@ -12,11 +12,14 @@ const parseEnvOrigins = (envVar) => {
     .filter(Boolean)
 }
 
-const envAllowedOrigins = parseEnvOrigins(process.env.ALLOWED_ORIGINS)
-const envClientUrls = parseEnvOrigins(process.env.CLIENT_URL)
-
-// Consolidate unique allowed origins loaded strictly from environment variables
-const allowedOrigins = [...new Set([...envAllowedOrigins, ...envClientUrls])]
+/**
+ * Dynamically resolves allowed origins from process.env on demand
+ */
+const getAllowedOrigins = () => {
+  const envAllowedOrigins = parseEnvOrigins(process.env.ALLOWED_ORIGINS)
+  const envClientUrls = parseEnvOrigins(process.env.CLIENT_URL)
+  return [...new Set([...envAllowedOrigins, ...envClientUrls])]
+}
 
 /**
  * CORS Configuration Options for Express & Preflight OPTIONS Requests
@@ -30,6 +33,7 @@ const corsOptions = {
 
     // Normalize origin by stripping trailing slashes
     const normalizedOrigin = origin.trim().replace(/\/+$/, '')
+    const allowedOrigins = getAllowedOrigins()
 
     if (allowedOrigins.includes(normalizedOrigin)) {
       return callback(null, true)
@@ -57,5 +61,6 @@ const corsOptions = {
 
 module.exports = {
   corsOptions,
-  allowedOrigins
+  getAllowedOrigins
 }
+

@@ -8,6 +8,10 @@ describe('CORS Configuration Tests', () => {
   const allowedOrigin = 'https://admin.ecomargin.in'
   const disallowedOrigin = 'https://unauthorized-domain.com'
 
+  beforeAll(() => {
+    process.env.ALLOWED_ORIGINS = 'https://admin.ecomargin.in,https://www.ecomargin.in,https://ecomargin.in'
+  })
+
   describe('Preflight OPTIONS /api/v1/auth/login', () => {
     it('should return 200 and correct CORS headers for allowed origin', async () => {
       const res = await request(app)

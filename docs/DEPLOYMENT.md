@@ -9,7 +9,7 @@ This guide details the complete process for deploying the EcoMargin Enterprise E
 ```
 Frontend SPA (Vite/React)    ──> Vercel  (https://ecomargin.vercel.app)
 Admin Panel (Vite/React)     ──> Vercel  (https://ecomargin-admin.vercel.app)
-Backend REST API (Express)   ──> Render  (https://eco-margin-1-web.onrender.com)
+Backend REST API (Express)   ──> Render  (https://eco-margin-web.onrender.com)
 Database (MySQL 8.0)         ──> PlanetScale / Railway / Render Managed MySQL
 ```
 
@@ -53,7 +53,7 @@ Database (MySQL 8.0)         ──> PlanetScale / Railway / Render Managed MySQ
      DB_NAME=ecomargin_db
      JWT_SECRET=<strong-random-32-char-secret>
      JWT_EXPIRATION=24h
-     ALLOWED_ORIGINS=https://ecomargin.vercel.app,https://ecomargin-admin.vercel.app
+     ALLOWED_ORIGINS=https://admin.ecomargin.in,https://www.ecomargin.in,https://ecomargin.in
      ```
 
 ---
@@ -66,7 +66,7 @@ Database (MySQL 8.0)         ──> PlanetScale / Railway / Render Managed MySQ
 4. Set **Root Directory**: `frontend`.
 5. Configure Environment Variables:
    ```env
-   VITE_API_BASE_URL=https://eco-margin-1-web.onrender.com/api/v1
+   VITE_API_BASE_URL=https://eco-margin-web.onrender.com/api/v1
    VITE_API_TIMEOUT=30000
    VITE_APP_NAME=EcoMargin
    VITE_APP_ENV=production
@@ -82,7 +82,7 @@ Database (MySQL 8.0)         ──> PlanetScale / Railway / Render Managed MySQ
 3. Set **Root Directory**: `admin-panel`.
 4. Configure Environment Variables:
    ```env
-   VITE_API_BASE_URL=https://eco-margin-1-web.onrender.com/api/v1
+   VITE_API_BASE_URL=https://eco-margin-web.onrender.com/api/v1
    VITE_APP_NAME="EcoMargin Admin Panel"
    VITE_APP_ENV=production
    ```
@@ -98,7 +98,7 @@ If using custom domains (e.g. `ecomargin.com`):
 | :--- | :--- | :--- | :--- |
 | `ecomargin.com` | Vercel (Frontend) | `A` | `76.76.21.21` |
 | `admin.ecomargin.com` | Vercel (Admin) | `CNAME` | `cname.vercel-dns.com` |
-| `api.ecomargin.com` | Render (Backend) | `CNAME` | `eco-margin-1-web.onrender.com` |
+| `api.ecomargin.com` | Render (Backend) | `CNAME` | `eco-margin-web.onrender.com` |
 
 ---
 

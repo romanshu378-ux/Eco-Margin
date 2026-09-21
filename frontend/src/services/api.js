@@ -8,12 +8,13 @@ const getApiBaseUrl = () => {
   let rawUrl =
     import.meta.env.VITE_API_BASE_URL ||
     import.meta.env.VITE_API_URL ||
-    "https://eco-margin-1-web.onrender.com/api/v1";
+    "https://eco-margin-web.onrender.com/api/v1";
 
   // Sanitize any legacy render backend domain
   rawUrl = rawUrl
-    .replace("https://eco-margin.onrender.com", "https://eco-margin-1-web.onrender.com")
-    .replace("https://ecomargin-api.onrender.com", "https://eco-margin-1-web.onrender.com");
+    .replace("https://eco-margin-1-web.onrender.com", "https://eco-margin-web.onrender.com")
+    .replace("https://eco-margin.onrender.com", "https://eco-margin-web.onrender.com")
+    .replace("https://ecomargin-api.onrender.com", "https://eco-margin-web.onrender.com");
 
   // Remove trailing slashes
   rawUrl = rawUrl.replace(/\/+$/, "");

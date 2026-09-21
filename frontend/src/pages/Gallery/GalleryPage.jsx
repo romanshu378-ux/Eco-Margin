@@ -31,35 +31,35 @@ export default function GalleryPage() {
 
   return (
     <>
-      <SEO 
-        title="EcoMargin EV Charging Infrastructure Gallery" 
-        description="Explore visual showcases of EcoMargin LLP EV charger manufacturing facilities, commercial DC fast charger deployments, testing labs, and charging hubs." 
+      <SEO
+        title="EcoMargin EV Charging Infrastructure Gallery"
+        description="Explore visual showcases of EcoMargin LLP EV charger manufacturing facilities, commercial DC fast charger deployments, testing labs, and charging hubs."
         pageRoute="/gallery"
       />
-      
-      <PageHeader 
-        title="Factory & Manufacturing Gallery" 
+
+      <PageHeader
+        title="Factory & Manufacturing Gallery"
         description="A visual tour through our 5,000 sq.ft. manufacturing facility, cleanroom SMT lines, and endurance testing labs."
       />
 
       <div className="container" style={{ padding: '6rem 0' }}>
-        <motion.div 
-          variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} 
-          style={{ 
+        <motion.div
+          variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }}
+          style={{
             display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem'
           }}
         >
           {items.map((item, i) => {
             const img = item.imageUrl || item.image_url;
             return (
-              <motion.div 
-                key={item.id || i} 
+              <motion.div
+                key={item.id || i}
                 variants={fadeUp}
                 whileHover={{ scale: 1.02 }}
-                style={{ 
-                  height: '320px', 
-                  background: 'var(--color-bg-card)', 
-                  borderRadius: 'var(--radius-xl)', 
+                style={{
+                  height: '320px',
+                  background: 'var(--color-bg-card)',
+                  borderRadius: 'var(--radius-xl)',
                   border: '1px solid var(--color-border)',
                   overflow: 'hidden',
                   position: 'relative',
@@ -74,16 +74,16 @@ export default function GalleryPage() {
                   </div>
                 )}
 
-                <div 
-                  style={{ 
-                    position: 'absolute', 
-                    inset: 0, 
-                    background: 'linear-gradient(to top, rgba(0,0,0,0.85), transparent)', 
-                    zIndex: 1, 
-                    display: 'flex', 
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    background: 'linear-gradient(to top, rgba(0,0,0,0.85), transparent)',
+                    zIndex: 1,
+                    display: 'flex',
                     flexDirection: 'column',
-                    justifyContent: 'flex-end', 
-                    padding: '1.5rem' 
+                    justifyContent: 'flex-end',
+                    padding: '1.5rem'
                   }}
                 >
                   <span style={{ background: 'rgba(16, 185, 129, 0.2)', color: '#10b981', padding: '0.2rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: '600', width: 'fit-content', marginBottom: '0.5rem' }}>
