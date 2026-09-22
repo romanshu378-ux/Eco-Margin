@@ -5,6 +5,7 @@
 
 const express = require('express')
 const router = express.Router()
+const projectController = require('../controllers/projectController')
 const { protect, restrictTo } = require('../middleware/auth')
 
 router.get('/', projectController.getAllProjects)

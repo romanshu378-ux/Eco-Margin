@@ -5,6 +5,7 @@
 
 const express = require('express')
 const router = express.Router()
+const blogController = require('../controllers/blogController')
 const { protect, restrictTo } = require('../middleware/auth')
 
 router.get('/', blogController.getAllBlogs)

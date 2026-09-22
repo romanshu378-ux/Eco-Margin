@@ -4,6 +4,7 @@
 
 const express = require('express')
 const router = express.Router()
+const emailController = require('../controllers/emailController')
 const { protect, restrictTo } = require('../middleware/auth')
 
 // Protect all email routes

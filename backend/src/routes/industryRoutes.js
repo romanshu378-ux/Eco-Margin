@@ -5,6 +5,7 @@
 
 const express = require('express')
 const router = express.Router()
+const industryController = require('../controllers/industryController')
 const { protect, restrictTo } = require('../middleware/auth')
 
 router.get('/', industryController.getAllIndustries)

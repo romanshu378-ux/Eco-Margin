@@ -5,6 +5,7 @@
 
 const express = require('express')
 const router = express.Router()
+const downloadsController = require('../controllers/downloadsController')
 const { protect, restrictTo } = require('../middleware/auth')
 
 router.get('/', downloadsController.getAllDownloads)
