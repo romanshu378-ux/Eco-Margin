@@ -70,6 +70,7 @@ export default function AppRoutes() {
           <Route path="/cms/about" element={<AboutCMSPage />} />
           <Route path="/cms/manufacturing" element={<ManufacturingCMSPage />} />
           <Route path="/cms/footer" element={<FooterCMSPage />} />
+          <Route path="/cms/contact" element={<FooterCMSPage />} />
           <Route path="/cms/logo" element={<LogoCMSPage />} />
           <Route path="/cms/services" element={<ServicesCMSPage />} />
           <Route path="/cms/industries" element={<IndustriesCMSPage />} />

@@ -7,6 +7,9 @@ import {
   FiShield, FiCheckCircle, FiPhoneCall, FiMail, 
   FiMapPin, FiClock, FiMessageSquare, FiExternalLink 
 } from 'react-icons/fi'
+import { 
+  FaYoutube, FaInstagram, FaFacebook, FaLinkedin 
+} from 'react-icons/fa6'
 import { useFooterCMS, useLogos } from '../../../hooks/useCMS'
 
 export default function Footer() {
@@ -23,6 +26,10 @@ export default function Footer() {
   const businessHours = footerCMS?.businessHours || ''
   const whatsapp = footerCMS?.whatsapp || ''
   const googleMapsEmbedUrl = footerCMS?.googleMapsEmbedUrl || ''
+  const youtube = footerCMS?.youtube || ''
+  const instagram = footerCMS?.instagram || ''
+  const facebook = footerCMS?.facebook || ''
+  const linkedin = footerCMS?.linkedin || ''
   const copyright = footerCMS?.copyright || `© ${currentYear} ${companyName || 'EcoMargin LLP'}. All Rights Reserved.`
 
   return (
@@ -80,9 +87,32 @@ export default function Footer() {
                 EcoMargin
               </span>
             </Link>
-            <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.5rem', fontSize: '0.875rem', lineHeight: 1.6, maxWidth: '360px' }}>
+            <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.25rem', fontSize: '0.875rem', lineHeight: 1.6, maxWidth: '360px' }}>
               {companyName ? `${companyName} is a leading OEM EV Charger Manufacturer and Infrastructure EPC Contractor in India.` : 'EcoMargin LLP is a leading OEM EV Charger Manufacturer & Infrastructure EPC Contractor in India.'}
             </p>
+            {/* Social Links */}
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
+              {linkedin && (
+                <a href={linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" style={{ width: '34px', height: '34px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0a66c2', textDecoration: 'none', transition: 'all 0.2s' }}>
+                  <FaLinkedin style={{ fontSize: '1.1rem' }} />
+                </a>
+              )}
+              {youtube && (
+                <a href={youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube" style={{ width: '34px', height: '34px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#dc2626', textDecoration: 'none', transition: 'all 0.2s' }}>
+                  <FaYoutube style={{ fontSize: '1.1rem' }} />
+                </a>
+              )}
+              {instagram && (
+                <a href={instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" style={{ width: '34px', height: '34px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#e1306c', textDecoration: 'none', transition: 'all 0.2s' }}>
+                  <FaInstagram style={{ fontSize: '1.1rem' }} />
+                </a>
+              )}
+              {facebook && (
+                <a href={facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" style={{ width: '34px', height: '34px', borderRadius: '8px', background: 'rgba(255,255,255,0.06)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1877f2', textDecoration: 'none', transition: 'all 0.2s' }}>
+                  <FaFacebook style={{ fontSize: '1.1rem' }} />
+                </a>
+              )}
+            </div>
           </div>
 
           {/* Manufacturing Range */}

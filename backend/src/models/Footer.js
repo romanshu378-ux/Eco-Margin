@@ -67,6 +67,14 @@ Footer.init(
       type: DataTypes.STRING(255),
       allowNull: true,
     },
+    instagram: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    youtube: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
     copyright: {
       type: DataTypes.STRING(255),
       field: 'copyright',

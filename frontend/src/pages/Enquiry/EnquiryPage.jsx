@@ -6,38 +6,53 @@ import { motion } from 'framer-motion'
 import { 
   FiSend, 
   FiCheckCircle, 
-  FiZap, 
   FiMail, 
   FiPhone, 
   FiMapPin, 
   FiClock, 
-  FiShield, 
-  FiHelpCircle 
+  FiExternalLink,
+  FiAlertCircle
 } from 'react-icons/fi'
+import { 
+  FaYoutube, 
+  FaInstagram, 
+  FaFacebook, 
+  FaLinkedin 
+} from 'react-icons/fa6'
 import SEO from '@seo/SEO'
 import PageHeader from '@components/common/PageHeader/PageHeader'
 import Button from '@components/ui/Button/Button'
 import { fadeUp, staggerContainer } from '@animations/variants'
 import publicApi from '../../services/publicApi'
+import { useFooterCMS } from '../../hooks/useCMS'
 
 export default function EnquiryPage() {
+  const { data: cmsData, loading: cmsLoading } = useFooterCMS()
+
   const [formData, setFormData] = useState({
     fullName: '',
     company: '',
     email: '',
     phone: '',
     city: '',
-    requirementType: 'EV Charging Station',
     chargerRequirement: '',
-    requiredPower: '',
-    quantity: '1',
-    installationRequired: 'Yes',
     message: ''
   })
 
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [errorMsg, setErrorMsg] = useState(null)
+
+  // Dynamic Contact & Social Details from CMS
+  const salesEmail = cmsData?.email || 'sales@ecomargin.com'
+  const supportEmail = cmsData?.supportEmail || 'support@ecomargin.in'
+  const phone = cmsData?.phone || '+91-8302313065'
+  const altPhone = cmsData?.altPhone || ''
+  const address = cmsData?.address || 'NH-11, iStart Nest, Govt Engineering College, Bharatpur, Rajasthan - 321001'
+  const youtubeUrl = cmsData?.youtube || 'https://youtube.com/@ecomargin'
+  const instagramUrl = cmsData?.instagram || 'https://instagram.com/ecomargin'
+  const facebookUrl = cmsData?.facebook || 'https://facebook.com/ecomargin'
+  const linkedinUrl = cmsData?.linkedin || 'https://linkedin.com/company/ecomargin'
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -64,13 +79,9 @@ export default function EnquiryPage() {
         email: formData.email.trim().toLowerCase(),
         phone: formData.phone.trim(),
         city: formData.city.trim(),
-        requirementType: formData.requirementType,
         chargerRequirement: formData.chargerRequirement.trim(),
-        requiredPower: formData.requiredPower.trim(),
-        quantity: formData.quantity,
-        installationRequired: formData.installationRequired,
         message: formData.message.trim(),
-        subject: `Enquiry: ${formData.requirementType}${formData.chargerRequirement ? ` - ${formData.chargerRequirement}` : ''}`
+        subject: `Enquiry${formData.chargerRequirement.trim() ? `: ${formData.chargerRequirement.trim()}` : ''}`
       })
 
       if (res && res.success === false && res.message) {
@@ -84,11 +95,7 @@ export default function EnquiryPage() {
         email: '',
         phone: '',
         city: '',
-        requirementType: 'EV Charging Station',
         chargerRequirement: '',
-        requiredPower: '',
-        quantity: '1',
-        installationRequired: 'Yes',
         message: ''
       })
     } catch (err) {
@@ -109,20 +116,25 @@ export default function EnquiryPage() {
 
       <PageHeader 
         title="Send Your Enquiry"
-        description="Tell us about your EV charging requirement and our team will get back to you."
+        description="Tell us about your EV charging requirement and our engineering sales team will connect with you."
       />
 
-      <section style={{ padding: '5rem 0', background: 'var(--color-bg)' }}>
+      <section style={{ padding: '4.5rem 0', background: 'var(--color-bg)' }}>
         <div className="container">
           <motion.div 
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
-            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem', alignItems: 'start' }}
+            style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
+              gap: '2.5rem', 
+              alignItems: 'start' 
+            }}
           >
             
-            {/* Left Column — Professional Form */}
+            {/* Left Column — Public Enquiry Form */}
             <motion.div 
               variants={fadeUp}
               style={{
@@ -135,13 +147,13 @@ export default function EnquiryPage() {
             >
               <div style={{ marginBottom: '2rem' }}>
                 <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                  ⚡ Rapid Sales &amp; Technical Support
+                  ⚡ Rapid Sales &amp; Technical Consultation
                 </span>
-                <h2 style={{ fontSize: '1.75rem', marginTop: '0.4rem', color: 'var(--color-text)' }}>
-                  Send Your Enquiry
+                <h2 style={{ fontSize: '1.75rem', marginTop: '0.4rem', color: 'var(--color-text)', fontWeight: 700 }}>
+                  Send Your Requirement
                 </h2>
                 <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginTop: '0.25rem' }}>
-                  Tell us about your EV charging requirement and our team will get back to you.
+                  Provide your project details below. Our team reviews your power specifications and provides a tailored commercial proposal.
                 </p>
               </div>
 
@@ -157,12 +169,12 @@ export default function EnquiryPage() {
                     border: '1px solid rgba(16, 185, 129, 0.2)'
                   }}
                 >
-                  <FiCheckCircle style={{ fontSize: '4rem', color: '#10b981', marginBottom: '1rem' }} />
-                  <h3 style={{ fontSize: '1.4rem', color: 'var(--color-text)', marginBottom: '0.75rem' }}>
+                  <FiCheckCircle style={{ fontSize: '3.5rem', color: '#10b981', marginBottom: '1rem' }} />
+                  <h3 style={{ fontSize: '1.4rem', color: 'var(--color-text)', marginBottom: '0.75rem', fontWeight: 700 }}>
                     Thank You!
                   </h3>
-                  <p style={{ color: 'var(--color-text-muted)', fontSize: '1rem', lineHeight: 1.6, marginBottom: '2rem', maxWidth: '460px', margin: '0 auto 2rem' }}>
-                    Thank you! Your enquiry has been submitted successfully. Our team will contact you shortly.
+                  <p style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', lineHeight: 1.6, marginBottom: '2rem', maxWidth: '440px', margin: '0 auto 2rem' }}>
+                    Your enquiry has been received successfully. A dedicated EcoMargin charging specialist will reach out to you shortly.
                   </p>
                   <Button variant="primary" onClick={() => setSubmitted(false)}>
                     Send Another Enquiry
@@ -172,13 +184,13 @@ export default function EnquiryPage() {
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                   
                   {errorMsg && (
-                    <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--color-danger, #ef4444)', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', border: '1px solid rgba(239, 68, 68, 0.3)' }}>
-                      {errorMsg}
+                    <div style={{ background: 'rgba(239, 68, 68, 0.1)', color: 'var(--color-danger, #ef4444)', padding: '0.85rem 1rem', borderRadius: 'var(--radius-md)', fontSize: '0.875rem', border: '1px solid rgba(239, 68, 68, 0.3)', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                      <FiAlertCircle /> {errorMsg}
                     </div>
                   )}
 
-                  {/* Row 1: Full Name & Company */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
+                  {/* Row 1: Full Name & Company Name */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
                     <div>
                       <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--color-text)' }}>
                         Full Name *
@@ -217,8 +229,8 @@ export default function EnquiryPage() {
                     </div>
                   </div>
 
-                  {/* Row 2: Email & Phone */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
+                  {/* Row 2: Email Address & Phone Number */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
                     <div>
                       <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--color-text)' }}>
                         Email Address *
@@ -258,8 +270,8 @@ export default function EnquiryPage() {
                     </div>
                   </div>
 
-                  {/* Row 3: City & Requirement Type */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
+                  {/* Row 3: City / Location & Charger Requirement */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
                     <div>
                       <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--color-text)' }}>
                         City / Location
@@ -280,37 +292,6 @@ export default function EnquiryPage() {
 
                     <div>
                       <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--color-text)' }}>
-                        Requirement Type *
-                      </label>
-                      <select 
-                        name="requirementType"
-                        required
-                        value={formData.requirementType}
-                        onChange={handleChange}
-                        style={{
-                          width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)',
-                          background: 'var(--color-bg)', border: '1px solid var(--color-border)',
-                          color: 'var(--color-text)', outline: 'none', fontSize: '0.9rem'
-                        }}
-                      >
-                        <option value="EV Charging Station">EV Charging Station</option>
-                        <option value="AC Charger">AC Charger</option>
-                        <option value="DC Fast Charger">DC Fast Charger</option>
-                        <option value="Ultra-Fast Charger">Ultra-Fast Charger</option>
-                        <option value="Fleet Charging">Fleet Charging</option>
-                        <option value="Commercial Charging">Commercial Charging</option>
-                        <option value="Home Charging">Home Charging</option>
-                        <option value="EPC / Installation">EPC / Installation</option>
-                        <option value="AMC / Service">AMC / Service</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Row 4: Charger Requirement & Required Power */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--color-text)' }}>
                         Charger Requirement
                       </label>
                       <input 
@@ -318,25 +299,7 @@ export default function EnquiryPage() {
                         name="chargerRequirement"
                         value={formData.chargerRequirement}
                         onChange={handleChange}
-                        placeholder="e.g. 60kW Dual Gun CCS2 / AC Type-2"
-                        style={{
-                          width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)',
-                          background: 'var(--color-bg)', border: '1px solid var(--color-border)',
-                          color: 'var(--color-text)', outline: 'none', fontSize: '0.9rem'
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--color-text)' }}>
-                        Required Power
-                      </label>
-                      <input 
-                        type="text" 
-                        name="requiredPower"
-                        value={formData.requiredPower}
-                        onChange={handleChange}
-                        placeholder="e.g. 7.4kW / 30kW / 60kW / 120kW / 240kW"
+                        placeholder="e.g. 60kW DC Fast / 22kW Dual AC / CSMS"
                         style={{
                           width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)',
                           background: 'var(--color-bg)', border: '1px solid var(--color-border)',
@@ -346,48 +309,7 @@ export default function EnquiryPage() {
                     </div>
                   </div>
 
-                  {/* Row 5: Quantity & Installation Required */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.25rem' }}>
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--color-text)' }}>
-                        Quantity
-                      </label>
-                      <input 
-                        type="number" 
-                        name="quantity"
-                        min="1"
-                        value={formData.quantity}
-                        onChange={handleChange}
-                        style={{
-                          width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)',
-                          background: 'var(--color-bg)', border: '1px solid var(--color-border)',
-                          color: 'var(--color-text)', outline: 'none', fontSize: '0.9rem'
-                        }}
-                      />
-                    </div>
-
-                    <div>
-                      <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--color-text)' }}>
-                        Installation Required
-                      </label>
-                      <select 
-                        name="installationRequired"
-                        value={formData.installationRequired}
-                        onChange={handleChange}
-                        style={{
-                          width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)',
-                          background: 'var(--color-bg)', border: '1px solid var(--color-border)',
-                          color: 'var(--color-text)', outline: 'none', fontSize: '0.9rem'
-                        }}
-                      >
-                        <option value="Yes">Yes (Turnkey Installation Needed)</option>
-                        <option value="No">No (Supply Only)</option>
-                        <option value="Consultation Needed">Consultation Needed</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Row 6: Message */}
+                  {/* Row 4: Message */}
                   <div>
                     <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.4rem', color: 'var(--color-text)' }}>
                       Message *
@@ -398,7 +320,7 @@ export default function EnquiryPage() {
                       rows="4"
                       value={formData.message}
                       onChange={handleChange}
-                      placeholder="Please describe your project location, grid power availability, timeline, or any specific requirements..."
+                      placeholder="Please describe your project location, power availability, expected chargers count, timeline, or any specific technical requirements..."
                       style={{
                         width: '100%', padding: '0.75rem 1rem', borderRadius: 'var(--radius-md)',
                         background: 'var(--color-bg)', border: '1px solid var(--color-border)',
@@ -409,7 +331,7 @@ export default function EnquiryPage() {
 
                   <div style={{ marginTop: '0.5rem' }}>
                     <Button type="submit" variant="primary" size="lg" fullWidth disabled={loading}>
-                      {loading ? 'Submitting...' : 'Submit Enquiry →'}
+                      {loading ? 'Submitting Enquiry...' : 'Submit Enquiry →'}
                     </Button>
                   </div>
 
@@ -417,106 +339,307 @@ export default function EnquiryPage() {
               )}
             </motion.div>
 
-            {/* Right Column — Corporate Info & Highlights */}
+            {/* Right Column — Connect With EcoMargin Section */}
             <motion.div 
               variants={fadeUp}
-              style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
+              style={{
+                background: 'var(--color-bg-card)',
+                border: '1px solid var(--color-border)',
+                borderRadius: 'var(--radius-xl)',
+                padding: '2.5rem',
+                boxShadow: 'var(--shadow-lg)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '1.75rem'
+              }}
             >
-              
-              {/* Highlight Card 1 */}
-              <div 
-                style={{
-                  background: 'var(--color-bg-card)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-xl)',
-                  padding: '2rem',
-                  boxShadow: 'var(--shadow-md)'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.25rem' }}>
-                  <div style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#10b981', padding: '0.85rem', borderRadius: 'var(--radius-md)', fontSize: '1.5rem', display: 'flex' }}>
-                    <FiZap />
-                  </div>
-                  <div>
-                    <h3 style={{ fontSize: '1.2rem', color: 'var(--color-text)', margin: 0 }}>
-                      Fast Turnaround
-                    </h3>
-                    <span style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
-                      Dedicated Engineering Sales Team
-                    </span>
-                  </div>
-                </div>
-                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', lineHeight: 1.6, margin: 0 }}>
-                  Our technical team evaluates your site specifications, electrical load requirements, and charger selection to provide a tailored quote within 4 business hours.
+              <div>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-primary)', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                  🌿 Get In Touch
+                </span>
+                <h2 style={{ fontSize: '1.75rem', marginTop: '0.4rem', color: 'var(--color-text)', fontWeight: 700 }}>
+                  Connect With EcoMargin
+                </h2>
+                <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginTop: '0.25rem', lineHeight: 1.5 }}>
+                  Reach out directly to our engineering specialists or join our growing EV community across official digital channels.
                 </p>
               </div>
 
-              {/* Highlight Card 2: Contact Details */}
-              <div 
-                style={{
-                  background: 'var(--color-bg-card)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-xl)',
-                  padding: '2rem',
-                  boxShadow: 'var(--shadow-md)'
-                }}
-              >
-                <h3 style={{ fontSize: '1.25rem', marginBottom: '1.25rem', color: 'var(--color-text)' }}>
-                  Direct Contact Information
-                </h3>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                    <FiMail style={{ color: 'var(--color-primary)', fontSize: '1.25rem', marginTop: '0.2rem' }} />
-                    <div>
-                      <span style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Sales &amp; Corporate Email</span>
-                      <a href="mailto:support@ecomargin.in" style={{ color: 'var(--color-primary)', fontWeight: 600, fontSize: '0.95rem', textDecoration: 'none' }}>
-                        support@ecomargin.in
-                      </a>
-                    </div>
+              {/* Direct Contact Channels */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                
+                {/* Email Address */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+                  <div style={{ 
+                    width: '42px', height: '42px', borderRadius: '10px', 
+                    background: 'rgba(16, 185, 129, 0.12)', color: 'var(--color-primary, #10b981)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem',
+                    flexShrink: 0
+                  }}>
+                    <FiMail />
                   </div>
-
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                    <FiPhone style={{ color: 'var(--color-primary)', fontSize: '1.25rem', marginTop: '0.2rem' }} />
-                    <div>
-                      <span style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Hotline / Support</span>
-                      <a href="tel:+918302313065" style={{ color: 'var(--color-text)', fontWeight: 600, fontSize: '0.95rem', textDecoration: 'none' }}>
-                        +91-8302313065
-                      </a>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
-                    <FiMapPin style={{ color: 'var(--color-primary)', fontSize: '1.25rem', marginTop: '0.2rem' }} />
-                    <div>
-                      <span style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase' }}>Manufacturing Plant</span>
-                      <span style={{ color: 'var(--color-text)', fontSize: '0.9rem', lineHeight: 1.4, display: 'block' }}>
-                        EcoMargin LLP Facility, Industrial Area, Rajasthan, India
+                  <div style={{ overflowWrap: 'break-word', wordBreak: 'break-word', minWidth: 0 }}>
+                    <span style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      Sales &amp; Corporate Email
+                    </span>
+                    <a 
+                      href={`mailto:${salesEmail}`} 
+                      style={{ color: 'var(--color-primary)', fontWeight: 600, fontSize: '0.95rem', textDecoration: 'none', display: 'inline-block' }}
+                    >
+                      {salesEmail}
+                    </a>
+                    {supportEmail && supportEmail !== salesEmail && (
+                      <span style={{ display: 'block', fontSize: '0.825rem', color: 'var(--color-text-muted)', marginTop: '0.15rem' }}>
+                        Support: <a href={`mailto:${supportEmail}`} style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>{supportEmail}</a>
                       </span>
-                    </div>
+                    )}
                   </div>
+                </div>
+
+                {/* Phone Number */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+                  <div style={{ 
+                    width: '42px', height: '42px', borderRadius: '10px', 
+                    background: 'rgba(16, 185, 129, 0.12)', color: 'var(--color-primary, #10b981)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem',
+                    flexShrink: 0
+                  }}>
+                    <FiPhone />
+                  </div>
+                  <div>
+                    <span style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      Sales Hotline &amp; Technical Desk
+                    </span>
+                    <a 
+                      href={`tel:${phone.replace(/[^0-9+]/g, '')}`} 
+                      style={{ color: 'var(--color-text)', fontWeight: 600, fontSize: '0.95rem', textDecoration: 'none' }}
+                    >
+                      {phone}
+                    </a>
+                    {altPhone && (
+                      <span style={{ display: 'block', fontSize: '0.825rem', color: 'var(--color-text-muted)', marginTop: '0.15rem' }}>
+                        Support: <a href={`tel:${altPhone.replace(/[^0-9+]/g, '')}`} style={{ color: 'var(--color-text-muted)', textDecoration: 'none' }}>{altPhone}</a>
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Address */}
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '1rem' }}>
+                  <div style={{ 
+                    width: '42px', height: '42px', borderRadius: '10px', 
+                    background: 'rgba(16, 185, 129, 0.12)', color: 'var(--color-primary, #10b981)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.25rem',
+                    flexShrink: 0
+                  }}>
+                    <FiMapPin />
+                  </div>
+                  <div>
+                    <span style={{ display: 'block', fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                      Factory &amp; Corporate Address
+                    </span>
+                    <span style={{ color: 'var(--color-text)', fontSize: '0.9rem', lineHeight: 1.5, display: 'block' }}>
+                      {address}
+                    </span>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* Divider */}
+              <div style={{ borderTop: '1px solid var(--color-border)', margin: '0.25rem 0' }} />
+
+              {/* Social Channels Section */}
+              <div>
+                <span style={{ display: 'block', fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-text-muted)', textTransform: 'uppercase', letterSpacing: '0.5px', marginBottom: '0.75rem' }}>
+                  Official Social Channels
+                </span>
+                
+                <div style={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', 
+                  gap: '0.75rem' 
+                }}>
+                  
+                  {/* YouTube */}
+                  <a 
+                    href={youtubeUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.65rem',
+                      padding: '0.75rem 1rem',
+                      borderRadius: 'var(--radius-md)',
+                      background: 'var(--color-bg)',
+                      border: '1px solid var(--color-border)',
+                      textDecoration: 'none',
+                      color: 'var(--color-text)',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#dc2626'
+                      e.currentTarget.style.transform = 'translateY(-2px)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--color-border)'
+                      e.currentTarget.style.transform = 'translateY(0)'
+                    }}
+                  >
+                    <div style={{ 
+                      width: '32px', height: '32px', borderRadius: '8px', 
+                      background: 'rgba(220, 38, 38, 0.1)', color: '#dc2626',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem'
+                    }}>
+                      <FaYoutube />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>YouTube</div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)' }}>Videos &amp; Demos</div>
+                    </div>
+                  </a>
+
+                  {/* Instagram */}
+                  <a 
+                    href={instagramUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.65rem',
+                      padding: '0.75rem 1rem',
+                      borderRadius: 'var(--radius-md)',
+                      background: 'var(--color-bg)',
+                      border: '1px solid var(--color-border)',
+                      textDecoration: 'none',
+                      color: 'var(--color-text)',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#e1306c'
+                      e.currentTarget.style.transform = 'translateY(-2px)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--color-border)'
+                      e.currentTarget.style.transform = 'translateY(0)'
+                    }}
+                  >
+                    <div style={{ 
+                      width: '32px', height: '32px', borderRadius: '8px', 
+                      background: 'rgba(225, 48, 108, 0.1)', color: '#e1306c',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem'
+                    }}>
+                      <FaInstagram />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>Instagram</div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)' }}>Highlights &amp; Updates</div>
+                    </div>
+                  </a>
+
+                  {/* Facebook */}
+                  <a 
+                    href={facebookUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.65rem',
+                      padding: '0.75rem 1rem',
+                      borderRadius: 'var(--radius-md)',
+                      background: 'var(--color-bg)',
+                      border: '1px solid var(--color-border)',
+                      textDecoration: 'none',
+                      color: 'var(--color-text)',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#1877f2'
+                      e.currentTarget.style.transform = 'translateY(-2px)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--color-border)'
+                      e.currentTarget.style.transform = 'translateY(0)'
+                    }}
+                  >
+                    <div style={{ 
+                      width: '32px', height: '32px', borderRadius: '8px', 
+                      background: 'rgba(24, 119, 242, 0.1)', color: '#1877f2',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem'
+                    }}>
+                      <FaFacebook />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>Facebook</div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)' }}>Community Hub</div>
+                    </div>
+                  </a>
+
+                  {/* LinkedIn */}
+                  <a 
+                    href={linkedinUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.65rem',
+                      padding: '0.75rem 1rem',
+                      borderRadius: 'var(--radius-md)',
+                      background: 'var(--color-bg)',
+                      border: '1px solid var(--color-border)',
+                      textDecoration: 'none',
+                      color: 'var(--color-text)',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = '#0a66c2'
+                      e.currentTarget.style.transform = 'translateY(-2px)'
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--color-border)'
+                      e.currentTarget.style.transform = 'translateY(0)'
+                    }}
+                  >
+                    <div style={{ 
+                      width: '32px', height: '32px', borderRadius: '8px', 
+                      background: 'rgba(10, 102, 194, 0.1)', color: '#0a66c2',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.1rem'
+                    }}>
+                      <FaLinkedin />
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 600 }}>LinkedIn</div>
+                      <div style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)' }}>Corporate &amp; Careers</div>
+                    </div>
+                  </a>
+
                 </div>
               </div>
 
-              {/* Highlight Card 3: Trust Badges */}
+              {/* Service Level Agreement / Assurance */}
               <div 
                 style={{
-                  background: 'var(--color-bg-card)',
-                  border: '1px solid var(--color-border)',
-                  borderRadius: 'var(--radius-xl)',
-                  padding: '1.75rem',
+                  background: 'rgba(16, 185, 129, 0.05)',
+                  border: '1px solid rgba(16, 185, 129, 0.15)',
+                  borderRadius: 'var(--radius-lg)',
+                  padding: '1.25rem',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '1.25rem'
+                  gap: '1rem',
+                  marginTop: '0.5rem'
                 }}
               >
-                <FiShield style={{ fontSize: '2.5rem', color: 'var(--color-primary)', flexShrink: 0 }} />
+                <FiClock style={{ fontSize: '1.75rem', color: 'var(--color-primary)', flexShrink: 0 }} />
                 <div>
-                  <h4 style={{ fontSize: '1rem', color: 'var(--color-text)', margin: '0 0 0.25rem 0' }}>
-                    ARAI &amp; ISO Certified Manufacturing
+                  <h4 style={{ fontSize: '0.9rem', color: 'var(--color-text)', margin: '0 0 0.15rem 0', fontWeight: 700 }}>
+                    Fast Turnaround Guarantee
                   </h4>
-                  <p style={{ fontSize: '0.825rem', color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.4 }}>
-                    Heavy-duty EV chargers built to IEC standards with 3-Year comprehensive warranty.
+                  <p style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)', margin: 0, lineHeight: 1.4 }}>
+                    Custom engineering RFQ evaluations and commercial quotes dispatched within 4 business hours.
                   </p>
                 </div>
               </div>

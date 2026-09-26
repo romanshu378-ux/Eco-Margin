@@ -83,6 +83,8 @@ const defaultFooter = {
   linkedin: "https://linkedin.com/company/ecomargin",
   twitter: "https://twitter.com/ecomargin",
   facebook: "https://facebook.com/ecomargin",
+  instagram: "https://instagram.com/ecomargin",
+  youtube: "https://youtube.com/@ecomargin",
   copyright: "© 2026 EcoMargin Infrastructure Pvt. Ltd. All Rights Reserved."
 }
 
@@ -249,7 +251,9 @@ async function ensureSchemaSynchronizations() {
       "ALTER TABLE seo ADD COLUMN gtm_container_id VARCHAR(100) NULL;",
       "ALTER TABLE seo ADD COLUMN clarity_id VARCHAR(100) NULL;",
       "ALTER TABLE seo ADD COLUMN created_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP;",
-      "ALTER TABLE seo ADD COLUMN updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;"
+      "ALTER TABLE seo ADD COLUMN updated_at TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP;",
+      "ALTER TABLE footer ADD COLUMN youtube VARCHAR(255) NULL;",
+      "ALTER TABLE footer ADD COLUMN instagram VARCHAR(255) NULL;"
     ];
 
     await Promise.all(alterQueries.map(q => sequelize.query(q).catch(() => {})));

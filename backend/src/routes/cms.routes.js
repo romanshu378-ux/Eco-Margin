@@ -22,6 +22,8 @@ router.put('/manufacturing', protect, restrictTo('superadmin', 'admin', 'sales_r
 
 router.get('/footer', cmsController.getFooterCMS)
 router.put('/footer', protect, restrictTo('superadmin', 'admin', 'sales_rep'), cmsController.updateFooterCMS)
+router.get('/contact', cmsController.getFooterCMS)
+router.put('/contact', protect, restrictTo('superadmin', 'admin', 'sales_rep'), cmsController.updateFooterCMS)
 
 router.get('/seo', cmsController.getSEOCMS)
 router.put('/seo', protect, restrictTo('superadmin', 'admin', 'sales_rep'), cmsController.updateSEOCMS)

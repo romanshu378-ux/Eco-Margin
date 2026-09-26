@@ -266,13 +266,25 @@ CREATE TABLE IF NOT EXISTS menus (
 -- 21. Footer CMS Table
 CREATE TABLE IF NOT EXISTS footer (
   id INT AUTO_INCREMENT PRIMARY KEY,
+  company_name VARCHAR(255),
   company_bio TEXT,
   address TEXT,
   phone VARCHAR(50),
+  alt_phone VARCHAR(50),
   email VARCHAR(255),
+  support_email VARCHAR(255),
   whatsapp VARCHAR(50),
+  google_maps_embed_url TEXT,
+  business_hours VARCHAR(255),
+  linkedin VARCHAR(255),
+  twitter VARCHAR(255),
+  facebook VARCHAR(255),
+  instagram VARCHAR(255),
+  youtube VARCHAR(255),
   social_links JSON,
+  copyright VARCHAR(255),
   copyright_text VARCHAR(255),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
