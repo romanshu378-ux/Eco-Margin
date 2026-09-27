@@ -40,6 +40,7 @@ const logDbError = (err, context = 'Database Error') => {
 // ── 1. Start HTTP Express Server Immediately ──────────────────
 // Binds to 0.0.0.0 so Render detects server readiness immediately
 server.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`)
   console.log(`HTTP server listening on port ${PORT}`)
   console.log('Health endpoint available at /health')
   logger.info(`🚀 Server running on port ${PORT} bound to 0.0.0.0`)
@@ -52,24 +53,31 @@ const initDatabase = async () => {
     await sequelize.authenticate()
     logger.info('✅ MySQL Connected')
 
-    // Production-Safe Model Sync (Syncs missing tables ONLY, never force, never alter)
+    // Model sync: In production, skip table alterations if tables exist
     try {
-      await sequelize.sync({ force: false, alter: false })
-      logger.info('✅ Database synced successfully')
+      if (process.env.NODE_ENV !== 'production') {
+        await sequelize.sync({ force: false, alter: false })
+        logger.info('✅ Database synced successfully')
+      }
     } catch (syncErr) {
       logDbError(syncErr, 'Sequelize Model Sync Warning')
       logger.warn('⚠️ Proceeding with existing database schema...')
     }
 
-    // Initialize CMS defaults ONLY if tables are completely empty (0 records)
+    // Initialize CMS defaults safely (skips if data already exists)
     try {
       await initCMSDefaults()
     } catch (cmsErr) {
       logDbError(cmsErr, 'CMS Defaults Initializer Warning')
     }
+
+    // Mark database as ready so API endpoints can serve requests
+    app.setDatabaseReady(true)
+    logger.info('🚀 Database initialization complete — Application APIs operational')
   } catch (authErr) {
-    logDbError(authErr, 'MySQL Connection Warning')
-    logger.warn('⚠️ Database initialization delayed or offline; server remains healthy.')
+    app.setDatabaseReady(false)
+    logDbError(authErr, 'MySQL Connection Error')
+    logger.warn('⚠️ Database connection offline or delayed; /health continues responding.')
   }
 }
 

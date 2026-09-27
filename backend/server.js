@@ -37,6 +37,7 @@ const logDbError = (err, context = 'Database Error') => {
 // ── 1. Start HTTP Express Server Immediately ──────────────────
 // Binds to 0.0.0.0 so Render detects server readiness immediately
 app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on port ${PORT}`)
   console.log(`HTTP server listening on port ${PORT}`)
   console.log('Health endpoint available at /health')
   console.log(`
@@ -57,8 +58,10 @@ const startDatabase = async () => {
     console.log('✅ MySQL Connected')
 
     try {
-      await sequelize.sync({ force: false, alter: false })
-      console.log('✅ Database synced successfully')
+      if (process.env.NODE_ENV !== 'production') {
+        await sequelize.sync({ force: false, alter: false })
+        console.log('✅ Database synced successfully')
+      }
     } catch (syncErr) {
       logDbError(syncErr, 'Sequelize Model Sync Warning')
       console.warn('⚠️ Proceeding with existing database schema...')
@@ -69,7 +72,11 @@ const startDatabase = async () => {
     } catch (cmsErr) {
       logDbError(cmsErr, 'CMS Defaults Initializer Warning')
     }
+
+    app.setDatabaseReady(true)
+    console.log('🚀 Database initialization complete — Application APIs operational')
   } catch (error) {
+    app.setDatabaseReady(false)
     logDbError(error, 'Database Initialization Warning')
     console.warn('⚠️ Server running; database connection retry in background.')
   }

@@ -56,6 +56,7 @@ exports.getHomepageCMS = async (req, res) => {
 
   // 1. Return from in-memory cache if fresh
   if (homepageCacheData && Date.now() < homepageCacheExpiresAt) {
+    console.log('[Homepage API] cache hit');
     res.setHeader('X-Cache', 'HIT');
     return res.status(200).json({
       success: true,
@@ -64,6 +65,7 @@ exports.getHomepageCMS = async (req, res) => {
     });
   }
 
+  console.log('[Homepage API] cache miss - database query');
   res.setHeader('X-Cache', 'MISS');
 
   try {
@@ -71,13 +73,11 @@ exports.getHomepageCMS = async (req, res) => {
     if (!homepagePendingPromise) {
       homepagePendingPromise = (async () => {
         const dbStart = Date.now();
-        console.log('[Homepage API] database query started');
-
         const record = await Homepage.findOne({
           attributes: [
             'id', 'heroTitle', 'heroSubtitle', 'heroBackgroundImageUrl', 'heroVideoUrl', 'heroVideoPublicId',
             'primaryButtonText', 'secondaryButtonText', 'brochureButtonText',
-            'stats', 'sectionVisibility', 'createdAt', 'updatedAt'
+            'stats', 'sectionVisibility', 'updatedAt'
           ],
           order: [['id', 'ASC']],
           raw: true

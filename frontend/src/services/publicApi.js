@@ -3,16 +3,37 @@
 
 import api from './api'
 
+// In-flight promise & client cache to prevent multiple concurrent requests when multiple sections mount
+let homepageInFlightPromise = null
+let homepageClientCache = null
+let homepageClientCacheTime = 0
+const CLIENT_HOMEPAGE_TTL = 30 * 1000 // 30 seconds
+
 export const publicApi = {
-  // Fetch Homepage CMS Data
+  // Fetch Homepage CMS Data (Deduplicated across concurrent sections and hooks)
   getHomepage: async () => {
-    try {
-      const response = await api.get('/public/homepage')
-      return response
-    } catch (error) {
-      console.warn('[PublicAPI] Offline fallback for homepage:', error.message)
-      return { success: false, data: null }
+    const now = Date.now()
+    if (homepageClientCache && (now - homepageClientCacheTime < CLIENT_HOMEPAGE_TTL)) {
+      return homepageClientCache
     }
+
+    if (!homepageInFlightPromise) {
+      homepageInFlightPromise = api.get('/public/homepage')
+        .then(response => {
+          homepageClientCache = response
+          homepageClientCacheTime = Date.now()
+          return response
+        })
+        .catch(error => {
+          console.warn('[PublicAPI] Offline fallback for homepage:', error.message)
+          return { success: false, data: null }
+        })
+        .finally(() => {
+          homepageInFlightPromise = null
+        })
+    }
+
+    return homepageInFlightPromise
   },
   getHomepageCMS: async () => {
     return publicApi.getHomepage()

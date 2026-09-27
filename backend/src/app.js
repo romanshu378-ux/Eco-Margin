@@ -33,14 +33,28 @@ app.set('trust proxy', 1)
 app.use(cors(corsOptions))
 app.options('*', cors(corsOptions))
 
-// ── LIGHTWEIGHT HEALTH CHECK FOR RENDER & MONITORING ──────────────
-// Must respond immediately without querying the database or external services
-app.get('/health', (req, res) => {
+// ── DATABASE READINESS STATE TRACKER (PREVENTS STARTUP RACE CONDITIONS) ───
+let isDatabaseReady = false
+
+const setDatabaseReady = (ready) => {
+  isDatabaseReady = Boolean(ready)
+}
+
+app.setDatabaseReady = setDatabaseReady
+app.isDatabaseReady = () => isDatabaseReady
+
+// ── LIGHTWEIGHT HEALTH CHECKS FOR RENDER & MONITORING ─────────────
+// Must respond immediately (<2ms) without querying the database or external services
+const immediateHealthHandler = (req, res) => {
   res.status(200).json({
     success: true,
     status: 'ok'
   })
-})
+}
+
+app.get('/health', immediateHealthHandler)
+app.get('/api/health', immediateHealthHandler)
+app.get('/api/v1/health', immediateHealthHandler)
 
 // ── 2. SECURITY HEADERS (HELMET & CUSTOM SECURITY POLICIES) ───────
 app.use(
@@ -138,6 +152,23 @@ app.use('/uploads', express.static('uploads'))
 const seoController = require('./controllers/seoController')
 
 // ── 7. API ROUTES & ROOT SEO FILES ────────────────────────────────
+// Guard database-dependent API endpoints during server bootstrap to prevent race conditions
+app.use(['/api/v1', '/api'], (req, res, next) => {
+  const url = req.url || ''
+  if (url === '/health' || url.startsWith('/health')) {
+    return next()
+  }
+  if (process.env.NODE_ENV !== 'test' && !isDatabaseReady) {
+    res.setHeader('Retry-After', '2')
+    return res.status(503).json({
+      success: false,
+      message: 'Database initialization in progress. Please retry in a few seconds.',
+      status: 'service_unavailable'
+    })
+  }
+  next()
+})
+
 app.use('/api/v1', routes)
 app.use('/api', routes)
 
