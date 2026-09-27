@@ -53,7 +53,7 @@ function validateEnv() {
     throw new Error(`Missing required database variable(s): ${missingCore.join(', ')}`)
   }
 
-  console.log('🛡️ [Security] Environment variables checked successfully.')
+  console.log('Environment validated')
 }
 
 module.exports = { validateEnv }

@@ -264,21 +264,13 @@ async function ensureSchemaSynchronizations() {
   }
 }
 
-/**
- * Initializes default CMS content ONLY IF tables are completely empty.
- * If data already exists, skips expensive ALTER TABLE operations and table counts.
- */
 async function initCMSDefaults() {
   try {
-    // 0. Fast-path check: If CMS data already exists, skip expensive ALTER TABLE queries & counts
+    // Fast-path check: If CMS data already exists, skip seeding entirely
     const existingRecord = await Homepage.findOne({ attributes: ['id'], raw: true }).catch(() => null)
     if (existingRecord) {
-      logger.info('🛡️ CMS tables and defaults already verified; skipping schema alterations and seeding.')
       return
     }
-
-    // 1. First-time setup only: Ensure tables have required columns
-    await ensureSchemaSynchronizations()
 
     const homepageCount = await Homepage.count()
     if (homepageCount === 0) {

@@ -46,6 +46,7 @@ app.isDatabaseReady = () => isDatabaseReady
 // ── LIGHTWEIGHT HEALTH CHECKS FOR RENDER & MONITORING ─────────────
 // Must respond immediately (<2ms) without querying the database or external services
 const immediateHealthHandler = (req, res) => {
+  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate')
   res.status(200).json({
     success: true,
     status: 'ok'

@@ -46,6 +46,7 @@ const invalidateHomepageCache = () => {
   homepageCacheExpiresAt = 0;
   homepagePendingPromise = null;
 };
+exports.invalidateHomepageCache = invalidateHomepageCache;
 
 // ── 1. HOMEPAGE CMS ─────────────────────────────────────────────
 
@@ -73,20 +74,36 @@ exports.getHomepageCMS = async (req, res) => {
     if (!homepagePendingPromise) {
       homepagePendingPromise = (async () => {
         const dbStart = Date.now();
-        const record = await Homepage.findOne({
-          attributes: [
-            'id', 'heroTitle', 'heroSubtitle', 'heroBackgroundImageUrl', 'heroVideoUrl', 'heroVideoPublicId',
-            'primaryButtonText', 'secondaryButtonText', 'brochureButtonText',
-            'stats', 'sectionVisibility', 'updatedAt'
-          ],
-          order: [['id', 'ASC']],
-          raw: true
-        });
+        let record = null;
+        try {
+          record = await Homepage.findOne({
+            attributes: [
+              'id', 'heroTitle', 'heroSubtitle', 'heroBackgroundImageUrl', 'heroVideoUrl', 'heroVideoPublicId',
+              'primaryButtonText', 'secondaryButtonText', 'brochureButtonText',
+              'stats', 'sectionVisibility', 'updatedAt'
+            ],
+            order: [['id', 'ASC']],
+            raw: true
+          });
+        } catch (dbErr) {
+          console.warn('⚠️ [Homepage API] Database query notice:', dbErr.message || 'database query unreachable');
+          record = null;
+        }
 
         const dbDuration = Date.now() - dbStart;
         console.log(`[Homepage API] database query completed: ${dbDuration}ms`);
 
         const raw = record || {};
+
+        const parseJsonField = (val, fallback) => {
+          if (!val) return fallback;
+          if (typeof val === 'object') return val;
+          try {
+            return JSON.parse(val);
+          } catch (e) {
+            return fallback;
+          }
+        };
 
         const formatted = {
           ...raw,
@@ -101,16 +118,16 @@ exports.getHomepageCMS = async (req, res) => {
           primaryButtonText: raw.primaryButtonText || "Request Quote",
           secondaryButtonText: raw.secondaryButtonText || "Contact Sales",
           brochureButtonText: raw.brochureButtonText || "Download Brochure",
-          stats: raw.stats || [
+          stats: parseJsonField(raw.stats, [
             { label: "AC & DC Fast Range", value: "3.3kW – 240kW" },
             { label: "Certified Factory", value: "ISO & ARAI" },
             { label: "Network Uptime", value: "99.8%" }
-          ],
-          sectionVisibility: raw.sectionVisibility || {
+          ]),
+          sectionVisibility: parseJsonField(raw.sectionVisibility, {
             hero: true, intro: true, products: true, manufacturing: true,
             services: true, whyChooseUs: true, counter: true, industries: true,
             gallery: true, blogs: true, faq: true, contactCta: true
-          },
+          }),
           updated_at: raw.updatedAt || raw.updated_at || new Date().toISOString(),
           updatedAt: raw.updatedAt || raw.updated_at || new Date().toISOString()
         };

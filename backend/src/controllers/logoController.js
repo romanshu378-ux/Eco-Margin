@@ -14,13 +14,9 @@ const setNoCache = (res) => {
   res.setHeader('Expires', '0')
 }
 
-// Safely ensure website_logo table exists
+// Schema is managed via models/migrations; no runtime sync
 async function autoMigrateLogosSchema() {
-  try {
-    await Logo.sync({ alter: false })
-  } catch (err) {
-    // Table already exists or initialized
-  }
+  // No-op at runtime to eliminate database DDL lock overhead
 }
 
 /**
