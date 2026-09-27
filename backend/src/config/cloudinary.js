@@ -10,23 +10,17 @@ const cloudName = process.env.CLOUDINARY_CLOUD_NAME
 const apiKey = process.env.CLOUDINARY_API_KEY
 const apiSecret = process.env.CLOUDINARY_API_SECRET
 
-if (!cloudName) {
-  throw new Error('CLOUDINARY_CLOUD_NAME environment variable is required')
+if (cloudName && apiKey && apiSecret) {
+  // ── Configure Cloudinary Credentials ──────────────────────────────
+  cloudinary.config({
+    cloud_name: cloudName,
+    api_key: apiKey,
+    api_secret: apiSecret,
+    secure: true,
+  })
+} else {
+  console.warn('ℹ️ [Cloudinary] Credentials not configured; media upload features run in fallback mode.')
 }
-if (!apiKey) {
-  throw new Error('CLOUDINARY_API_KEY environment variable is required')
-}
-if (!apiSecret) {
-  throw new Error('CLOUDINARY_API_SECRET environment variable is required')
-}
-
-// ── Configure Cloudinary Credentials ──────────────────────────────
-cloudinary.config({
-  cloud_name: cloudName,
-  api_key: apiKey,
-  api_secret: apiSecret,
-  secure: true,
-})
 
 /**
  * Helper to check if Cloudinary SDK is initialized with valid credentials

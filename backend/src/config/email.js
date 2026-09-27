@@ -10,20 +10,17 @@ const apiKey = process.env.BREVO_API_KEY
 const emailCcArchive = process.env.EMAIL_CC_ARCHIVE
 const mailFrom = process.env.MAIL_FROM
 
-if (!apiKey) {
-  throw new Error('BREVO_API_KEY environment variable is required')
+if (!apiKey || !mailFrom) {
+  console.warn('ℹ️ [Brevo Email] Credentials not configured; email dispatch will be unavailable until set.')
+} else {
+  // Log status without printing secrets
+  console.log('Brevo Configured (Main Transporter):')
+  console.log(`- BREVO_API_KEY configured: ${!!apiKey}`)
+  console.log(`- MAIL_FROM configured: ${!!mailFrom}`)
+  console.log(`- ADMIN_EMAIL configured: ${!!process.env.ADMIN_EMAIL}`)
+  console.log(`- ADMIN_NOTIFY_EMAIL configured: ${!!process.env.ADMIN_NOTIFY_EMAIL}`)
+  console.log(`- EMAIL_CC_ARCHIVE configured: ${!!emailCcArchive}`)
 }
-if (!mailFrom) {
-  throw new Error('MAIL_FROM environment variable is required')
-}
-
-// Log status without printing secrets
-console.log('Brevo Configured (Main Transporter):')
-console.log(`- BREVO_API_KEY configured: ${!!apiKey}`)
-console.log(`- MAIL_FROM configured: ${!!mailFrom}`)
-console.log(`- ADMIN_EMAIL configured: ${!!process.env.ADMIN_EMAIL}`)
-console.log(`- ADMIN_NOTIFY_EMAIL configured: ${!!process.env.ADMIN_NOTIFY_EMAIL}`)
-console.log(`- EMAIL_CC_ARCHIVE configured: ${!!emailCcArchive}`)
 
 function isValidEmail(email) {
   if (!email) return false
@@ -57,6 +54,10 @@ const promiseTimeout = (promise, ms) => {
 }
 
 const sendEmail = async ({ to, subject, html, text }) => {
+  if (!apiKey || !mailFrom) {
+    throw new Error('Email sending failed: Brevo credentials (BREVO_API_KEY, MAIL_FROM) are not configured.')
+  }
+
   console.log('Sending email... Using Brevo API')
   console.log(`Recipient: ${to}`)
   console.log(`Subject: ${subject}`)

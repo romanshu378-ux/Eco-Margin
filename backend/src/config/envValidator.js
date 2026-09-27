@@ -2,17 +2,16 @@
 // src/config/envValidator.js
 'use strict'
 
-const requiredEnvVars = [
-  'NODE_ENV',
-  'PORT',
+// Essential environment variables required for server and database operation
+const coreRequiredEnvVars = [
   'DB_HOST',
-  'DB_PORT',
   'DB_NAME',
   'DB_USER',
   'DB_PASSWORD',
-  'DB_SSL',
-  'JWT_SECRET',
-  'JWT_REFRESH_SECRET',
+]
+
+// Optional integration variables (warn instead of crashing server startup)
+const optionalIntegrationVars = [
   'BREVO_API_KEY',
   'MAIL_FROM',
   'ADMIN_EMAIL',
@@ -20,35 +19,41 @@ const requiredEnvVars = [
   'CLOUDINARY_CLOUD_NAME',
   'CLOUDINARY_API_KEY',
   'CLOUDINARY_API_SECRET',
-  'SITE_URL',
-  'CLIENT_URL',
-  'ALLOWED_ORIGINS',
-  'RATE_LIMIT_WINDOW_MS',
-  'RATE_LIMIT_MAX_REQUESTS',
-  'AUTH_RATE_LIMIT_MAX',
-  'API_VERSION',
+  'JWT_REFRESH_SECRET'
 ]
 
 /**
- * Validates that all required environment variables are present and non-empty.
- * Throws a startup error if any variable is missing.
+ * Validates that core environment variables are present.
+ * Issues warnings for unconfigured external services without blocking server readiness.
  */
 function validateEnv() {
-  const missingVars = []
+  const missingCore = []
 
-  for (const key of requiredEnvVars) {
+  for (const key of coreRequiredEnvVars) {
     if (process.env[key] === undefined || process.env[key] === null || String(process.env[key]).trim() === '') {
-      missingVars.push(key)
+      missingCore.push(key)
     }
   }
 
-  if (missingVars.length > 0) {
-    const errorMsg = `❌ [FATAL] Application startup aborted. Missing required environment variable(s):\n${missingVars.map((v) => `   - ${v}`).join('\n')}`
-    console.error(errorMsg)
-    throw new Error(`Missing environment variable(s): ${missingVars.join(', ')}`)
+  // Warn on missing optional integrations (e.g. Brevo, Cloudinary)
+  const missingOptional = []
+  for (const key of optionalIntegrationVars) {
+    if (process.env[key] === undefined || process.env[key] === null || String(process.env[key]).trim() === '') {
+      missingOptional.push(key)
+    }
   }
 
-  console.log('🛡️ [Security] All required environment variables validated successfully.')
+  if (missingOptional.length > 0) {
+    console.warn(`ℹ️ [Notice] Optional integration variables not set (external features will run in fallback/mock mode):\n${missingOptional.map(v => `   - ${v}`).join('\n')}`)
+  }
+
+  if (missingCore.length > 0 && process.env.NODE_ENV === 'production') {
+    const errorMsg = `❌ [FATAL] Production database configuration missing:\n${missingCore.map((v) => `   - ${v}`).join('\n')}`
+    console.error(errorMsg)
+    throw new Error(`Missing required database variable(s): ${missingCore.join(', ')}`)
+  }
+
+  console.log('🛡️ [Security] Environment variables checked successfully.')
 }
 
 module.exports = { validateEnv }

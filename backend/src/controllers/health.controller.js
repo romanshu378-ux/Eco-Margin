@@ -4,8 +4,6 @@
 exports.checkHealth = (req, res) => {
   res.status(200).json({
     success: true,
-    status: 'healthy',
-    service: 'EcoMargin Backend',
-    timestamp: new Date().toISOString()
+    status: 'ok'
   });
 };

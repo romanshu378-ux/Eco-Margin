@@ -34,57 +34,98 @@ const setNoCache = (res) => {
   res.setHeader('Expires', '0');
 }
 
+// Public Homepage CMS In-Memory Cache (TTL: 60 seconds)
+let homepageCacheData = null;
+let homepageCacheExpiresAt = 0;
+let homepagePendingPromise = null;
+const HOMEPAGE_CACHE_TTL_MS = 60 * 1000; // 60 seconds
+
+// Cache invalidator helper (called whenever Admin updates Homepage CMS)
+const invalidateHomepageCache = () => {
+  homepageCacheData = null;
+  homepageCacheExpiresAt = 0;
+  homepagePendingPromise = null;
+};
+
 // ── 1. HOMEPAGE CMS ─────────────────────────────────────────────
 
-// GET Homepage CMS from database
+// GET Homepage CMS from database or in-memory cache
 exports.getHomepageCMS = async (req, res) => {
   const reqStart = Date.now();
-  console.log('[Homepage API] request started');
   setCacheHeaders(req, res);
-  try {
-    console.log('[Homepage API] database query started');
-    const dbStart = Date.now();
-    
-    const record = await Homepage.findOne({
-      attributes: [
-        'id', 'heroTitle', 'heroSubtitle', 'heroBackgroundImageUrl', 'heroVideoUrl', 'heroVideoPublicId',
-        'primaryButtonText', 'secondaryButtonText', 'brochureButtonText',
-        'stats', 'sectionVisibility', 'createdAt', 'updatedAt'
-      ]
+
+  // 1. Return from in-memory cache if fresh
+  if (homepageCacheData && Date.now() < homepageCacheExpiresAt) {
+    res.setHeader('X-Cache', 'HIT');
+    return res.status(200).json({
+      success: true,
+      message: "Fetched Successfully",
+      data: homepageCacheData
     });
+  }
 
-    const dbDuration = Date.now() - dbStart;
-    console.log(`[Homepage API] database query completed: ${dbDuration}ms`);
+  res.setHeader('X-Cache', 'MISS');
 
-    const raw = record ? record.toJSON() : {};
-    
-    // Ensure both hero_background_image_url and heroVideoUrl are formatted in payload
-    const formattedData = {
-      ...raw,
-      heroTitle: raw.heroTitle || "Powering India's EV Infrastructure",
-      heroSubtitle: raw.heroSubtitle || "Design • Manufacturing • EPC Installation • OCPP Software • AMC Services",
-      hero_background_image_url: raw.heroBackgroundImageUrl || raw.hero_background_image_url || '',
-      heroBackgroundImageUrl: raw.heroBackgroundImageUrl || raw.hero_background_image_url || '',
-      heroVideoUrl: raw.heroVideoUrl || raw.hero_video_url || '',
-      background_video_url: raw.heroVideoUrl || raw.hero_video_url || '',
-      heroVideoPublicId: raw.heroVideoPublicId || raw.hero_video_public_id || '',
-      video_public_id: raw.heroVideoPublicId || raw.hero_video_public_id || '',
-      primaryButtonText: raw.primaryButtonText || "Request Quote",
-      secondaryButtonText: raw.secondaryButtonText || "Contact Sales",
-      brochureButtonText: raw.brochureButtonText || "Download Brochure",
-      stats: raw.stats || [
-        { label: "AC & DC Fast Range", value: "3.3kW – 240kW" },
-        { label: "Certified Factory", value: "ISO & ARAI" },
-        { label: "Network Uptime", value: "99.8%" }
-      ],
-      sectionVisibility: raw.sectionVisibility || {
-        hero: true, intro: true, products: true, manufacturing: true,
-        services: true, whyChooseUs: true, counter: true, industries: true,
-        gallery: true, blogs: true, faq: true, contactCta: true
-      },
-      updated_at: raw.updatedAt || raw.updated_at || new Date().toISOString(),
-      updatedAt: raw.updatedAt || raw.updated_at || new Date().toISOString()
-    };
+  try {
+    // 2. Request deduplication: share single in-flight DB query among concurrent requests
+    if (!homepagePendingPromise) {
+      homepagePendingPromise = (async () => {
+        const dbStart = Date.now();
+        console.log('[Homepage API] database query started');
+
+        const record = await Homepage.findOne({
+          attributes: [
+            'id', 'heroTitle', 'heroSubtitle', 'heroBackgroundImageUrl', 'heroVideoUrl', 'heroVideoPublicId',
+            'primaryButtonText', 'secondaryButtonText', 'brochureButtonText',
+            'stats', 'sectionVisibility', 'createdAt', 'updatedAt'
+          ],
+          order: [['id', 'ASC']],
+          raw: true
+        });
+
+        const dbDuration = Date.now() - dbStart;
+        console.log(`[Homepage API] database query completed: ${dbDuration}ms`);
+
+        const raw = record || {};
+
+        const formatted = {
+          ...raw,
+          heroTitle: raw.heroTitle || "Powering India's EV Infrastructure",
+          heroSubtitle: raw.heroSubtitle || "Design • Manufacturing • EPC Installation • OCPP Software • AMC Services",
+          hero_background_image_url: raw.heroBackgroundImageUrl || raw.hero_background_image_url || '',
+          heroBackgroundImageUrl: raw.heroBackgroundImageUrl || raw.hero_background_image_url || '',
+          heroVideoUrl: raw.heroVideoUrl || raw.hero_video_url || '',
+          background_video_url: raw.heroVideoUrl || raw.hero_video_url || '',
+          heroVideoPublicId: raw.heroVideoPublicId || raw.hero_video_public_id || '',
+          video_public_id: raw.heroVideoPublicId || raw.hero_video_public_id || '',
+          primaryButtonText: raw.primaryButtonText || "Request Quote",
+          secondaryButtonText: raw.secondaryButtonText || "Contact Sales",
+          brochureButtonText: raw.brochureButtonText || "Download Brochure",
+          stats: raw.stats || [
+            { label: "AC & DC Fast Range", value: "3.3kW – 240kW" },
+            { label: "Certified Factory", value: "ISO & ARAI" },
+            { label: "Network Uptime", value: "99.8%" }
+          ],
+          sectionVisibility: raw.sectionVisibility || {
+            hero: true, intro: true, products: true, manufacturing: true,
+            services: true, whyChooseUs: true, counter: true, industries: true,
+            gallery: true, blogs: true, faq: true, contactCta: true
+          },
+          updated_at: raw.updatedAt || raw.updated_at || new Date().toISOString(),
+          updatedAt: raw.updatedAt || raw.updated_at || new Date().toISOString()
+        };
+
+        return formatted;
+      })().finally(() => {
+        homepagePendingPromise = null;
+      });
+    }
+
+    const formattedData = await homepagePendingPromise;
+
+    // Cache the result for subsequent requests
+    homepageCacheData = formattedData;
+    homepageCacheExpiresAt = Date.now() + HOMEPAGE_CACHE_TTL_MS;
 
     const totalDuration = Date.now() - reqStart;
     console.log(`[Homepage API] response completed: ${totalDuration}ms`);
@@ -174,6 +215,9 @@ exports.updateHomepageCMS = async (req, res) => {
       updated_at: record.updatedAt,
       updatedAt: record.updatedAt
     };
+
+    // Invalidate public homepage cache so changes are immediately visible
+    invalidateHomepageCache();
 
     console.log('✅ [Database Commit] Homepage CMS updated successfully in MySQL table');
     return res.status(200).json({

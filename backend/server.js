@@ -3,6 +3,10 @@
 
 'use strict'
 
+// ── Startup Logging (Render & Diagnostics) ───────────────────
+console.log('Server starting...')
+console.log('Database initialization...')
+
 require('dotenv').config()
 const app = require('./src/app')
 const { sequelize, connectDB } = require('./src/config/db.config')
@@ -30,19 +34,28 @@ const logDbError = (err, context = 'Database Error') => {
   }
 }
 
-// Initialize Database connection then start Express server
-const startServer = async () => {
-  try {
-    // 1. Attempt connection to MySQL / TiDB
-    try {
-      await connectDB()
-      console.log('✅ MySQL Connected')
-    } catch (connErr) {
-      logDbError(connErr, 'MySQL Connection Failed')
-      process.exit(1)
-    }
+// ── 1. Start HTTP Express Server Immediately ──────────────────
+// Binds to 0.0.0.0 so Render detects server readiness immediately
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`HTTP server listening on port ${PORT}`)
+  console.log('Health endpoint available at /health')
+  console.log(`
+=====================================================
+📡 Environment : ${process.env.NODE_ENV || 'production'}
+🌐 Port        : ${PORT}
+🗄️ Database    : ${process.env.DB_NAME || 'ecomargin_db'}
+🔒 CORS Allowed Origins:
+   ${getAllowedOrigins().join('\n   ')}
+=====================================================
+  `)
+})
 
-    // 2. Production-Safe Model Sync (Syncs missing tables ONLY, never force, never alter)
+// ── 2. Asynchronous Database Initialization (Non-blocking) ───
+const startDatabase = async () => {
+  try {
+    await connectDB(3, 2000)
+    console.log('✅ MySQL Connected')
+
     try {
       await sequelize.sync({ force: false, alter: false })
       console.log('✅ Database synced successfully')
@@ -51,30 +64,15 @@ const startServer = async () => {
       console.warn('⚠️ Proceeding with existing database schema...')
     }
 
-    // 3. Initialize CMS defaults ONLY if tables are completely empty
     try {
       await initCMSDefaults()
     } catch (cmsErr) {
       logDbError(cmsErr, 'CMS Defaults Initializer Warning')
     }
-
-    // 4. Listen on PORT
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`)
-      console.log(`
-=====================================================
-📡 Environment : ${process.env.NODE_ENV || 'production'}
-🌐 Port        : ${PORT}
-🗄️ Database    : ${process.env.DB_NAME || 'ecomargin_db'}
-🔒 CORS Allowed Origins:
-   ${getAllowedOrigins().join('\n   ')}
-=====================================================
-      `)
-    })
   } catch (error) {
-    logDbError(error, 'Fatal Server Start Error')
-    process.exit(1)
+    logDbError(error, 'Database Initialization Warning')
+    console.warn('⚠️ Server running; database connection retry in background.')
   }
 }
 
-startServer()
+startDatabase()

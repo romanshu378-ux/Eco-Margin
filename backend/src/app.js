@@ -33,6 +33,15 @@ app.set('trust proxy', 1)
 app.use(cors(corsOptions))
 app.options('*', cors(corsOptions))
 
+// ── LIGHTWEIGHT HEALTH CHECK FOR RENDER & MONITORING ──────────────
+// Must respond immediately without querying the database or external services
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    success: true,
+    status: 'ok'
+  })
+})
+
 // ── 2. SECURITY HEADERS (HELMET & CUSTOM SECURITY POLICIES) ───────
 app.use(
   helmet({

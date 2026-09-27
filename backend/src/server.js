@@ -3,6 +3,10 @@
 
 'use strict'
 
+// ── Startup Logging (Render & Diagnostics) ───────────────────
+console.log('Server starting...')
+console.log('Database initialization...')
+
 const http = require('http')
 const app = require('./app')
 const { sequelize } = require('./config/database')
@@ -33,19 +37,22 @@ const logDbError = (err, context = 'Database Error') => {
   }
 }
 
-// ── Database + Server Bootstrap ───────────────────────────────
-const bootstrap = async () => {
-  try {
-    // 1. Authenticate Database Connection
-    try {
-      await sequelize.authenticate()
-      logger.info('✅ MySQL Connected')
-    } catch (authErr) {
-      logDbError(authErr, 'MySQL Authentication Failed')
-      process.exit(1)
-    }
+// ── 1. Start HTTP Express Server Immediately ──────────────────
+// Binds to 0.0.0.0 so Render detects server readiness immediately
+server.listen(PORT, '0.0.0.0', () => {
+  console.log(`HTTP server listening on port ${PORT}`)
+  console.log('Health endpoint available at /health')
+  logger.info(`🚀 Server running on port ${PORT} bound to 0.0.0.0`)
+})
 
-    // 2. Production-Safe Model Sync (Syncs missing tables ONLY, never force, never alter)
+// ── 2. Asynchronous Database Initialization (Non-blocking) ───
+// Server handles /health immediately while DB connects in background
+const initDatabase = async () => {
+  try {
+    await sequelize.authenticate()
+    logger.info('✅ MySQL Connected')
+
+    // Production-Safe Model Sync (Syncs missing tables ONLY, never force, never alter)
     try {
       await sequelize.sync({ force: false, alter: false })
       logger.info('✅ Database synced successfully')
@@ -54,25 +61,19 @@ const bootstrap = async () => {
       logger.warn('⚠️ Proceeding with existing database schema...')
     }
 
-    // 3. Initialize CMS defaults ONLY if tables are completely empty (0 records)
+    // Initialize CMS defaults ONLY if tables are completely empty (0 records)
     try {
       await initCMSDefaults()
     } catch (cmsErr) {
       logDbError(cmsErr, 'CMS Defaults Initializer Warning')
     }
-
-    // 4. Start HTTP Express Server
-    server.listen(PORT, () => {
-      logger.info(`🚀 Server running on port ${PORT}`)
-      logger.info(`📍 Health check endpoint: http://localhost:${PORT}/api/health`)
-    })
-  } catch (error) {
-    logDbError(error, 'Fatal Server Bootstrap Crash')
-    process.exit(1)
+  } catch (authErr) {
+    logDbError(authErr, 'MySQL Connection Warning')
+    logger.warn('⚠️ Database initialization delayed or offline; server remains healthy.')
   }
 }
 
-bootstrap()
+initDatabase()
 
 // ── Graceful Shutdown ─────────────────────────────────────────
 const gracefulShutdown = (signal) => {
