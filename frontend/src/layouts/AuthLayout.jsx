@@ -14,9 +14,8 @@ export default function AuthLayout() {
     }}>
       {/* Simple Header */}
       <header style={{ padding: '1.5rem', display: 'flex', justifyContent: 'center' }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <div style={{ color: 'var(--color-primary)' }}><LogoIcon size={32} /></div>
-          <span style={{ fontFamily: 'Outfit', fontSize: '1.5rem', fontWeight: '700' }}>EcoMargin</span>
+        <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }} aria-label="EcoMargin Home">
+          <img src="/logo.png" alt="EcoMargin Logo" className="navbar-brand-logo" style={{ height: '48px', width: 'auto' }} />
         </Link>
       </header>
 

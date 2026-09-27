@@ -208,6 +208,29 @@ footer, footer * {
   }
 }
 
+/* ── Brand Logo Styling & Responsiveness ── */
+.navbar-brand-logo {
+  height: 44px;
+  width: auto;
+  max-width: 220px;
+  object-fit: contain;
+  display: block;
+  transition: transform var(--transition-fast), filter var(--transition-fast);
+}
 
+.navbar-brand-logo:hover {
+  transform: scale(1.02);
+}
 
+[data-theme='dark'] .navbar-brand-logo {
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.75)) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.5));
+}
 
+.footer-brand-logo {
+  height: 44px;
+  width: auto;
+  max-width: 220px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 0 1px rgba(255, 255, 255, 0.75));
+}

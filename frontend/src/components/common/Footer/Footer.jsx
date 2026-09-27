@@ -81,11 +81,12 @@ export default function Footer() {
         <div className="footer-grid" style={{ marginBottom: '3rem' }}>
           {/* Company Bio */}
           <div className="footer-company-bio" style={{ minWidth: 0 }}>
-            <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '1.25rem' }}>
-              <div style={{ color: 'var(--color-primary)' }}><LogoIcon size={30} /></div>
-              <span style={{ fontFamily: 'Outfit', fontSize: '1.4rem', fontWeight: '800', color: '#ffffff' }}>
-                EcoMargin
-              </span>
+            <Link to="/" style={{ display: 'flex', alignItems: 'center', marginBottom: '1.25rem', textDecoration: 'none' }} aria-label="EcoMargin Home">
+              <img 
+                src={logos?.footer?.imageUrl || logos?.white_logo?.imageUrl || '/logo.png'} 
+                alt="EcoMargin Logo" 
+                className="footer-brand-logo" 
+              />
             </Link>
             <p style={{ color: 'var(--color-text-muted)', marginBottom: '1.25rem', fontSize: '0.875rem', lineHeight: 1.6, maxWidth: '360px' }}>
               {companyName ? `${companyName} is a leading OEM EV Charger Manufacturer and Infrastructure EPC Contractor in India.` : 'EcoMargin LLP is a leading OEM EV Charger Manufacturer & Infrastructure EPC Contractor in India.'}

@@ -16,7 +16,7 @@ export default function Navbar() {
   const location = useLocation()
 
   const [logoError, setLogoError] = useState(false)
-  const headerLogoUrl = logoError ? null : (logos?.header?.imageUrl || logos?.white_logo?.imageUrl)
+  const headerLogoUrl = logoError ? '/logo.png' : (logos?.header?.imageUrl || logos?.white_logo?.imageUrl || '/logo.png')
   const headerLogoAlt = logos?.header?.altText || 'EcoMargin Corporate Logo'
 
   useEffect(() => {
@@ -74,29 +74,15 @@ export default function Navbar() {
         <div className="container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           
           {/* Corporate Logo */}
-          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-            {headerLogoUrl ? (
-              <img 
-                src={headerLogoUrl} 
-                alt={headerLogoAlt} 
-                onError={() => setLogoError(true)}
-                style={{ height: '36px', width: 'auto', objectFit: 'contain' }} 
-              />
-            ) : (
-              <>
-                <div style={{ color: 'var(--color-primary)' }}>
-                  <LogoIcon size={34} />
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column' }}>
-                  <span style={{ fontFamily: 'Outfit', fontSize: '1.4rem', fontWeight: '800', letterSpacing: '0.5px', color: 'var(--color-text)', lineHeight: 1.1 }}>
-                    EcoMargin
-                  </span>
-                  <span style={{ fontSize: '0.65rem', fontWeight: 600, color: 'var(--color-primary)', letterSpacing: '1px', textTransform: 'uppercase' }}>
-                    EV Infrastructure
-                  </span>
-                </div>
-              </>
-            )}
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', textDecoration: 'none' }} aria-label="EcoMargin Home">
+            <img 
+              src={headerLogoUrl} 
+              alt={headerLogoAlt} 
+              onError={() => {
+                if (!logoError) setLogoError(true)
+              }}
+              className="navbar-brand-logo"
+            />
           </Link>
 
           {/* Desktop Nav */}
@@ -202,8 +188,10 @@ export default function Navbar() {
               }}
             >
               {/* Drawer Header */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--color-border)', width: '100%', minWidth: 0, background: 'var(--color-bg-card)' }}>
-                <span style={{ fontFamily: 'Outfit', fontWeight: 800, fontSize: '1.25rem', color: 'var(--color-text)' }}>Menu</span>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem 1.25rem', borderBottom: '1px solid var(--color-border)', width: '100%', minWidth: 0, background: 'var(--color-bg-card)' }}>
+                <Link to="/" onClick={() => setMobileMenuOpen(false)} style={{ display: 'flex', alignItems: 'center' }}>
+                  <img src={headerLogoUrl} alt={headerLogoAlt} className="navbar-brand-logo" style={{ height: '36px', width: 'auto' }} />
+                </Link>
                 <button
                   onClick={() => setMobileMenuOpen(false)}
                   aria-label="Close menu"

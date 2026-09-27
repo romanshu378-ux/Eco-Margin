@@ -43,7 +43,7 @@ export default function InstallPopup() {
 
   const logoUrl = logoError
     ? 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" style="background:%230F9D58"><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="white" font-weight="bold" font-family="sans-serif" font-size="14">EM</text></svg>'
-    : 'https://res.cloudinary.com/dcumpbswm/image/upload/v1785843387/dark_mfegwj.png';
+    : '/android-chrome-192x192.png';
 
   return (
     <AnimatePresence>

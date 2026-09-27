@@ -20,7 +20,10 @@ export const getOrganizationSchema = (companyName: string = 'EcoMargin LLP') => 
     'name': companyName,
     'alternateName': ['EcoMargin', 'Eco Margin'],
     'url': siteUrl,
-    'logo': 'https://res.cloudinary.com/dcumpbswm/image/upload/v1785843387/dark_mfegwj.png',
+    'logo': {
+      '@type': 'ImageObject',
+      'url': `${siteUrl}/logo-stacked.png`
+    },
     'email': 'support@ecomargin.in',
     'telephone': '+91-8302313065',
     'address': {
@@ -103,8 +106,11 @@ export const getLocalBusinessSchema = (
     'name': companyName,
     'legalName': 'EcoMargin LLP',
     'url': siteUrl,
-    'logo': 'https://res.cloudinary.com/dcumpbswm/image/upload/v1785843387/dark_mfegwj.png',
-    'image': ogImg || 'https://res.cloudinary.com/dcumpbswm/image/upload/v1785843387/dark_mfegwj.png',
+    'logo': {
+      '@type': 'ImageObject',
+      'url': `${siteUrl}/logo-stacked.png`
+    },
+    'image': ogImg || `${siteUrl}/logo-stacked.png`,
     'description': description,
     'telephone': phone || '+91-8302313065',
     'email': email || 'support@ecomargin.in',
@@ -251,7 +257,7 @@ export const getArticleSchema = (article: ArticleDetails) => {
       'name': article.publisherName || 'EcoMargin LLP',
       'logo': {
         '@type': 'ImageObject',
-        'url': article.publisherLogo || 'https://res.cloudinary.com/dcumpbswm/image/upload/v1785843387/dark_mfegwj.png'
+        'url': article.publisherLogo || `${siteUrl}/logo-stacked.png`
       }
     },
     'mainEntityOfPage': {

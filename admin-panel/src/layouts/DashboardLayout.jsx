@@ -96,9 +96,9 @@ export default function DashboardLayout() {
     <div className="app-container">
       {/* Sidebar */}
       <aside className="sidebar" style={{ width: '265px', background: 'var(--bg-sidebar)', borderRight: '1px solid var(--border)', display: 'flex', flexDirection: 'column' }}>
-        <div style={{ padding: '1.5rem', borderBottom: '1px solid var(--border)' }}>
-          <h2 style={{ fontSize: '1.2rem', color: 'var(--primary)', margin: 0, fontWeight: 800 }}>EcoMargin</h2>
-          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>Enterprise Control Center</div>
+        <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid var(--border)', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+          <img src="/logo.png" alt="EcoMargin Logo" style={{ height: '38px', width: 'auto', maxWidth: '180px', objectFit: 'contain' }} />
+          <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', letterSpacing: '0.5px' }}>Enterprise Control Center</div>
         </div>
         
         <nav style={{ flex: 1, padding: '1rem', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
