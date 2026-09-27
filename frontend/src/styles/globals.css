@@ -111,10 +111,6 @@ input, textarea, select {
   min-width: 0 !important;
 }
 
-/* Hide PWA Install Popup when mobile menu is open */
-body.mobile-menu-open .pwa-install-popup {
-  display: none !important;
-}
 
 @media (min-width: 640px) {
   .sm\:grid-cols-2 {

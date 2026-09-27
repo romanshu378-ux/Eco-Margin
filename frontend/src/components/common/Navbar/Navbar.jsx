@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import LogoIcon from '@assets/icons/LogoIcon'
 import Button from '../../ui/Button/Button'
 import QuoteModal from '../QuoteModal/QuoteModal'
-import InstallAppButton from '../InstallAppButton/InstallAppButton'
 import ThemeToggle from '../ThemeToggle/ThemeToggle'
 import { useLogos } from '../../../hooks/useCMS'
 
@@ -112,7 +111,6 @@ export default function Navbar() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
             <ThemeToggle variant="header" />
             <div className="hidden lg:flex desktop-actions" style={{ alignItems: 'center', gap: '0.75rem' }}>
-              <InstallAppButton placement="nav" />
               <Link to="/enquiry">
                 <Button variant="primary" size="sm">
                   Enquiry
@@ -249,7 +247,6 @@ export default function Navbar() {
 
                 <div style={{ marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid var(--color-border)', display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', minWidth: 0 }}>
                   <ThemeToggle variant="mobile" />
-                  <InstallAppButton placement="drawer" />
                   <Link to="/enquiry" onClick={() => setMobileMenuOpen(false)} style={{ width: '100%' }}>
                     <Button variant="primary" fullWidth style={{ height: '48px', flexShrink: 0, fontWeight: 700 }}>
                       Enquiry
