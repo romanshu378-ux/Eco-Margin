@@ -1,12 +1,14 @@
 // EcoMargin PWA — Enterprise Service Worker
 // public/sw.js
 
-const CACHE_NAME = 'ecomargin-cache-v4';
+const CACHE_NAME = 'ecomargin-cache-v5';
 const STATIC_ASSETS = [
   '/offline.html',
-  '/favicon.ico',
-  '/favicon.png',
-  '/site.webmanifest'
+  '/favicon-32x32.png?v=3',
+  '/favicon-16x16.png?v=3',
+  '/favicon-48x48.png?v=3',
+  '/apple-touch-icon.png?v=3',
+  '/site.webmanifest?v=3'
 ];
 
 // Install: Cache static fallback assets only (DO NOT pre-cache index.html or hashed JS/CSS bundles)
