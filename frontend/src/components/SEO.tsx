@@ -11,12 +11,14 @@ import {
   getWebsiteSchema,
   getBreadcrumbSchema,
   getProductSchema,
+  getServiceSchema,
   getFAQSchema,
   getOrganizationSchema,
   getWebPageSchema,
   getImageObjectSchema,
   getArticleSchema,
   ProductDetails,
+  ServiceDetails,
   FAQItem,
   ArticleDetails
 } from '../utils/schema';
@@ -29,10 +31,12 @@ export interface SEOProps {
   url?: string;
   canonical?: string;
   pageRoute?: string;
+  robots?: string;
   schemaType?: 'Organization' | 'LocalBusiness' | 'WebSite' | 'Product' | 'Service' | 'FAQPage';
   schemaData?: any;
   product?: ProductDetails | null;
   products?: ProductDetails[] | null;
+  service?: ServiceDetails | null;
   article?: ArticleDetails | null;
   faqs?: FAQItem[] | null;
   breadcrumbs?: { name: string; url: string }[] | null;
@@ -46,10 +50,12 @@ export default function SEO({
   url,
   canonical,
   pageRoute = '/',
+  robots,
   schemaType = 'Organization',
   schemaData = null,
   product = null,
   products = null,
+  service = null,
   article = null,
   faqs = null,
   breadcrumbs = null,
@@ -58,31 +64,32 @@ export default function SEO({
   const { data: footerData } = useFooterCMS();
   const { logos } = useLogos();
 
+  const resolvedRoute = pageRoute || (typeof window !== 'undefined' ? window.location.pathname : '/');
+
   useEffect(() => {
     let isMounted = true;
     const loadSEO = async () => {
       try {
-        const res = await publicApi.getSEO({ route: pageRoute });
+        const res = await publicApi.getSEO({ route: resolvedRoute });
         const payload = res?.data || (res?.metaTitle ? res : null);
         if (isMounted && payload) {
           setSeoData(payload);
         }
       } catch (err: any) {
-        console.warn('Live SEO fetch notice:', err?.message);
+        // Silently fallback to component props and defaults
       }
     };
     loadSEO();
     return () => {
       isMounted = false;
     };
-  }, [pageRoute]);
+  }, [resolvedRoute]);
 
   const siteName = 'EcoMargin';
   const siteUrl = getSiteUrl();
 
   const companyName = footerData?.companyName || 'EcoMargin LLP';
   const phone = footerData?.phone || '+91-8302313065';
-  const altPhone = footerData?.altPhone || '+91-9079139959';
   const email = footerData?.email || 'support@ecomargin.in';
 
   // Dynamic Head Metadata Resolution
@@ -97,7 +104,7 @@ export default function SEO({
     keywords || seoData?.keywords || DEFAULT_SEO.keywords;
 
   const canonicalLink =
-    canonical || seoData?.canonicalUrl || getCanonicalUrl(pageRoute);
+    canonical || seoData?.canonicalUrl || getCanonicalUrl(resolvedRoute);
 
   const ogImg =
     image ||
@@ -105,36 +112,43 @@ export default function SEO({
     logos?.header?.imageUrl ||
     DEFAULT_SEO.image;
 
-  const robotsSetting = seoData?.robots || DEFAULT_SEO.robots;
+  const robotsSetting = robots || seoData?.robots || DEFAULT_SEO.robots;
 
-  // Search Console & Webmaster verification tags
+  // Search Console & Webmaster verification tags (only if actual values exist)
   const gsc = seoData?.gscVerification || '';
   const bing = seoData?.bingVerification || '';
-  const gaId = seoData?.gaMeasurementId || '';
-  const gtmId = seoData?.gtmContainerId || '';
-  const clarityId = seoData?.clarityId || '';
 
-  // Generate Schemas
-  const organizationSchema = getOrganizationSchema(companyName);
-  const webSiteSchema = getWebsiteSchema(siteName);
+  // Schemas Resolution
+  const isHomePage = resolvedRoute === '/' || resolvedRoute === '';
+  const organizationSchema = isHomePage ? getOrganizationSchema(companyName, ogImg) : null;
+  const webSiteSchema = isHomePage ? getWebsiteSchema(siteName) : null;
   const webPageSchema = getWebPageSchema(metaTitle, metaDesc, canonicalLink);
-  const localBusinessSchema = getLocalBusinessSchema(companyName, metaDesc, phone, email, ogImg);
-  
-  const breadcrumbItems = breadcrumbs || [
-    { name: 'Home', url: siteUrl },
-    ...(pageRoute !== '/'
-      ? [{ name: pageRoute.split('/')[1]?.toUpperCase() || 'PAGE', url: `${siteUrl}/${pageRoute.split('/')[1]}` }]
-      : [])
-  ];
-  const breadcrumbSchema = getBreadcrumbSchema(breadcrumbItems);
+  const localBusinessSchema = schemaType === 'LocalBusiness' 
+    ? getLocalBusinessSchema(companyName, metaDesc, phone, email, ogImg) 
+    : null;
+
+  // Breadcrumbs for subpages
+  const breadcrumbItems = !isHomePage
+    ? (breadcrumbs || [
+        { name: 'Home', url: `${siteUrl}/` },
+        { 
+          name: resolvedRoute.split('/')[1]?.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Page', 
+          url: canonicalLink 
+        }
+      ])
+    : null;
+  const breadcrumbSchema = breadcrumbItems ? getBreadcrumbSchema(breadcrumbItems) : null;
 
   const productSchema = product ? getProductSchema(product, siteUrl, ogImg, companyName) : null;
-  const productSchemasList = products && Array.isArray(products) 
-    ? products.map(p => getProductSchema(p, siteUrl, ogImg, companyName)) 
+  const productSchemasList = products && Array.isArray(products)
+    ? products.map(p => getProductSchema(p, siteUrl, ogImg, companyName))
     : [];
-  const faqSchema = faqs ? getFAQSchema(faqs) : null;
-  const articleSchema = article ? getArticleSchema(article) : null;
+  const serviceSchema = service ? getServiceSchema(service, companyName) : null;
+  const faqSchema = faqs && Array.isArray(faqs) && faqs.length > 0 ? getFAQSchema(faqs) : null;
+  const articleSchema = article ? getArticleSchema({ ...article, url: canonicalLink }) : null;
   const imageObjectSchema = ogImg ? getImageObjectSchema(ogImg, metaTitle) : null;
+
+  const ogType = article ? 'article' : (product || schemaType === 'Product' ? 'product' : 'website');
 
   return (
     <Helmet htmlAttributes={{ lang: 'en-IN' }}>
@@ -150,11 +164,7 @@ export default function SEO({
       <link rel="alternate" href={canonicalLink} hrefLang="x-default" />
 
       {/* ── 2. PRELOAD LOGO & BRAND ASSETS ── */}
-      <link
-        rel="preload"
-        as="image"
-        href="/logo.png"
-      />
+      <link rel="preload" as="image" href="/logo.png" />
 
       {/* ── 3. FAVICON SYSTEM SUPPORT ── */}
       <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -162,33 +172,55 @@ export default function SEO({
       <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
       <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png" />
       <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
+      <link rel="icon" type="image/png" sizes="512x512" href="/android-chrome-512x512.png" />
       <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
       <link rel="manifest" href="/site.webmanifest" />
 
-      {/* Webmaster Verifications */}
+      {/* Webmaster Verifications (only when genuine tokens exist) */}
       {gsc && <meta name="google-site-verification" content={gsc} />}
       {bing && <meta name="msvalidate.01" content={bing} />}
 
       {/* ── 4. OPEN GRAPH TAGS ── */}
+      <meta property="og:type" content={ogType} />
+      <meta property="og:site_name" content={siteName} />
       <meta property="og:title" content={seoData?.ogTitle || metaTitle} />
       <meta property="og:description" content={seoData?.ogDescription || metaDesc} />
       <meta property="og:image" content={ogImg} />
-      <meta property="og:type" content="website" />
-      <meta property="og:site_name" content={siteName} />
       <meta property="og:url" content={url || canonicalLink} />
 
-      {/* ── 5. TWITTER CARD TAGS ── */}
+      {/* Article Open Graph Metadata */}
+      {article && article.datePublished && (
+        <meta property="article:published_time" content={article.datePublished} />
+      )}
+      {article && article.dateModified && (
+        <meta property="article:modified_time" content={article.dateModified} />
+      )}
+      {article && article.author && (
+        <meta property="article:author" content={article.author} />
+      )}
+
+      {/* ── 5. TWITTER/X CARD TAGS ── */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={metaTitle} />
       <meta name="twitter:description" content={metaDesc} />
       <meta name="twitter:image" content={ogImg} />
 
-      {/* ── 6. DYNAMIC STRUCTURED DATA SCHEMAS ── */}
-      <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
-      <script type="application/ld+json">{JSON.stringify(webSiteSchema)}</script>
-      <script type="application/ld+json">{JSON.stringify(webPageSchema)}</script>
-      <script type="application/ld+json">{JSON.stringify(localBusinessSchema)}</script>
-      <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+      {/* ── 6. STRUCTURED DATA SCHEMAS (JSON-LD) ── */}
+      {organizationSchema && (
+        <script type="application/ld+json">{JSON.stringify(organizationSchema)}</script>
+      )}
+      {webSiteSchema && (
+        <script type="application/ld+json">{JSON.stringify(webSiteSchema)}</script>
+      )}
+      {webPageSchema && (
+        <script type="application/ld+json">{JSON.stringify(webPageSchema)}</script>
+      )}
+      {breadcrumbSchema && (
+        <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+      )}
+      {localBusinessSchema && (
+        <script type="application/ld+json">{JSON.stringify(localBusinessSchema)}</script>
+      )}
 
       {productSchema && (
         <script type="application/ld+json">{JSON.stringify(productSchema)}</script>
@@ -197,6 +229,10 @@ export default function SEO({
       {productSchemasList.map((pSchema, idx) => (
         <script key={`prod-${idx}`} type="application/ld+json">{JSON.stringify(pSchema)}</script>
       ))}
+
+      {serviceSchema && (
+        <script type="application/ld+json">{JSON.stringify(serviceSchema)}</script>
+      )}
 
       {faqSchema && (
         <script type="application/ld+json">{JSON.stringify(faqSchema)}</script>

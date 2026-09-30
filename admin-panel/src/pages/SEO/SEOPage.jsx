@@ -47,14 +47,18 @@ export default function SEOPage() {
   const availableRoutes = [
     { label: 'Home Page ( / )', value: '/' },
     { label: 'About Us ( /about )', value: '/about' },
-    { label: 'Manufacturing Plant ( /manufacturing )', value: '/manufacturing' },
     { label: 'Products Catalog ( /products )', value: '/products' },
+    { label: 'Industry Solutions ( /solutions )', value: '/solutions' },
     { label: 'Services & EPC ( /services )', value: '/services' },
     { label: 'Projects Portfolio ( /projects )', value: '/projects' },
+    { label: 'Projects & Plant Gallery ( /gallery )', value: '/gallery' },
+    { label: 'Blogs & Insights ( /blogs )', value: '/blogs' },
+    { label: 'Careers ( /career )', value: '/career' },
+    { label: 'Contact Us ( /contact )', value: '/contact' },
+    { label: 'Enquiry & RFQ ( /enquiry )', value: '/enquiry' },
+    { label: 'Manufacturing Plant ( /manufacturing )', value: '/manufacturing' },
     { label: 'Dealer Partner ( /dealer-partner )', value: '/dealer-partner' },
     { label: 'Downloads & Specs ( /downloads )', value: '/downloads' },
-    { label: 'Contact Us ( /contact )', value: '/contact' },
-    { label: 'Blogs & Insights ( /blogs )', value: '/blogs' },
     { label: 'Privacy Policy ( /privacy-policy )', value: '/privacy-policy' },
     { label: 'Terms of Service ( /terms )', value: '/terms' },
   ];
@@ -62,9 +66,15 @@ export default function SEOPage() {
   useEffect(() => {
     const fetchSEO = async () => {
       try {
-        const res = await adminService.getSEOCMS();
-        if (res && res.data) {
-          setSeo(prev => ({ ...prev, ...res.data }));
+        const res = await adminService.getSEOCMS({ params: { route: selectedRoute } });
+        if (res && res.data && Object.keys(res.data).length > 0) {
+          setSeo(prev => ({ ...prev, ...res.data, pageRoute: selectedRoute }));
+        } else {
+          setSeo(prev => ({
+            ...prev,
+            pageRoute: selectedRoute,
+            canonicalUrl: `https://www.ecomargin.in${selectedRoute === '/' ? '/' : selectedRoute}`,
+          }));
         }
       } catch (err) {
         console.warn('Initial SEO CMS load notice:', err.message);

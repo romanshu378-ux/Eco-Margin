@@ -91,16 +91,18 @@ export default function BlogDetailPage() {
   return (
     <>
       <SEO 
-        title={`${blog.title} | EcoMargin LLP`} 
+        title={`${blog.title} | EcoMargin`} 
         description={blog.summary || (blog.content ? blog.content.substring(0, 155) : 'EcoMargin EV Charging Insights')} 
         pageRoute={`/blogs/${blog.slug}`}
-        image={imageSrc}
+        image={imageSrc || DEFAULT_BLOGS[0].coverImage}
         article={{
           title: blog.title,
           description: blog.summary || blog.title,
           image: imageSrc || DEFAULT_BLOGS[0].coverImage,
           author: blog.author || 'EcoMargin Engineering Team',
-          datePublished: blog.createdAt || blog.created_at || '2026-02-15T00:00:00.000Z'
+          datePublished: blog.createdAt || blog.created_at || '2026-02-15T00:00:00.000Z',
+          dateModified: blog.updatedAt || blog.updated_at || blog.createdAt || blog.created_at || '2026-02-15T00:00:00.000Z',
+          slug: blog.slug
         }}
       />
 
@@ -157,7 +159,8 @@ export default function BlogDetailPage() {
               <div style={{ height: '380px', width: '100%', borderRadius: 'var(--radius-lg)', overflow: 'hidden', marginBottom: '2.5rem', background: 'var(--color-bg-alt)', border: '1px solid var(--color-border)' }}>
                 <img 
                   src={imageSrc || fallbackImage} 
-                  alt={blog.title}
+                  alt={blog.title ? `${blog.title} - EcoMargin EV Charging Infrastructure` : 'EcoMargin EV Charging Technical Guide'}
+                  loading="eager"
                   onError={() => setImageSrc(fallbackImage)}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />

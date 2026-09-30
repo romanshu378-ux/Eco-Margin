@@ -105,18 +105,18 @@ export const publicApi = {
     return publicApi.getContact()
   },
 
-  // Fetch Global SEO Metadata
-  getSEO: async () => {
+  // Fetch Global SEO Metadata (supports route-specific query)
+  getSEO: async (params = {}) => {
     try {
-      const response = await api.get('/public/seo')
+      const response = await api.get('/public/seo', { params })
       return response
     } catch (error) {
       console.warn('[PublicAPI] Offline fallback for SEO:', error.message)
       return { success: false, data: null }
     }
   },
-  getSEOCMS: async () => {
-    return publicApi.getSEO()
+  getSEOCMS: async (params = {}) => {
+    return publicApi.getSEO(params)
   },
 
   // Fetch Website Branding Logos (Header, Footer, White Logo, Favicon)

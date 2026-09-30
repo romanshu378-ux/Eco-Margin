@@ -168,6 +168,8 @@ export default function HeroSection() {
                   src={heroImageSrc} 
                   alt="EcoMargin Fast EV Charging Station" 
                   className="hero-media-img" 
+                  fetchPriority="high"
+                  loading="eager"
                   onError={() => setHeroImageSrc(DEFAULT_HERO_IMAGE)}
                 />
                 <div className="hero-media-overlay" />

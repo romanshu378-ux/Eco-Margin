@@ -32,14 +32,14 @@ export default function GalleryPage() {
   return (
     <>
       <SEO
-        title="EcoMargin EV Charging Infrastructure Gallery"
-        description="Explore visual showcases of EcoMargin LLP EV charger manufacturing facilities, commercial DC fast charger deployments, testing labs, and charging hubs."
+        title="EcoMargin EV Charging Projects & Gallery"
+        description="Explore our installation gallery featuring commercial EV charging stations, DC fast charger deployments, and manufacturing facilities across India."
         pageRoute="/gallery"
       />
 
       <PageHeader
-        title="Factory & Manufacturing Gallery"
-        description="A visual tour through our 5,000 sq.ft. manufacturing facility, cleanroom SMT lines, and endurance testing labs."
+        title="EV Charging Projects & Manufacturing Gallery"
+        description="Explore our high-power DC fast charger deployments, commercial fleet installations, and advanced manufacturing facility."
       />
 
       <div className="container" style={{ padding: '6rem 0' }}>
@@ -67,7 +67,12 @@ export default function GalleryPage() {
                 }}
               >
                 {img ? (
-                  <img src={img} alt={item.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <img 
+                    src={img} 
+                    alt={item.title ? `${item.title} - EcoMargin EV Charging Infrastructure` : 'EcoMargin EV Charging Infrastructure Installation'} 
+                    loading="lazy"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                  />
                 ) : (
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--color-text-muted)' }}>
                     [{item.title}]

@@ -36,7 +36,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <SEO title="Log In" />
+      <SEO title="Account Log In | EcoMargin" robots="noindex, nofollow" pageRoute="/login" />
       
       <motion.div 
         initial={{ opacity: 0, y: 20 }}

@@ -157,8 +157,7 @@ export default function ProductsPage() {
       name: prod.name,
       description: `${prod.name} manufactured by EcoMargin. Specifications: Connector: ${prod.connector}, Protection: ${prod.protection}, Efficiency: ${prod.efficiency}, Warranty: ${prod.warranty}. Features: ${prod.features.join(', ')}. Applications: ${prod.applications}.`,
       power: prod.power,
-      sku: `EM-PROD-${catIdx}-${idx}`,
-      price: 'Call for Quote'
+      sku: `EM-PROD-${catIdx}-${idx}`
     }))
   );
 
@@ -171,8 +170,8 @@ export default function ProductsPage() {
   return (
     <>
       <SEO 
-        title="EV Chargers & Charging Solutions | EcoMargin LLP" 
-        description="Explore EcoMargin LLP AC & DC fast EV chargers from 3.3kW to 240kW. Built for commercial fleets, highways, workplaces, and public EV charging stations in India." 
+        title="EV Chargers & DC Fast Chargers (60kW, 80kW, 120kW) | EcoMargin" 
+        description="Explore EcoMargin's range of smart AC chargers and high-efficiency DC fast chargers from 60kW, 80kW to 120kW+ for commercial, fleet, and public EV charging in India." 
         pageRoute="/products"
         products={allProductsList}
         faqs={productFaqs}

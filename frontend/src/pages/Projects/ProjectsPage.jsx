@@ -36,12 +36,12 @@ export default function ProjectsPage() {
   return (
     <>
       <SEO 
-        title="EV Charging Projects & Infrastructure | EcoMargin LLP"
-        description="Discover successful EV charging infrastructure deployments, highway fast-charging hubs, workplace charging setups, and commercial fleet depots by EcoMargin LLP."
+        title="EV Charging Projects & Installations | EcoMargin"
+        description="Discover completed EV charging infrastructure projects, high-power DC fast charger deployments, and commercial EV installations powered by EcoMargin."
         pageRoute="/projects"
       />
       
-      <PageHeader title="Our Projects" subtitle="Powering electric mobility transitions across highway corridors, transit hubs and logistics networks." />
+      <PageHeader title="EV Charging Projects & Installations" description="Powering electric mobility transitions across highway corridors, transit hubs and logistics networks." />
 
       <div className="container" style={{ padding: '6rem 0' }}>
         <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-50px" }} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
@@ -64,7 +64,13 @@ export default function ProjectsPage() {
               >
                 <div style={{ height: '220px', background: 'var(--color-bg-alt)', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
                   {img ? (
-                    <img src={img} alt={proj.title} onError={() => handleImageError(proj.id || i)} loading="lazy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img 
+                      src={img} 
+                      alt={proj.title ? `${proj.title} - EcoMargin EV Charging Installation` : 'EV charging infrastructure installation by EcoMargin'} 
+                      onError={() => handleImageError(proj.id || i)} 
+                      loading="lazy" 
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                    />
                   ) : (
                     <span style={{ color: 'var(--color-text-muted)' }}>[EcoMargin EPC Project]</span>
                   )}

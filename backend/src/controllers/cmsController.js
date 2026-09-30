@@ -511,7 +511,11 @@ exports.updateFooterCMS = async (req, res) => {
 exports.getSEOCMS = async (req, res) => {
   setCacheHeaders(req, res)
   try {
-    const record = await SEO.findOne()
+    const routeParam = req.query.route || req.query.pageRoute || '/'
+    let record = await SEO.findOne({ where: { pageRoute: routeParam } })
+    if (!record && routeParam === '/') {
+      record = await SEO.findOne()
+    }
     return res.status(200).json({
       success: true,
       message: "Fetched Successfully",
@@ -531,13 +535,14 @@ exports.updateSEOCMS = async (req, res) => {
   console.log('📝 [PUT /api/v1/cms/seo] Request Payload:', JSON.stringify(req.body, null, 2))
   setNoCache(res)
   try {
-    let record = await SEO.findOne()
+    const routeParam = req.body.pageRoute || req.body.page_route || '/'
+    let record = await SEO.findOne({ where: { pageRoute: routeParam } })
     if (record) {
       await record.update(req.body)
     } else {
-      record = await SEO.create(req.body)
+      record = await SEO.create({ ...req.body, pageRoute: routeParam })
     }
-    console.log('✅ [Database Commit] SEO CMS updated successfully in database')
+    console.log('✅ [Database Commit] SEO CMS updated successfully in database for route:', routeParam)
     return res.status(200).json({
       success: true,
       message: "Data saved successfully",

@@ -65,8 +65,8 @@ export default function DownloadsPage() {
   return (
     <>
       <SEO 
-        title="EV Charger Datasheets & User Manual Downloads | EcoMargin LLP" 
-        description="Download official EcoMargin LLP product datasheets, EV charger brochures, user manuals, and technical specification guides." 
+        title="EV Charger Datasheets & Technical Downloads | EcoMargin" 
+        description="Download technical datasheets, user manuals, CAD drawings, and compliance specifications for EcoMargin AC and DC fast chargers." 
         pageRoute="/downloads"
       />
 
@@ -141,7 +141,12 @@ export default function DownloadsPage() {
                       {/* Logo / Icon image or fallback SVG */}
                       {iconUrl ? (
                         <div style={{ width: '48px', height: '48px', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border)', background: '#ffffff', padding: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-                          <img src={iconUrl} alt="Logo" style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                          <img 
+                            src={iconUrl} 
+                            alt={docName ? `${docName} Icon` : 'EcoMargin Document'} 
+                            loading="lazy" 
+                            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} 
+                          />
                         </div>
                       ) : (
                         <div style={{ fontSize: '1.75rem', color: 'var(--color-primary)', background: 'rgba(16, 185, 129, 0.1)', padding: '0.75rem', borderRadius: 'var(--radius-md)', flexShrink: 0 }}>

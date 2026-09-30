@@ -51,8 +51,8 @@ export default function ManufacturingPage() {
   return (
     <>
       <SEO 
-        title="EV Charger Manufacturing in India | EcoMargin LLP" 
-        description="State-of-the-art EV charger manufacturing by EcoMargin LLP. Advanced power electronics, IP55 enclosure testing, and white-label OEM charger production in India." 
+        title="EV Charger Manufacturing & R&D Facility | EcoMargin" 
+        description="Discover EcoMargin's state-of-the-art EV charger manufacturing facility in India, engineered with indigenous R&D, IP55 protection, and ARAI standards." 
         pageRoute="/manufacturing"
       />
 

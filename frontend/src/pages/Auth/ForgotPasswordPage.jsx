@@ -21,7 +21,7 @@ export default function ForgotPasswordPage() {
 
   return (
     <>
-      <SEO title="Reset Password" />
+      <SEO title="Reset Password | EcoMargin" robots="noindex, nofollow" pageRoute="/forgot-password" />
       
       <motion.div 
         initial={{ opacity: 0, y: 20 }}

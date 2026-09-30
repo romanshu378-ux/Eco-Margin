@@ -19,7 +19,11 @@ export default function CareerPage() {
 
   return (
     <>
-      <SEO title="Careers" description="Join EcoMargin and help build the software powering the electric revolution." />
+      <SEO 
+        title="Careers at EcoMargin | EV Charging Company" 
+        description="Join the team accelerating India's electric mobility revolution. Explore engineering, operations, and business career opportunities at EcoMargin." 
+        pageRoute="/career"
+      />
       
       <PageHeader 
         title="Careers at EcoMargin" 

@@ -7,7 +7,11 @@ import { fadeUp } from '@animations/variants'
 export default function PrivacyPage() {
   return (
     <>
-      <SEO title="Privacy Policy" />
+      <SEO 
+        title="Privacy Policy | EcoMargin LLP" 
+        description="Privacy policy and data protection terms for EcoMargin LLP EV charging services and digital platforms."
+        pageRoute="/privacy-policy"
+      />
       <PageHeader title="Privacy Policy" description="Last updated: August 1, 2026" />
       
       <div className="container" style={{ padding: '6rem 0' }}>

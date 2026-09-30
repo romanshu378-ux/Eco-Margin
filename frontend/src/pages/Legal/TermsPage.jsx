@@ -7,7 +7,11 @@ import { fadeUp } from '@animations/variants'
 export default function TermsPage() {
   return (
     <>
-      <SEO title="Terms of Service" />
+      <SEO 
+        title="Terms of Service | EcoMargin LLP" 
+        description="Terms and conditions governing the use of EcoMargin LLP EV charging services, equipment, and web platforms."
+        pageRoute="/terms"
+      />
       <PageHeader title="Terms of Service" description="Last updated: August 1, 2026" />
       
       <div className="container" style={{ padding: '6rem 0' }}>

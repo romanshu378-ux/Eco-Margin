@@ -11,29 +11,21 @@ export interface LocalBusinessAddress {
   addressCountry: string;
 }
 
-export const getOrganizationSchema = (companyName: string = 'EcoMargin LLP') => {
+export const getOrganizationSchema = (companyName: string = 'EcoMargin LLP', logoUrl?: string) => {
   const siteUrl = getSiteUrl();
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     '@id': `${siteUrl}/#organization`,
     'name': companyName,
-    'alternateName': ['EcoMargin', 'Eco Margin'],
+    'alternateName': ['EcoMargin', 'EcoMargin LLP', 'EcoMargin EV', 'EcoMargin EV Charging'],
     'url': siteUrl,
     'logo': {
       '@type': 'ImageObject',
-      'url': `${siteUrl}/logo-stacked.png`
+      'url': logoUrl || `${siteUrl}/logo-stacked.png`
     },
     'email': 'support@ecomargin.in',
     'telephone': '+91-8302313065',
-    'address': {
-      '@type': 'PostalAddress',
-      'streetAddress': 'NH-11, iStart Nest, Government Engineering College',
-      'addressLocality': 'Bharatpur',
-      'addressRegion': 'Rajasthan',
-      'postalCode': '321001',
-      'addressCountry': 'IN'
-    },
     'sameAs': [
       'https://www.linkedin.com/company/ecomargin',
       'https://www.instagram.com/ecomargin',
@@ -51,12 +43,7 @@ export const getWebsiteSchema = (siteName: string = 'EcoMargin') => {
     '@type': 'WebSite',
     '@id': `${siteUrl}/#website`,
     'name': siteName,
-    'url': siteUrl,
-    'potentialAction': {
-      '@type': 'SearchAction',
-      'target': `${siteUrl}/products?search={search_term_string}`,
-      'query-input': 'required name=search_term_string'
-    }
+    'url': siteUrl
   };
 };
 
@@ -96,10 +83,11 @@ export const getLocalBusinessSchema = (
   description: string = '',
   phone: string = '+91-8302313065',
   email: string = 'support@ecomargin.in',
-  ogImg: string = ''
+  ogImg: string = '',
+  address?: LocalBusinessAddress
 ) => {
   const siteUrl = getSiteUrl();
-  return {
+  const schema: any = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     '@id': `${siteUrl}/#localbusiness`,
@@ -114,34 +102,25 @@ export const getLocalBusinessSchema = (
     'description': description,
     'telephone': phone || '+91-8302313065',
     'email': email || 'support@ecomargin.in',
-    'priceRange': '₹₹₹',
-    'address': {
-      '@type': 'PostalAddress',
-      'streetAddress': 'NH-11, iStart Nest, Government Engineering College',
-      'addressLocality': 'Bharatpur',
-      'addressRegion': 'Rajasthan',
-      'postalCode': '321001',
-      'addressCountry': 'IN'
-    },
-    'geo': {
-      '@type': 'GeoCoordinates',
-      'latitude': 27.2023,
-      'longitude': 77.4912
-    },
-    'openingHoursSpecification': {
-      '@type': 'OpeningHoursSpecification',
-      'dayOfWeek': ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
-      'opens': '09:00',
-      'closes': '19:00'
-    },
-    'areaServed': [
-      {
-        '@type': 'Country',
-        'name': 'India',
-        'identifier': 'IN'
-      }
-    ]
+    'areaServed': {
+      '@type': 'Country',
+      'name': 'India',
+      'identifier': 'IN'
+    }
   };
+
+  if (address) {
+    schema.address = {
+      '@type': 'PostalAddress',
+      'streetAddress': address.streetAddress,
+      'addressLocality': address.addressLocality,
+      'addressRegion': address.addressRegion,
+      'postalCode': address.postalCode,
+      'addressCountry': address.addressCountry || 'IN'
+    };
+  }
+
+  return schema;
 };
 
 export interface ProductDetails {
@@ -161,14 +140,13 @@ export const getProductSchema = (
   ogImg: string,
   companyName: string
 ) => {
-  return {
+  const schema: any = {
     '@context': 'https://schema.org',
     '@type': 'Product',
     'name': product.name,
     'image': [product.image || ogImg],
     'description': product.description,
     'sku': product.sku || `EM-${product.id || 'CHG'}`,
-    'mpn': product.mpn || `EM-EV-${product.power || 'AC'}`,
     'brand': {
       '@type': 'Brand',
       'name': 'EcoMargin'
@@ -176,24 +154,58 @@ export const getProductSchema = (
     'manufacturer': {
       '@type': 'Organization',
       'name': companyName
-    },
-    'offers': {
+    }
+  };
+
+  if (product.mpn) {
+    schema.mpn = product.mpn;
+  }
+
+  // Only include offer if a genuine numeric price is available
+  if (product.price && !isNaN(Number(product.price)) && Number(product.price) > 0) {
+    schema.offers = {
       '@type': 'Offer',
       'url': `${siteUrl}/products`,
       'priceCurrency': 'INR',
-      'price': product.price || 'Call for Quote',
-      'priceValidUntil': '2027-12-31',
+      'price': Number(product.price),
       'itemCondition': 'https://schema.org/NewCondition',
       'availability': 'https://schema.org/InStock',
       'seller': {
         '@type': 'Organization',
         'name': companyName
       }
+    };
+  }
+
+  return schema;
+};
+
+export interface ServiceDetails {
+  name: string;
+  description: string;
+  serviceType?: string;
+  url?: string;
+}
+
+export const getServiceSchema = (
+  service: ServiceDetails,
+  companyName: string = 'EcoMargin LLP'
+) => {
+  const siteUrl = getSiteUrl();
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    'name': service.name,
+    'description': service.description,
+    'serviceType': service.serviceType || 'EV Charging Infrastructure Services',
+    'provider': {
+      '@type': 'Organization',
+      'name': companyName,
+      'url': siteUrl
     },
-    'aggregateRating': {
-      '@type': 'AggregateRating',
-      'ratingValue': '4.9',
-      'reviewCount': '128'
+    'areaServed': {
+      '@type': 'Country',
+      'name': 'India'
     }
   };
 };
@@ -236,13 +248,20 @@ export interface ArticleDetails {
   dateModified?: string;
   publisherName?: string;
   publisherLogo?: string;
+  url?: string;
+  slug?: string;
 }
 
 export const getArticleSchema = (article: ArticleDetails) => {
   const siteUrl = getSiteUrl();
+  const articleUrl = article.url || (article.slug ? `${siteUrl}/blogs/${article.slug}` : `${siteUrl}/blogs`);
   return {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
+    'mainEntityOfPage': {
+      '@type': 'WebPage',
+      '@id': articleUrl
+    },
     'headline': article.title,
     'description': article.description,
     'image': article.image,
@@ -259,10 +278,6 @@ export const getArticleSchema = (article: ArticleDetails) => {
         '@type': 'ImageObject',
         'url': article.publisherLogo || `${siteUrl}/logo-stacked.png`
       }
-    },
-    'mainEntityOfPage': {
-      '@type': 'WebPage',
-      '@id': `${siteUrl}/blogs`
     }
   };
 };

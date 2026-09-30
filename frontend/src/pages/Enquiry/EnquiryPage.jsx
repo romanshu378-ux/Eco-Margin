@@ -109,8 +109,8 @@ export default function EnquiryPage() {
   return (
     <>
       <SEO 
-        title="EV Charging Enquiry | EcoMargin"
-        description="Send your EV charging requirement to EcoMargin for AC chargers, DC fast chargers, fleet charging, EV charging stations, installation and support."
+        title="EV Charging Enquiry | Request a Quote | EcoMargin"
+        description="Request a quote for commercial EV chargers, DC fast charging stations, or turnkey infrastructure installation from EcoMargin. Quick consultation."
         pageRoute="/enquiry"
       />
 

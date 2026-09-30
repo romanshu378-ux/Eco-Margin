@@ -33,13 +33,13 @@ export default function BlogsPage() {
   return (
     <>
       <SEO 
-        title="EV Charging Blog & Technical Insights | EcoMargin LLP" 
-        description="Read latest EV industry insights, technical whitepapers, Indian grid safety standards, thermal management, and OCPP software integration from EcoMargin LLP." 
+        title="EV Charging & Electric Mobility Blog | EcoMargin" 
+        description="Stay updated with the latest insights, industry standards, technological trends, and guides on EV charging infrastructure in India from EcoMargin." 
         pageRoute="/blogs"
       />
       
       <PageHeader 
-        title="Blogs & Technical Insights" 
+        title="EV Charging & Electric Mobility Blog" 
         description="Stay up to date with EV charging engineering, safety compliance standards, and OEM manufacturing technology."
       />
 
@@ -73,7 +73,7 @@ export default function BlogsPage() {
                   <div style={{ height: '220px', background: 'var(--color-bg-alt)', borderBottom: '1px solid var(--color-border)', overflow: 'hidden' }}>
                     <img 
                       src={img} 
-                      alt={blog.title} 
+                      alt={blog.title ? `${blog.title} - EcoMargin EV Blog` : 'EcoMargin EV Charging Insights'} 
                       loading="lazy" 
                       onError={(e) => {
                         e.currentTarget.onerror = null

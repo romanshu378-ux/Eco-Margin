@@ -21,7 +21,7 @@ export default function RegisterPage() {
 
   return (
     <>
-      <SEO title="Register" />
+      <SEO title="Create Account | EcoMargin" robots="noindex, nofollow" pageRoute="/register" />
       
       <motion.div 
         initial={{ opacity: 0, y: 20 }}

@@ -93,7 +93,8 @@ export default function AboutPage() {
               <motion.div variants={fadeUp} style={{ height: '360px', borderRadius: 'var(--radius-xl)', overflow: 'hidden', border: '1px solid var(--color-border)', boxShadow: 'var(--shadow-lg)' }}>
                 <img 
                   src={finalImage} 
-                  alt={imageAlt} 
+                  alt={imageAlt || 'EcoMargin EV Charging Infrastructure Company'} 
+                  loading="lazy"
                   onError={() => setImageSrc(DEFAULT_ABOUT_IMAGE)}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
                 />

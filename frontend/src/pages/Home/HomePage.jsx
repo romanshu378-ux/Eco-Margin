@@ -19,7 +19,7 @@ export default function HomePage() {
     <>
       <SEO 
         title="EcoMargin LLP | EV Charging Solutions & Infrastructure India" 
-        description="EcoMargin LLP provides EV charging solutions, EV chargers, charging infrastructure, installation, software and support for commercial, industrial and public charging applications in India."
+        description="EcoMargin LLP provides EV charging infrastructure, EV chargers, installation, OCPP software and complete electric vehicle charging solutions across India."
         pageRoute="/"
       />
       

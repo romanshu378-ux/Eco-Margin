@@ -6,7 +6,7 @@
 const { SEO, Product, Blog, Project, Service, Category, Download } = require('../models')
 const { slugify } = require('../utils/slugify')
 
-const SITE_URL = process.env.SITE_URL
+const SITE_URL = (process.env.SITE_URL || 'https://www.ecomargin.in').replace(/\/$/, '')
 
 // ── 1. GET Dynamic Sitemap XML ───────────────────────────────────
 exports.generateSitemap = async (req, res) => {
@@ -14,14 +14,18 @@ exports.generateSitemap = async (req, res) => {
     const staticRoutes = [
       { url: '/', priority: '1.0', changefreq: 'daily' },
       { url: '/about', priority: '0.8', changefreq: 'monthly' },
-      { url: '/manufacturing', priority: '0.9', changefreq: 'monthly' },
-      { url: '/products', priority: '0.95', changefreq: 'daily' },
+      { url: '/products', priority: '0.95', changefreq: 'weekly' },
+      { url: '/solutions', priority: '0.85', changefreq: 'weekly' },
       { url: '/services', priority: '0.9', changefreq: 'weekly' },
-      { url: '/projects', priority: '0.85', changefreq: 'weekly' },
+      { url: '/projects', priority: '0.85', changefreq: 'monthly' },
+      { url: '/gallery', priority: '0.7', changefreq: 'monthly' },
+      { url: '/blogs', priority: '0.8', changefreq: 'daily' },
+      { url: '/career', priority: '0.7', changefreq: 'monthly' },
+      { url: '/contact', priority: '0.85', changefreq: 'monthly' },
+      { url: '/enquiry', priority: '0.9', changefreq: 'weekly' },
+      { url: '/manufacturing', priority: '0.85', changefreq: 'monthly' },
       { url: '/dealer-partner', priority: '0.8', changefreq: 'monthly' },
       { url: '/downloads', priority: '0.7', changefreq: 'weekly' },
-      { url: '/contact', priority: '0.85', changefreq: 'monthly' },
-      { url: '/blogs', priority: '0.8', changefreq: 'daily' },
       { url: '/privacy-policy', priority: '0.3', changefreq: 'yearly' },
       { url: '/terms', priority: '0.3', changefreq: 'yearly' },
     ]
@@ -88,12 +92,15 @@ exports.generateSitemap = async (req, res) => {
 
 // ── 2. GET Dynamic Robots.txt ─────────────────────────────────────
 exports.generateRobotsTxt = async (req, res) => {
-  const content = `# EcoMargin Infrastructure Pvt. Ltd. — Enterprise Robots.txt
+  const content = `# EcoMargin LLP — Robots.txt for Search Engines
 User-agent: *
 Allow: /
+
+Disallow: /dashboard/
 Disallow: /admin/
-Disallow: /api/
-Disallow: /uploads/private/
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
 
 # Sitemap Location
 Sitemap: ${SITE_URL}/sitemap.xml
